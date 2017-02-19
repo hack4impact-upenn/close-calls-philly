@@ -1,0 +1,230 @@
+{% extends 'layouts/base.html' %}
+{% import 'macros/form_macros.html' as f %}
+
+{% block content %}
+<div id="wrapper">
+    <div id="googleMap"></div>
+        <div id="slider"></div>
+        <div id="form_button">Report Incident</div>
+        <div id="form_container">
+            <button id="close_form" class="ui icon button close">
+                <i class="remove icon"></i>
+            </button>
+            <div id ="form_fields">
+            {% set flashes = {
+            'error': get_flashed_messages(category_filter=['form-error']),
+            'warning': get_flashed_messages(category_filter=['form-check-email']),
+            'info': get_flashed_messages(category_filter=['form-info']),
+            'success': get_flashed_messages(category_filter=['form-success'])
+            } %}
+
+            {{ f.begin_form(form, flashes) }}
+            {{ f.render_form_field(form.vehicle_id) }}
+            {{ f.render_form_field(form.license_plate) }}
+            {{ f.render_form_field(form.picture_file)}}
+            {{ f.render_form_field(form.description) }}
+            {{ f.render_form_field(form.duration) }}
+            {{ f.render_form_field(form.location)}}
+            <div class="ui button" id="current_location_button" onclick="geoFindMe()">Use Current location</div>
+            {{ f.render_form_field(form.agency)}}
+            {{ f.render_form_field(form.other_agency, extra_classes='other_agency') }}
+            {{ f.render_form_field(form.date)}}
+            {{ f.render_form_field(form.time)}}
+            {{ f.render_form_field(form.bus_number, extra_classes='bus_number') }}
+            {{ f.render_form_field(form.led_screen_number, extra_classes='led_screen_number') }}
+            {{ f.form_message(flashes['error'], header='Something went wrong.', class='error') }}
+            {{ f.form_message(flashes['warning'], header='Check your email.', class='warning') }}
+            {{ f.form_message(flashes['info'], header='Information', class='info') }}
+            {{ f.form_message(flashes['success'], header='Success!', class='success') }}
+            {% for field in form | selectattr('type', 'equalto', 'SubmitField') %}
+            {{ f.render_form_field(field) }}
+            {% endfor %}
+            {{ form.hidden_tag() }}
+            {{ f.end_form() }}
+            </div>
+        </div>
+        <div id="info_container">
+            <div id="replaceable"></div>
+        </div>
+        <form name="addressForm" id="addressForm">
+            <div class="ui action input" id="addressSearch">
+                <input class="prompt" placeholder="Enter Address..." type="text" name="address" id="address">
+                <button id="submitButton" class="ui button">Search</button>
+            </div>
+        </form>
+</div>
+
+<div class="ui centered modal" id="geocode_error">
+    <i class="close icon"></i>
+    <div class="header">Geocode not successful</div>
+    <div class="actions">
+        <div class="ui approve button">Okay</div>
+    </div>
+</div>
+<div class="ui centered modal" id="address_error">
+    <i class="close icon"></i>
+    <div class="header">Address not found</div>
+    <div class="actions">
+        <div class="ui approve button">Okay</div>
+    </div>
+</div>
+
+<script type="text/javascript">
+
+    $('#form_button').click(function(){
+        $('#form_container').toggle();
+        $('#info_container').hide();
+    });
+
+    $('#close_form').click(function(){
+        $('#form_container').hide();
+    });
+
+    $('#agency').change(function(){
+        console.log($("#agency option:selected").text());
+        if ($("#agency option:selected").text() === 'SEPTA BUS') {
+            $('.bus_number').show()
+            $('.led_screen_number').show()
+        }
+        else {
+            $('.bus_number').hide()
+            $('.led_screen_number').hide()
+        }
+    });
+
+    $('#agency').change(function(){
+        console.log($("#agency option:selected").text());
+        if ($("#agency option:selected").text() === 'Other') {
+            $('.other_agency').show()
+        }
+        else {
+            $('.other_agency').hide()
+        }
+    });
+
+    function initializeMapAndMarkers() {
+        var mapProp = {
+                mapTypeId: google.maps.MapTypeId.ROADMAP,
+                mapTypeControl: false,
+                streetViewControl: false,
+                scrollwheel: false,
+        };
+        map = new google.maps.Map($('#googleMap')[0],mapProp);
+        google.maps.event.addListener(map, 'click', function(event) {
+                $('#latitude').val(event.latLng.lat());
+                $('#replaceable').hide()
+                $('#info_container').hide()
+                $('#longitude').val(event.latLng.lng());
+                getReverseGeocodingData(event.latLng.lat(), event.latLng.lng())
+        });
+        var oms = new OverlappingMarkerSpiderfier(map, {keepSpiderfied: true, nearbyDistance: 10});
+
+        // Add click listener to marker for displaying infoWindow
+        oms.addListener('click', function(marker, event) {
+          $('#form_container').hide()
+          $('#info_container').show();
+          $('#replaceable').replaceWith(marker.contentString);
+          marker.setIcon("../static/images/marker_selected.png");
+          $('#close_info').on('click', function() {
+              $('#info_container').hide();
+          });
+        });
+
+        markers = [];
+        var minDate = new Date(2015, 0, 1);
+        var bounds = new google.maps.LatLngBounds();
+        {% for report in incident_reports %}
+        $(function() {
+            var marker = new google.maps.Marker({
+                // Use latitude and longitude values from incident report
+                // to set position of marker
+                position:{lat: parseFloat('{{ report.location.latitude }}'), lng: parseFloat('{{ report.location.longitude }}')},
+                icon: "../static/images/marker.png"
+            });
+            var dateString = '{{ report.date }}';
+            year = parseInt((dateString.split(' '))[0].split('-')[0]);
+            month = parseInt((dateString.split(' '))[0].split('-')[1])-1;
+            day = parseInt((dateString.split(' '))[0].split('-')[2]);
+            incidentDate = new Date(year, month, day);
+            if (incidentDate.getTime() < minDate.getTime())
+                minDate.setTime(incidentDate.getTime());
+            var contentString = '<div id="replaceable" class="ui segment">' +
+                                '<button id="close_info" class="ui icon button close">' +
+                                '<i class="remove icon"></i>' +
+                                '</button>' +
+                                '<h3>Date: ' + '{{ report.date.strftime('%m-%d-%Y at %I:%M %p') }}' + '</h3>' +
+                                '<p>Duration (h:m:s): ' + '{{ report.duration }}' + '</p>' +
+                                {% if current_user.is_admin() or report.agency in current_user.agencies or report.show_agency_publicly %}
+                                '<p>Vehicle ID: ' + '{{ report.vehicle_id }}' +'</p>' +
+                                '<p>License Plate: ' + '{{ report.license_plate if report.license_plate else '' }}' + '</p>' +
+                                '<p>Agency: ' + '{{ report.agency.name }}' + '</p>' +
+                                  {% if report.picture_url %}
+                                  '<p><a href="{{ report.picture_url }}" target="_blank" rel="noopener noreferrer">' + 'Link to Picture' + '</a></p>' +
+                                  {% endif %}
+                                {% endif %}
+                                '<p>Description: ' + '{{ report.description }}' + '</p>' +
+                                '</div>';
+            bounds.extend(marker.getPosition());
+
+            // Dynamically add state to marker object.
+            marker.incidentDate = incidentDate;
+            marker.contentString = contentString;
+            markers.push(marker);
+            var infoWindow = new google.maps.InfoWindow({
+                content: contentString
+            });
+        });
+        {% endfor %}
+        storeMarkerState(markers, map, minDate, bounds, oms);
+        initializeDateSlider();
+        addLocationButton(map);
+        addCenterButton(map);
+    }
+    $(document).ready(function() {
+        // Add the map to the window
+        google.maps.event.addDomListener(window, 'load', initializeMapAndMarkers);
+        // Set the height of the googleMap to the height of the window (less
+        // any elements above the googleMap)
+        $(function () {
+            $("#googleMap").css("height", $(window).height() -
+                $(".ui.navigation.grid").height());
+            $(".ui.navigation.grid").css("margin-bottom", "0");
+            $("footer").css("margin-top", "0");
+        });
+    });
+
+    function getReverseGeocodingData(lat, lng) {
+        var latlng = new google.maps.LatLng(lat, lng);
+        // This is making the Geocode request
+        var geocoder = new google.maps.Geocoder();
+        geocoder.geocode({ 'latLng': latlng }, function (results, status) {
+            if (status !== google.maps.GeocoderStatus.OK) {
+                alert(status);
+            }
+            // This is checking to see if the Geoeode Status is OK before proceeding
+            if (status == google.maps.GeocoderStatus.OK) {
+                console.log(results);
+                 $('#location').val(results[0].formatted_address);
+            }
+        });
+    }
+
+    function geoFindMe() {
+        if (!navigator.geolocation){
+          return;
+        }
+        function success(position) {
+            var geocoder = new google.maps.Geocoder;
+            $('#latitude').val(position.coords.latitude);
+            $('#longitude').val(position.coords.longitude);
+            getReverseGeocodingData(position.coords.latitude,
+                position.coords.longitude)
+        };
+        function error() {
+        };
+        navigator.geolocation.getCurrentPosition(success, error);
+    }
+
+</script>
+
+{% endblock %}

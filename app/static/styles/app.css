@@ -1,0 +1,589 @@
+@media -sass-debug-info{filename{}line{font-family:\0000316}}
+.ui.navigation.grid {
+  margin: 0px 0px 50px 0px;
+}
+
+@media -sass-debug-info{filename{}line{font-family:\0000320}}
+.body.container {
+  min-height: 100%;
+}
+
+@media -sass-debug-info{filename{}line{font-family:\0000324}}
+#CAC_logo {
+  content: url("../../static/images/CAC_logo.png");
+  height: 2em;
+  width: auto;
+  margin-right: 0.5em;
+  margin-left: 0.5em;
+}
+
+@media -sass-debug-info{filename{}line{font-family:\0000333}}
+.ui.fixed.main.menu .right.menu > .item:last-of-type {
+  border-right: 1px solid rgba(34, 36, 38, 0.09804);
+}
+
+@media -sass-debug-info{filename{}line{font-family:\0000337}}
+nav .computer.only.row {
+  padding: 0;
+}
+@media -sass-debug-info{filename{}line{font-family:\0000339}}
+nav .computer.only.row .ui.secondary.pointing.menu > .right.menu {
+  margin-right: 2em;
+  padding-bottom: 1em;
+}
+@media -sass-debug-info{filename{}line{font-family:\0000343}}
+nav .computer.only.row .ui.secondary.pointing.menu > .right.menu > a {
+  color: #FFFFFF;
+  text-transform: uppercase;
+}
+@media -sass-debug-info{filename{}line{font-family:\0000347}}
+nav .computer.only.row .ui.secondary.pointing.menu > .right.menu > a:hover, nav .computer.only.row .ui.dropdown.item:hover {
+  background-color: #7CC1D8;
+  color: #FFFFFF;
+  border-radius: 0.5em;
+}
+@media -sass-debug-info{filename{}line{font-family:\0000352}}
+nav .computer.only.row .ui.secondary.pointing.menu > .right.menu > a.active {
+  background-color: #7CC1D8;
+  color: #FFFFFF;
+  border: none;
+  font-weight: 400;
+}
+@media -sass-debug-info{filename{}line{font-family:\0000358}}
+nav .computer.only.row .ui.secondary.pointing.menu {
+  background-color: #56A5BF;
+  width: 100%;
+  font-size: 1.3em;
+}
+@media -sass-debug-info{filename{}line{font-family:\0000363}}
+nav .computer.only.row .ui.secondary.pointing.menu > .header.item {
+  color: #FFFFFF !important;
+  font-size: 1.4em;
+  font-weight: 400;
+  border: none;
+}
+
+@media -sass-debug-info{filename{}line{font-family:\0000373}}
+nav .mobile.only.row .ui.vertical.menu {
+  margin-top: 45px;
+  display: none;
+  background-color: #1C7592;
+}
+@media -sass-debug-info{filename{}line{font-family:\0000378}}
+nav .mobile.only.row .ui.vertical.menu > a, nav .mobile.only.row .ui.vertical.menu > ui.dropdown.item:hover {
+  color: #FFFFFF;
+  text-transform: uppercase;
+}
+@media -sass-debug-info{filename{}line{font-family:\0000382}}
+nav .mobile.only.row .ui.main.menu {
+  background-color: #56A5BF;
+}
+@media -sass-debug-info{filename{}line{font-family:\0000385}}
+nav .mobile.only.row .ui.vertical.secondary.menu > a {
+  color: #222222;
+}
+
+@media -sass-debug-info{filename{}line{font-family:\0000390}}
+#dashboard_dropdown {
+  color: #FFFFFF;
+  font-weight: 400;
+  text-transform: uppercase;
+}
+
+@media -sass-debug-info{filename{}line{font-family:\0000396}}
+#dashboard_dropdown > div > .header {
+  color: #222222;
+}
+
+@media -sass-debug-info{filename{}line{font-family:\00003100}}
+#nav_dashboard {
+  text-align: center;
+  color: #56A5BF !important;
+  text-transform: uppercase !important;
+  border-bottom: solid 1px #7CC1D8;
+}
+
+@media -sass-debug-info{filename{}line{font-family:\00003107}}
+.ui.menu .ui.dropdown .menu > .item {
+  color: #222222;
+  font-size: 0.8em !important;
+}
+
+@media -sass-debug-info{filename{}line{font-family:\00003114}}
+.flashes > .ui.message {
+  position: fixed;
+  bottom: 5%;
+  right: 5%;
+  z-index: 12;
+}
+
+@media -sass-debug-info{filename{}line{font-family:\00003120}}
+.ui.red.error {
+  color: #EE4222;
+}
+
+@media -sass-debug-info{filename{}line{font-family:\00003123}}
+.ui.red.pointing.label {
+  background-color: #EE4222 !important;
+  border-color: #EE4222 !important;
+}
+
+@media -sass-debug-info{filename{}line{font-family:\00003127}}
+.ui.red.label:before {
+  background-color: #EE4222 !important;
+}
+
+@media -sass-debug-info{filename{}line{font-family:\00003132}}
+table.selectable tr:hover {
+  cursor: pointer;
+}
+
+@media -sass-debug-info{filename{}line{font-family:\00003137}}
+h1, h2, .ui.dividing.header {
+  color: #1C7592;
+  text-transform: uppercase;
+}
+
+@media -sass-debug-info{filename{}line{font-family:\00003141}}
+h3 {
+  margin-bottom: 0.3em;
+}
+
+@media -sass-debug-info{filename{}line{font-family:\00003144}}
+.ui.form .field > label, p, input {
+  font-size: 1.1em;
+}
+
+@media -sass-debug-info{filename{}line{font-family:\00003148}}
+#incident_info {
+  position: relative;
+  color: #1C7592;
+  width: 0px;
+  top: 500px;
+}
+
+@media -sass-debug-info{filename{}line{font-family:\00003155}}
+.sub.header {
+  text-transform: none;
+}
+
+@media -sass-debug-info{filename{}line{font-family:\00003160}}
+footer {
+  bottom: 0;
+  width: 100%;
+  text-align: center;
+  padding: 1em;
+  margin-top: 5%;
+  background-color: #56A5BF;
+}
+
+@media -sass-debug-info{filename{}line{font-family:\00003169}}
+#h4i_logo {
+  content: url("../../static/images/h4i_square_white.png");
+  height: 1.2em;
+  width: auto;
+  margin-right: 0.5em;
+}
+
+@media -sass-debug-info{filename{}line{font-family:\00003176}}
+footer > div > h3, footer > div > h3 > a {
+  color: #FFFFFF;
+  text-align: center;
+  margin-top: 0;
+  font-weight: 300;
+}
+
+@media -sass-debug-info{filename{}line{font-family:\00003183}}
+.icon.heart:hover {
+  color: #EE4222;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/sallykong\/Desktop\/Hack4Impact\/clean-air-council\/app\/assets\/styles\/app\.scss}line{font-family:\0000316}}
+.ui.navigation.grid {
+  margin: 0px 0px 50px 0px;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/sallykong\/Desktop\/Hack4Impact\/clean-air-council\/app\/assets\/styles\/app\.scss}line{font-family:\0000320}}
+.body.container {
+  min-height: 100%;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/sallykong\/Desktop\/Hack4Impact\/clean-air-council\/app\/assets\/styles\/app\.scss}line{font-family:\0000324}}
+#CAC_logo {
+  content: url("../../static/images/CAC_logo.png");
+  height: 2em;
+  width: auto;
+  margin-right: 0.5em;
+  margin-left: 0.5em;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/sallykong\/Desktop\/Hack4Impact\/clean-air-council\/app\/assets\/styles\/app\.scss}line{font-family:\0000333}}
+.ui.fixed.main.menu .right.menu > .item:last-of-type {
+  border-right: 1px solid rgba(34, 36, 38, 0.09804);
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/sallykong\/Desktop\/Hack4Impact\/clean-air-council\/app\/assets\/styles\/app\.scss}line{font-family:\0000337}}
+nav .computer.only.row {
+  padding: 0;
+}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/sallykong\/Desktop\/Hack4Impact\/clean-air-council\/app\/assets\/styles\/app\.scss}line{font-family:\0000339}}
+nav .computer.only.row .ui.secondary.pointing.menu > .right.menu {
+  margin-right: 2em;
+  padding-bottom: 1em;
+}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/sallykong\/Desktop\/Hack4Impact\/clean-air-council\/app\/assets\/styles\/app\.scss}line{font-family:\0000343}}
+nav .computer.only.row .ui.secondary.pointing.menu > .right.menu > a {
+  color: #FFFFFF;
+  text-transform: uppercase;
+}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/sallykong\/Desktop\/Hack4Impact\/clean-air-council\/app\/assets\/styles\/app\.scss}line{font-family:\0000347}}
+nav .computer.only.row .ui.secondary.pointing.menu > .right.menu > a:hover, nav .computer.only.row .ui.dropdown.item:hover {
+  background-color: #7CC1D8;
+  color: #FFFFFF;
+  border-radius: 0.5em;
+}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/sallykong\/Desktop\/Hack4Impact\/clean-air-council\/app\/assets\/styles\/app\.scss}line{font-family:\0000352}}
+nav .computer.only.row .ui.secondary.pointing.menu > .right.menu > a.active {
+  background-color: #7CC1D8;
+  color: #FFFFFF;
+  border: none;
+  font-weight: 400;
+}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/sallykong\/Desktop\/Hack4Impact\/clean-air-council\/app\/assets\/styles\/app\.scss}line{font-family:\0000358}}
+nav .computer.only.row .ui.secondary.pointing.menu {
+  background-color: #56A5BF;
+  width: 100%;
+  font-size: 1.3em;
+}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/sallykong\/Desktop\/Hack4Impact\/clean-air-council\/app\/assets\/styles\/app\.scss}line{font-family:\0000363}}
+nav .computer.only.row .ui.secondary.pointing.menu > .header.item {
+  color: #FFFFFF !important;
+  font-size: 1.4em;
+  font-weight: 400;
+  border: none;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/sallykong\/Desktop\/Hack4Impact\/clean-air-council\/app\/assets\/styles\/app\.scss}line{font-family:\0000373}}
+nav .mobile.only.row .ui.vertical.menu {
+  margin-top: 45px;
+  display: none;
+  background-color: #1C7592;
+}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/sallykong\/Desktop\/Hack4Impact\/clean-air-council\/app\/assets\/styles\/app\.scss}line{font-family:\0000378}}
+nav .mobile.only.row .ui.vertical.menu > a, nav .mobile.only.row .ui.vertical.menu > ui.dropdown.item:hover {
+  color: #FFFFFF;
+  text-transform: uppercase;
+}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/sallykong\/Desktop\/Hack4Impact\/clean-air-council\/app\/assets\/styles\/app\.scss}line{font-family:\0000382}}
+nav .mobile.only.row .ui.main.menu {
+  background-color: #56A5BF;
+}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/sallykong\/Desktop\/Hack4Impact\/clean-air-council\/app\/assets\/styles\/app\.scss}line{font-family:\0000385}}
+nav .mobile.only.row .ui.vertical.secondary.menu > a {
+  color: #222222;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/sallykong\/Desktop\/Hack4Impact\/clean-air-council\/app\/assets\/styles\/app\.scss}line{font-family:\0000390}}
+#dashboard_dropdown {
+  color: #FFFFFF;
+  font-weight: 400;
+  text-transform: uppercase;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/sallykong\/Desktop\/Hack4Impact\/clean-air-council\/app\/assets\/styles\/app\.scss}line{font-family:\0000396}}
+#dashboard_dropdown > div > .header {
+  color: #222222;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/sallykong\/Desktop\/Hack4Impact\/clean-air-council\/app\/assets\/styles\/app\.scss}line{font-family:\00003100}}
+#nav_dashboard {
+  text-align: center;
+  color: #56A5BF !important;
+  text-transform: uppercase !important;
+  border-bottom: solid 1px #7CC1D8;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/sallykong\/Desktop\/Hack4Impact\/clean-air-council\/app\/assets\/styles\/app\.scss}line{font-family:\00003107}}
+.ui.menu .ui.dropdown .menu > .item {
+  color: #222222;
+  font-size: 0.8em !important;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/sallykong\/Desktop\/Hack4Impact\/clean-air-council\/app\/assets\/styles\/app\.scss}line{font-family:\00003114}}
+.flashes > .ui.message {
+  position: fixed;
+  bottom: 5%;
+  right: 5%;
+  z-index: 12;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/sallykong\/Desktop\/Hack4Impact\/clean-air-council\/app\/assets\/styles\/app\.scss}line{font-family:\00003120}}
+.ui.red.error {
+  color: #EE4222;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/sallykong\/Desktop\/Hack4Impact\/clean-air-council\/app\/assets\/styles\/app\.scss}line{font-family:\00003123}}
+.ui.red.pointing.label {
+  background-color: #EE4222 !important;
+  border-color: #EE4222 !important;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/sallykong\/Desktop\/Hack4Impact\/clean-air-council\/app\/assets\/styles\/app\.scss}line{font-family:\00003127}}
+.ui.red.label:before {
+  background-color: #EE4222 !important;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/sallykong\/Desktop\/Hack4Impact\/clean-air-council\/app\/assets\/styles\/app\.scss}line{font-family:\00003132}}
+table.selectable tr:hover {
+  cursor: pointer;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/sallykong\/Desktop\/Hack4Impact\/clean-air-council\/app\/assets\/styles\/app\.scss}line{font-family:\00003137}}
+h1, h2, .ui.dividing.header {
+  color: #1C7592;
+  text-transform: uppercase;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/sallykong\/Desktop\/Hack4Impact\/clean-air-council\/app\/assets\/styles\/app\.scss}line{font-family:\00003141}}
+h3 {
+  margin-bottom: 0.3em;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/sallykong\/Desktop\/Hack4Impact\/clean-air-council\/app\/assets\/styles\/app\.scss}line{font-family:\00003144}}
+.ui.form .field > label, p, input {
+  font-size: 1.1em;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/sallykong\/Desktop\/Hack4Impact\/clean-air-council\/app\/assets\/styles\/app\.scss}line{font-family:\00003148}}
+#incident_info {
+  position: relative;
+  color: #1C7592;
+  width: 0px;
+  top: 500px;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/sallykong\/Desktop\/Hack4Impact\/clean-air-council\/app\/assets\/styles\/app\.scss}line{font-family:\00003155}}
+.sub.header {
+  text-transform: none;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/sallykong\/Desktop\/Hack4Impact\/clean-air-council\/app\/assets\/styles\/app\.scss}line{font-family:\00003160}}
+footer {
+  bottom: 0;
+  width: 100%;
+  text-align: right;
+  padding: 1em;
+  margin-top: 5%;
+  background-color: #56A5BF;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/sallykong\/Desktop\/Hack4Impact\/clean-air-council\/app\/assets\/styles\/app\.scss}line{font-family:\00003169}}
+#h4i_logo {
+  content: url("../../static/images/h4i_square_white.png");
+  height: 1.2em;
+  width: auto;
+  margin-right: 0.5em;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/sallykong\/Desktop\/Hack4Impact\/clean-air-council\/app\/assets\/styles\/app\.scss}line{font-family:\00003176}}
+footer > div > h3 {
+  color: #FFFFFF;
+  margin-top: 0;
+  font-weight: 300;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/sallykong\/Desktop\/Hack4Impact\/clean-air-council\/app\/assets\/styles\/app\.scss}line{font-family:\00003182}}
+.icon.heart:hover {
+  color: #EE4222;
+}
+
+@media -sass-debug-info{filename{}line{font-family:\000033}}
+.ui-rangeSlider-innerBar {
+  width: 100% !important;
+  height: 100%;
+  left: 0px !important;
+}
+
+@media -sass-debug-info{filename{}line{font-family:\000039}}
+.ui-rangeSlider-bar {
+  background: #56A5BF;
+  height: 110% !important;
+  width: 100%;
+  top: -1px !important;
+  -webkit-box-shadow: inset 0 -2px 6px RGBA(0, 0, 0, 0.5);
+  -mox-box-shadow: inset 0 -2px 6px RGBA(0, 0, 0, 0.5);
+  box-shadow: inset 0 -2px 6px RGBA(0, 0, 0, 0.5);
+}
+
+@media -sass-debug-info{filename{}line{font-family:\0000319}}
+#addressSearch {
+  position: absolute;
+  left: 30px;
+  top: 49px;
+  z-index: 5;
+}
+
+@media -sass-debug-info{filename{}line{font-family:\0000326}}
+#submitButton {
+  background-color: #56A5BF;
+  color: #FFFFFF;
+  left: 220px;
+  top: 49px;
+  z-index: 5;
+  font-weight: 300;
+  text-transform: uppercase;
+}
+
+@media -sass-debug-info{filename{}line{font-family:\0000336}}
+#submitButton:hover, #submit:hover {
+  background-color: #7CC1D8;
+}
+
+@media -sass-debug-info{filename{}line{font-family:\0000340}}
+#current_location_button, #submit {
+  background-color: #56A5BF;
+  color: #FFFFFF;
+  width: 100%;
+  font-weight: 300;
+  text-transform: uppercase;
+  margin-bottom: 1em;
+}
+
+@media -sass-debug-info{filename{}line{font-family:\0000349}}
+#current_location_button:hover, #submit:hover {
+  background-color: #7CC1D8;
+  cursor: pointer;
+}
+
+@media -sass-debug-info{filename{}line{font-family:\0000354}}
+#slider {
+  position: absolute;
+  width: 25%;
+  right: 100px;
+  top: 8px;
+  z-index: 5;
+}
+
+@media -sass-debug-info{filename{}line{font-family:\0000362}}
+#form_fields {
+  margin-top: 1em;
+  padding: 1em;
+}
+
+@media -sass-debug-info{filename{}line{font-family:\0000367}}
+#form_button {
+  position: absolute;
+  background-color: #EE4222;
+  width: 25%;
+  color: white;
+  top: 85px;
+  right: 100px;
+  z-index: 6;
+  text-transform: uppercase;
+  text-align: center;
+  padding: 0.5em;
+  border-radius: 0.5em;
+}
+
+@media -sass-debug-info{filename{}line{font-family:\0000381}}
+#close_info, #close_form {
+  position: absolute;
+  background-color: #EE4222;
+  color: #FFFFFF;
+  height: 25px;
+  width: 25px;
+  top: 5px;
+  right: 5px;
+  padding: 1px;
+}
+
+@media -sass-debug-info{filename{}line{font-family:\0000392}}
+#form_button:hover, #close_info:hover, #close_form:hover {
+  background-color: #FF684C;
+  cursor: pointer;
+}
+
+@media -sass-debug-info{filename{}line{font-family:\0000397}}
+#info_container, #form_container {
+  display: none;
+  position: absolute;
+  background-color: white;
+  width: 25%;
+  max-height: 60%;
+  overflow-y: scroll;
+  color: black;
+  top: 80px;
+  right: 100px;
+  z-index: 6;
+}
+
+@media all and (max-width: 768px) {
+@media -sass-debug-info{filename{}line{font-family:\00003111}}
+  #slider {
+    display: none;
+  }
+
+@media -sass-debug-info{filename{}line{font-family:\00003114}}
+  #addressSearch {
+    width: 80%;
+    left: 5%;
+  }
+
+@media -sass-debug-info{filename{}line{font-family:\00003118}}
+  #form_button,
+  #form_container,
+  #info_container {
+    width: 80%;
+    left: 5%;
+    top: 100px;
+  }
+}
+@media -sass-debug-info{filename{}line{font-family:\00003127}}
+#googleMap {
+  width: 100%;
+  left: 0px;
+  top: 0px;
+}
+
+@media -sass-debug-info{filename{}line{font-family:\00003133}}
+#wrapper {
+  position: relative;
+}
+
+@media -sass-debug-info{filename{}line{font-family:\00003137}}
+#address_error {
+  position: fixed;
+  text-align: center;
+  margin: 0px 0px 0px -150px;
+  width: 300px;
+}
+
+@media -sass-debug-info{filename{}line{font-family:\00003144}}
+#geocode_error {
+  position: fixed;
+  text-align: center;
+  margin: 0px 0px 0px -150px;
+  width: 300px;
+}
+
+@media -sass-debug-info{filename{}line{font-family:\00003151}}
+.ui.approve.button {
+  display: block;
+  margin: 0 auto;
+}
+
+@media -sass-debug-info{filename{}line{font-family:\00003156}}
+#replaceable > p, a {
+  margin: 0 0 0.5em;
+}
+
+@media -sass-debug-info{filename{}line{font-family:\00003160}}
+.bus_number, .led_screen_number {
+  display: hide;
+}
+
+@media -sass-debug-info{filename{}line{font-family:\00003164}}
+form textarea#description {
+  min-height: 2em;
+  height: 4em;
+}
