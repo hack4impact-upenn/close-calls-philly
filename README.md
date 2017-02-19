@@ -1,14 +1,15 @@
-# IdleFreePhilly [![Circle CI](https://circleci.com/gh/hack4impact/idle-free-philly.svg?style=svg)](https://circleci.com/gh/hack4impact/idle-free-philly)
+# Vision Zero Philly
 
-IdleFreePhilly allows anyone to report illegal vehicle idling.
+## Team Members
+* Katie Jiang
 
 ## Setting up
 
 #####  Clone the repo
 
 ```
-$ git clone https://github.com/hack4impact/idle-free-philly.git
-$ cd idle-free-philly
+$ git clone https://github.com/hack4impact/vision-zero-philly.git
+$ cd vision-zero-philly
 ```
 
 ##### Initialize a virtualenv
