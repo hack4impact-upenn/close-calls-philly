@@ -146,4 +146,4 @@ def validate_field_partial(field, data, form, row_number):
 
 def print_error(row_number, error_message):
     """TODO: docstring"""
-    print 'Row {:d}: {}'.format(row_number, error_message)
+    print ('Row {:d}: {}'.format(row_number, error_message))

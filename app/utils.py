@@ -4,7 +4,7 @@ import time
 import os
 
 from flask import url_for, flash, current_app
-from flask.ext.rq import get_queue
+from flask_rq import get_queue
 from imgurpython import ImgurClient
 from datetime import timedelta
 from redis import Redis
@@ -91,7 +91,7 @@ def geocode(address):
         r = requests.get(url, params=payload)
 
     if r.json()['status'] == 'ZERO_RESULTS' or len(r.json()['results']) is 0:
-        print r.json()
+        print (r.json())
         return None, None
     else:
         coords = r.json()['results'][0]['geometry']['location']

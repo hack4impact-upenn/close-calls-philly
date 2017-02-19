@@ -1,11 +1,11 @@
 from flask import render_template, redirect, request, url_for, flash
-from flask.ext.login import (
+from flask_login import (
     login_required,
     login_user,
     logout_user,
     current_user
 )
-from flask.ext.rq import get_queue
+from flask_rq import get_queue
 from . import account
 from .. import db
 from ..utils import parse_phone_number, url_for_external
