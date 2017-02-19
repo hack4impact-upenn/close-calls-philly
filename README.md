@@ -2,6 +2,7 @@
 
 ## Team Members
 * Katie Jiang
+* Daniel Zhang
 
 ## Setting up
 
