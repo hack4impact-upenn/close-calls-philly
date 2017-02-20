@@ -7,3 +7,4 @@ from agency import *  # noqa
 from user import *  # noqa
 from incident_report import *  # noqa
 from miscellaneous import *  # noqa
+from incident import *
