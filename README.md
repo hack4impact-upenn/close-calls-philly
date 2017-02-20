@@ -2,6 +2,7 @@
 
 ## Team Members
 * Katie Jiang
+* Natasha Narang
 
 ## Setting up
 
