@@ -3,12 +3,14 @@ import traceback
 import enum
 
 from datetime import datetime, timedelta
+from enum import Enum
 from flask import current_app
 from flask.ext.rq import get_queue
 from .. import db
 from . import Agency, User
 from ..email import send_email
 from ..utils import get_current_weather, url_for_external
+from sqlalchemy.dialects.postgresql import ENUM
 
 
 class Location(db.Model):
@@ -23,6 +25,19 @@ class Location(db.Model):
 
     def __repr__(self):
         return str(self.original_user_text)
+
+class IncidentLocation(db.Model):
+    __tablename__ = 'incident_locations'
+    id = db.Column(db.Integer, primary_key=True)
+    latitude = db.Column(db.String(50))
+    longitude = db.Column(db.String(50))
+    # TODO: ensure original_user_text is always non-null
+    original_user_text = db.Column(db.Text)  # the raw text which we geocoded
+    incident_id = db.Column(db.Integer,
+                                   db.ForeignKey('incidents.id'))
+
+    def __repr__(self):
+        return str(self.original_user_text)        
 
 class IncidentType(enum.Enum):
     PEDESTRIAN = "Pedestrian"
@@ -174,13 +189,16 @@ class IncidentReport(db.Model):
 
 class Incident(db.Model):
     __tablename__ = 'incidents'
+    incident_types = ('Pedestrian', 'Bicycle', 'Automobile', 'Other')
+    incident_types_enum = ENUM(*incident_types, name="incident_type")
+
     id = db.Column(db.Integer, primary_key=True)
-    location = db.relationship('Location',
+    location = db.relationship('IncidentLocation',
                                 uselist=False,
                                 lazy='joined',
                                 backref='incident')
     date = db.Column(db.DateTime)
-    incident_type = db.Column(db.Enum(IncidentType))
+    incident_type = db.Column(incident_types_enum)
     description = db.Column(db.Text)
     injuries = db.Column(db.Text)
     picture_url = db.Column(db.Text, default=None) # optional
@@ -223,7 +241,7 @@ class Incident(db.Model):
 
         seed()
         for i in range(count):
-            l = Location(
+            l = IncidentLocation(
                 original_user_text=fake.address(),
                 latitude=str(fake.geo_coordinate(center=39.951021,
                                                  radius=0.01)),
@@ -233,7 +251,7 @@ class Incident(db.Model):
             r = Incident(
                 location=l,
                 date=fake.date_time_between(start_date="-1y", end_date="now"),
-                incident_type=PEDESTRIAN,
+                incident_type="Pedestrian",
                 description=fake.paragraph(),
                 injuries=fake.paragraph(),
                 picture_url=fake.image_url(),
