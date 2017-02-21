@@ -1,5 +1,6 @@
 import pytz
 import traceback
+import enum
 
 from datetime import datetime, timedelta
 from flask import current_app
@@ -22,6 +23,12 @@ class Location(db.Model):
 
     def __repr__(self):
         return str(self.original_user_text)
+
+class IncidentType(enum.Enum):
+    PEDESTRIAN = "Pedestrian"
+    BICYCLE = "Bicycle"
+    AUTOMOBILE = "Automobile"
+    OTHER = "Other" 
 
 
 class IncidentReport(db.Model):
@@ -164,3 +171,82 @@ class IncidentReport(db.Model):
                 db.session.commit()
             except IntegrityError:
                 db.session.rollback()
+
+class Incident(db.Model):
+    __tablename__ = 'incidents'
+    id = db.Column(db.Integer, primary_key=True)
+    location = db.relationship('Location',
+                                uselist=False,
+                                lazy='joined',
+                                backref='incident')
+    date = db.Column(db.DateTime)
+    incident_type = db.Column(db.Enum(IncidentType))
+    description = db.Column(db.Text)
+    injuries = db.Column(db.Text)
+    picture_url = db.Column(db.Text, default=None) # optional
+    comments = db.Column(db.Text, default=None) # optional
+    contact_phone = db.Column(db.Integer, default=None) #optional
+    contact_email = db.Column(db.Text, default=None) #optional
+
+    def __init__(self, **kwargs):
+        super(ncident, self).__init__(**kwargs)
+
+        if self.date is None:
+            self.date = datetime.now(pytz.timezone(
+                current_app.config['TIMEZONE']))
+            self.date = self.date.replace(tzinfo=None)
+
+        self.description = self.description.replace('\n', ' ').strip()
+        self.description = self.description.replace('\r', ' ').strip()
+
+    @staticmethod
+    def generate_fake(count=100, **kwargs):
+        """Generate a number of fake reports for testing."""
+        from sqlalchemy.exc import IntegrityError
+        from random import seed, choice, randint
+        from datetime import timedelta
+        from faker import Faker
+        import random
+        import string
+
+        def flip_coin():
+            """Returns True or False with equal probability"""
+            return choice([True, False])
+
+        def rand_alphanumeric(n):
+            """Returns random string of alphanumeric characters of length n"""
+            r = ''.join(random.choice(string.ascii_uppercase + string.digits)
+                        for _ in range(n))
+            return r
+
+        fake = Faker()
+
+        seed()
+        for i in range(count):
+            l = Location(
+                original_user_text=fake.address(),
+                latitude=str(fake.geo_coordinate(center=39.951021,
+                                                 radius=0.01)),
+                longitude=str(fake.geo_coordinate(center=-75.197243,
+                                                  radius=0.01))
+            )
+            r = Incident(
+                location=l,
+                date=fake.date_time_between(start_date="-1y", end_date="now"),
+                incident_type=PEDESTRIAN,
+                description=fake.paragraph(),
+                injuries=fake.paragraph(),
+                picture_url=fake.image_url(),
+                comments=fake.paragraph(),
+                contact_phone=1234567890,
+                contact_email = fake.email()
+                **kwargs
+            )
+            db.session.add(r)
+            try:
+                db.session.commit()
+            except IntegrityError:
+                db.session.rollback()    
+
+
+
