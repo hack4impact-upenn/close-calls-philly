@@ -178,7 +178,7 @@ def run_scheduler():
 
     setup_loghandlers('INFO')
     scheduler = Scheduler(connection=conn, interval=60.0)
-    for _ in xrange(10):
+    for _ in range(10):
         try:
             scheduler.run()
         except ValueError as exc:

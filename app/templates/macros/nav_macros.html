@@ -13,7 +13,7 @@
     <a id = "nav_map" class="item" href="{{ url_for('main.index') }}">Map</a>
     <a id = "nav_about" class="item" href="{{ url_for('main.about') }}">About</a>
     <a id = "nav_faq" class="item" href="{{ url_for('main.faq') }}">FAQ</a>
-    {% if current_user.is_authenticated() %}
+    {% if current_user.is_authenticated %}
         <div id = "dashboard_dropdown" class="ui simple dropdown item">
             Dashboard <i class="dropdown icon"></i>
             <div class = "menu">
@@ -43,7 +43,7 @@
 {% endmacro %}
 
 {% macro account_items(current_user) %}
-    {% if current_user.is_authenticated() %}
+    {% if current_user.is_authenticated %}
         <a href="{{ url_for('account.logout') }}" class="item">Log out</a>
     {% else %}
         <a id = "nav_register" href="{{ url_for('account.register') }}" class="item">Register</a>
