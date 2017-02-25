@@ -4,6 +4,7 @@
 * Katie Jiang
 * Daniel Zhang
 * Natasha Narang
+* Sanjay Subramanian
 
 ## Setting up
 
