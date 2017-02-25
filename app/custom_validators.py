@@ -94,7 +94,7 @@ class RequiredIf(object):
         self.conditions = kwargs
 
     def __call__(self, form, field):
-        for name, data in self.conditions.iteritems():
+        for name, data in self.conditions.items():
             if name not in form._fields:
                 Optional(form, field)
             else:

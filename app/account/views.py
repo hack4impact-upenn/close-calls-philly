@@ -86,7 +86,7 @@ def manage():
 @account.route('/reset-password', methods=['GET', 'POST'])
 def reset_password_request():
     """Respond to existing user's request to reset their password."""
-    if not current_user.is_anonymous():
+    if not current_user.is_anonymous:
         return redirect(url_for('main.index'))
     form = RequestResetPasswordForm()
     if form.validate_on_submit():
@@ -114,7 +114,7 @@ def reset_password_request():
 @account.route('/reset-password/<token>', methods=['GET', 'POST'])
 def reset_password(token):
     """Reset an existing user's password."""
-    if not current_user.is_anonymous():
+    if not current_user.is_anonymous:
         return redirect(url_for('main.index'))
     form = ResetPasswordForm()
     if form.validate_on_submit():
@@ -303,6 +303,6 @@ def before_request():
 @account.route('/unconfirmed')
 def unconfirmed():
     """Catch users with unconfirmed emails."""
-    if current_user.is_anonymous() or current_user.confirmed:
+    if current_user.is_anonymous or current_user.confirmed:
         return redirect(url_for('main.index'))
     return render_template('account/unconfirmed.html')
