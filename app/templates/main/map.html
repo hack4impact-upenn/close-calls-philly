@@ -129,6 +129,9 @@
         drawingManager = new google.maps.drawing.DrawingManager();
 
         google.maps.event.addListener(drawingManager, 'overlaycomplete', function(event) {
+            var rectangle = event.overlay;
+            map.fitBounds(rectangle.getBounds());
+            rectangle.setMap(null);
             drawingManager.setMap(null);
         });
 
