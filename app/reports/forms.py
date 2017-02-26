@@ -1,6 +1,6 @@
 import datetime as datetime
 
-from flask.ext.wtf import Form
+from flask_wtf import Form
 from flask_wtf.file import FileField, FileAllowed
 from wtforms.fields import (
     StringField,

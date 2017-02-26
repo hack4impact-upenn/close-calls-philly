@@ -1,6 +1,16 @@
 #!/usr/bin/env python
 import os
+import subprocess
 import time
+
+from redis import Redis
+from rq import Worker, Queue, Connection
+from rq_scheduler.scheduler import Scheduler
+from rq_scheduler.utils import setup_loghandlers
+from flask_script import Manager, Shell
+from flask_migrate import Migrate, MigrateCommand
+from app.parse_csv import parse_to_db
+
 from app import create_app, db
 from app.models import (
     User,
@@ -10,14 +20,6 @@ from app.models import (
     IncidentReport,
     EditableHTML
 )
-from redis import Redis
-from rq import Worker, Queue, Connection
-from rq_scheduler.scheduler import Scheduler
-from rq_scheduler.utils import setup_loghandlers
-from flask.ext.script import Manager, Shell
-from flask.ext.migrate import Migrate, MigrateCommand
-from app.parse_csv import parse_to_db
-
 
 # Import settings from .env file. Must define FLASK_CONFIG
 if os.path.exists('.env'):
@@ -176,7 +178,7 @@ def run_scheduler():
 
     setup_loghandlers('INFO')
     scheduler = Scheduler(connection=conn, interval=60.0)
-    for _ in xrange(10):
+    for _ in range(10):
         try:
             scheduler.run()
         except ValueError as exc:

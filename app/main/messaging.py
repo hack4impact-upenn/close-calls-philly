@@ -1,7 +1,7 @@
 import string
 import itertools
 from flask import request, make_response, current_app
-from flask.ext.rq import get_queue
+from flask_rq import get_queue
 from . import main
 from .. import db
 from ..utils import (
