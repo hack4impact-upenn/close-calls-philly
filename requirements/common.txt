@@ -1,3 +1,4 @@
+enum34
 fake-factory==0.5.3
 Flask==0.10.1
 Flask-Assets==0.10
