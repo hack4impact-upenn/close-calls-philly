@@ -3,9 +3,7 @@
 
 {% block content %}
 <div id="wrapper">
-    <div id="googleMap"></div>
-        <div id="slider"></div>
-        <div id="form_button">Report Incident</div>
+    <div id="inputPanel"></div>
         <div id="form_container">
             <button id="close_form" class="ui icon button close">
                 <i class="remove icon"></i>
@@ -46,12 +44,15 @@
         <div id="info_container">
             <div id="replaceable"></div>
         </div>
+        <div id="slider"></div>
+        <div id="form_button">Report Incident</div>
         <form name="addressForm" id="addressForm">
             <div class="ui action input" id="addressSearch">
                 <input class="prompt" placeholder="Enter Address..." type="text" name="address" id="address">
-                <button id="submitButton" class="ui button">Search</button>
+                <button id="submitButton" class="ui button">Center</button>
             </div>
         </form>
+    <div id="googleMap"></div>
 </div>
 
 <div class="ui centered modal" id="geocode_error">
@@ -74,10 +75,13 @@
     $('#form_button').click(function(){
         $('#form_container').toggle();
         $('#info_container').hide();
+        $('#form_button').toggle();
     });
 
     $('#close_form').click(function(){
+        console.log('form close');
         $('#form_container').hide();
+        $('#form_button').toggle();
     });
 
     $('#agency').change(function(){
@@ -127,6 +131,7 @@
           marker.setIcon("../static/images/marker_selected.png");
           $('#close_info').on('click', function() {
               $('#info_container').hide();
+              $('#form_button').show();
           });
         });
 
