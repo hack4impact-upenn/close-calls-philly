@@ -25,14 +25,15 @@
 }
 
 #submitButton {
+    position: absolute;
+    left: 70%;
     background-color: $teal;
     color: $white;
-    /* left: 220px; */
-    top: 49px;
     z-index: 5;
     font-weight: 300;
     text-transform: uppercase;
-    width: 30%;
+    text-align: center;
+    height: 100%;
 }
 
 #submitButton:hover, #submit:hover{
@@ -75,7 +76,6 @@
     left: 7.5%;
     display: table;
     margin: 0 auto;
-    /* right: 100px; */
     z-index: 6;
     text-transform: uppercase;
     text-align: center;
@@ -104,11 +104,8 @@
     position: absolute;
     background-color: white;
     width: 30%;
-    /*max-height: 60%;*/
     overflow-y: scroll;
     color: black;
-    /* top: 80px; */
-    /* right: 100px; */
     top: 0px;
     left: 0px;
     z-index: 6;
@@ -192,5 +189,8 @@ form textarea#description {
         width: 80%;
         left: 5%;
         bottom: 0px;
+    }
+    #submitButton {
+        left: 95%;
     }
 }
