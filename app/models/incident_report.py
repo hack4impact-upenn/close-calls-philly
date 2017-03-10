@@ -39,13 +39,6 @@ class IncidentLocation(db.Model):
     def __repr__(self):
         return str(self.original_user_text)        
 
-class IncidentType(enum.Enum):
-    PEDESTRIAN = "Pedestrian"
-    BICYCLE = "Bicycle"
-    AUTOMOBILE = "Automobile"
-    OTHER = "Other" 
-
-
 class IncidentReport(db.Model):
     __tablename__ = 'incident_reports'
     id = db.Column(db.Integer, primary_key=True)
@@ -189,8 +182,6 @@ class IncidentReport(db.Model):
 
 class Incident(db.Model):
     __tablename__ = 'incidents'
-    incident_types = ('Pedestrian', 'Bicycle', 'Automobile', 'Other')
-    incident_types_enum = ENUM(*incident_types, name="incident_type")
 
     id = db.Column(db.Integer, primary_key=True)
     location = db.relationship('IncidentLocation',
@@ -198,11 +189,14 @@ class Incident(db.Model):
                                 lazy='joined',
                                 backref='incident')
     date = db.Column(db.DateTime)
-    incident_type = db.Column(incident_types_enum)
+    pedestrian_num = db.Column(db.Integer) 
+    bicycle_num = db.Column(db.Integer)
+    automobile_num = db.Column(db.Integer)
     description = db.Column(db.Text)
     injuries = db.Column(db.Text)
     picture_url = db.Column(db.Text, default=None) # optional
     comments = db.Column(db.Text, default=None) # optional
+    contact_name = db.Column(db.Text, default=None) # optional
     contact_phone = db.Column(db.Integer, default=None) #optional
     contact_email = db.Column(db.Text, default=None) #optional
 
@@ -251,11 +245,14 @@ class Incident(db.Model):
             r = Incident(
                 location=l,
                 date=fake.date_time_between(start_date="-1y", end_date="now"),
-                incident_type="Pedestrian",
+                pedestrian_num=0,
+                bicycle_num=0,
+                automobile_num=0,
                 description=fake.paragraph(),
                 injuries=fake.paragraph(),
                 picture_url=fake.image_url(),
                 comments=fake.paragraph(),
+                contact_name = "Test Contact",
                 contact_phone=1234567890,
                 contact_email = fake.email()
                 **kwargs
