@@ -1,11 +1,11 @@
 from flask import render_template, redirect, request, url_for, flash
-from flask.ext.login import (
+from flask_login import (
     login_required,
     login_user,
     logout_user,
     current_user
 )
-from flask.ext.rq import get_queue
+from flask_rq import get_queue
 from . import account
 from .. import db
 from ..utils import parse_phone_number, url_for_external
@@ -86,7 +86,7 @@ def manage():
 @account.route('/reset-password', methods=['GET', 'POST'])
 def reset_password_request():
     """Respond to existing user's request to reset their password."""
-    if not current_user.is_anonymous():
+    if not current_user.is_anonymous:
         return redirect(url_for('main.index'))
     form = RequestResetPasswordForm()
     if form.validate_on_submit():
@@ -114,7 +114,7 @@ def reset_password_request():
 @account.route('/reset-password/<token>', methods=['GET', 'POST'])
 def reset_password(token):
     """Reset an existing user's password."""
-    if not current_user.is_anonymous():
+    if not current_user.is_anonymous:
         return redirect(url_for('main.index'))
     form = ResetPasswordForm()
     if form.validate_on_submit():
@@ -250,7 +250,7 @@ def join_from_invite(user_id, token):
     Confirm new user's account with provided token and prompt them to set
     a password.
     """
-    if current_user is not None and current_user.is_authenticated():
+    if current_user is not None and current_user.is_authenticated:
         flash('You are already logged in.', 'error')
         return redirect(url_for('main.index'))
 
@@ -293,7 +293,7 @@ def join_from_invite(user_id, token):
 @account.before_app_request
 def before_request():
     """Force user to confirm email before accessing login-required routes."""
-    if current_user.is_authenticated() \
+    if current_user.is_authenticated \
             and not current_user.confirmed \
             and request.endpoint[:8] != 'account.' \
             and request.endpoint != 'static':
@@ -303,6 +303,6 @@ def before_request():
 @account.route('/unconfirmed')
 def unconfirmed():
     """Catch users with unconfirmed emails."""
-    if current_user.is_anonymous() or current_user.confirmed:
+    if current_user.is_anonymous or current_user.confirmed:
         return redirect(url_for('main.index'))
     return render_template('account/unconfirmed.html')

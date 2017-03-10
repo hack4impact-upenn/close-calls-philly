@@ -10,9 +10,9 @@ from flask import (
     request,
     Response,
 )
-from flask.ext.login import login_required, current_user
-from flask.ext.rq import get_queue
-from forms import (
+from flask_login import login_required, current_user
+from flask_rq import get_queue
+from .forms import (
     ChangeUserEmailForm,
     ChangeUserPhoneNumberForm,
     ChangeAgencyAffiliationsForm,

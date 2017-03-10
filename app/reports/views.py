@@ -1,11 +1,11 @@
 from datetime import datetime
 
 from flask import render_template, abort, flash, redirect, url_for, current_app
-from flask.ext.login import login_required, current_user
-from flask.ext.rq import get_queue
+from flask_login import login_required, current_user
+from flask_rq import get_queue
 from werkzeug import secure_filename
 
-from forms import EditIncidentReportForm
+from .forms import EditIncidentReportForm
 
 from . import reports
 from .. import db

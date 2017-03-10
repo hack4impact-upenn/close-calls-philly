@@ -5,7 +5,7 @@ import enum
 from datetime import datetime, timedelta
 from enum import Enum
 from flask import current_app
-from flask.ext.rq import get_queue
+from flask_rq import get_queue
 from .. import db
 from . import Agency, User
 from ..email import send_email
@@ -124,7 +124,7 @@ class IncidentReport(db.Model):
                 )
 
         traceback.print_stack()  # TODO: Remove
-        print locals()
+        print (locals())
 
     @staticmethod
     def generate_fake(count=100, **kwargs):

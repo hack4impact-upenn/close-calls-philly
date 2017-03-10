@@ -1,14 +1,15 @@
 import os
 from flask import Flask
-from flask.ext.mail import Mail
-from flask.ext.sqlalchemy import SQLAlchemy
-from flask.ext.login import LoginManager
-from flask.ext.assets import Environment
-from flask.ext.wtf import CsrfProtect
-from flask.ext.compress import Compress
-from flask.ext.rq import RQ
+from flask_mail import Mail
+from flask_sqlalchemy import SQLAlchemy
+from flask_login import LoginManager
+from flask_assets import Environment
+from flask_wtf import CsrfProtect
+from flask_compress import Compress
+from flask_rq import RQ
+
 from config import config
-from assets import app_css, app_js, vendor_css, vendor_js
+from .assets import app_css, app_js, vendor_css, vendor_js
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 
@@ -28,7 +29,7 @@ def create_app(config_name):
     app = Flask(__name__)
     app.config.from_object(config[config_name])
     config[config_name].init_app(app)
-    print app.config
+    print(app.config)
 
     # Set up extensions
     mail.init_app(app)
@@ -39,7 +40,7 @@ def create_app(config_name):
     RQ(app)
 
     # Register Jinja template functions
-    from utils import register_template_utils
+    from .utils import register_template_utils
     register_template_utils(app)
 
     # Set up asset pipeline
@@ -55,20 +56,20 @@ def create_app(config_name):
     assets_env.register('vendor_js', vendor_js)
     # Configure SSL if platform supports it
     if not app.debug and not app.testing and not app.config['SSL_DISABLE']:
-        from flask.ext.sslify import SSLify
+        from flask_sslify import SSLify
         SSLify(app)
 
     # Create app blueprints
-    from main import main as main_blueprint
+    from .main import main as main_blueprint
     app.register_blueprint(main_blueprint)
 
-    from account import account as account_blueprint
+    from .account import account as account_blueprint
     app.register_blueprint(account_blueprint, url_prefix='/account')
 
-    from reports import reports as reports_blueprint
+    from .reports import reports as reports_blueprint
     app.register_blueprint(reports_blueprint, url_prefix='/reports')
 
-    from admin import admin as admin_blueprint
+    from .admin import admin as admin_blueprint
     app.register_blueprint(admin_blueprint, url_prefix='/admin')
 
     return app

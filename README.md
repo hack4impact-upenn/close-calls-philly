@@ -2,9 +2,11 @@
 
 ## Team Members
 * Katie Jiang
+* Daniel Zhang
 * Natasha Narang
+* Sanjay Subramanian
 
-## Setting up
+## Setting up for Python 3
 
 #####  Clone the repo
 
@@ -17,15 +19,14 @@ $ cd vision-zero-philly
 
 ```
 $ pip install virtualenv
-$ virtualenv env
+$ virtualenv -p python3 env
 $ source env/bin/activate
 ```
 
 ##### Install the app dependencies
 
 ```
-$ pip install -r requirements/common.txt
-$ pip install -r requirements/dev.txt
+$ pip install -r requirements.txt
 ```
 
 ##### Other dependencies for running locally
@@ -77,7 +78,7 @@ $ python manage.py parse_csv -f poll244.csv
 
 ```
 $ source env/bin/activate
-$ foreman start -f Local
+$ honcho start -f Local
 ```
 
 ## License
