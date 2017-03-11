@@ -213,3 +213,18 @@ function initializeDateSlider() {
         markerCluster = new MarkerClusterer(map, markersDisplayedOnMap, {gridSize: 50, maxZoom: 15, minimumClusterSize: 15, imagePath: 'static/images/clusterer/m'});
     });
 }
+
+function filterMarkers(bounds) {
+    var markersDisplayedOnMap = [];
+    for (mw = 0; mw < globalMarkers.length; mw++) {
+        if (bounds === null || bounds.contains(globalMarkers[mw].getPosition())) {
+            globalMarkers[mw].setMap(globalMap);
+            markersDisplayedOnMap.push(globalMarkers[mw]);
+        } else {
+            globalMarkers[mw].setMap(null);
+        }
+    }
+    markerCluster.setMap(null);
+    markerCluster.clearMarkers();
+    markerCluster = new MarkerClusterer(map, markersDisplayedOnMap, {gridSize: 50, maxZoom: 15, minimumClusterSize: 15, imagePath: 'static/images/clusterer/m'});
+}

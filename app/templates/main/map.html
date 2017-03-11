@@ -52,7 +52,8 @@
                 <button id="submitButton" class="ui button">Search</button>
             </div>
         </form>
-        <button id="boundingBoxButton" class="ui button">Create Bounding Box</button>
+        <button id="createBoundingBoxButton" class="ui button">Create Bounding Box</button>
+        <button id="deleteBoundingBoxButton" class="ui button">Delete Bounding Box</button>
 </div>
 
 <div class="ui centered modal" id="geocode_error">
@@ -74,10 +75,17 @@
     var creatingBoundingBox = false;
     var map;
     var drawingManager;
+    var rectangle = null;
 
-    $('#boundingBoxButton').click(function() {
+    $('#createBoundingBoxButton').click(function() {
         drawRec();
     })
+
+    $('#deleteBoundingBoxButton').click(function() {
+        deleteRec();
+        inboundsMarkers = filterMarkers(null);
+    })
+
 
     $('#form_button').click(function(){
         $('#form_container').toggle();
@@ -129,9 +137,11 @@
         drawingManager = new google.maps.drawing.DrawingManager();
 
         google.maps.event.addListener(drawingManager, 'overlaycomplete', function(event) {
-            var rectangle = event.overlay;
-            map.fitBounds(rectangle.getBounds());
-            rectangle.setMap(null);
+            deleteRec();
+            rectangle = event.overlay;
+            var bounds = rectangle.getBounds();
+            map.fitBounds(bounds);
+            inboundsMarkers = filterMarkers(bounds);
             drawingManager.setMap(null);
         });
 
@@ -212,6 +222,7 @@
     });
 
     function drawRec() {
+        // If already in drawing mode, cancel it.
         if (drawingManager.getMap()) {
             drawingManager.setMap(null);
         } else {
@@ -236,6 +247,13 @@
             drawingManager.setMap(map);
         }
 
+    }
+
+    function deleteRec() {
+        if (rectangle) {
+            rectangle.setMap(null);
+        }
+        rectangle = null;
     }
 
     function getReverseGeocodingData(lat, lng) {
