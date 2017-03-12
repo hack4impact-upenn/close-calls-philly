@@ -84,6 +84,7 @@
     $('#deleteBoundingBoxButton').click(function() {
         deleteRec();
         inboundsMarkers = filterMarkers(null);
+        map.fitBounds(geographicBounds);
     })
 
 
