@@ -224,9 +224,6 @@ function filterMarkers(bounds) {
             globalMarkers[mw].setMap(null);
         }
     }
-    /*markerCluster.setMap(null);
-    markerCluster.clearMarkers();
-    markerCluster = new MarkerClusterer(map, markersDisplayedOnMap, {gridSize: 50, maxZoom: 15, minimumClusterSize: 15, imagePath: 'static/images/clusterer/m'});*/
     markerCluster.clearMarkers();
     markerCluster.addMarkers(markersDisplayedOnMap);
 }
