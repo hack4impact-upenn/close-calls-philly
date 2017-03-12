@@ -52,6 +52,8 @@
                 <button id="submitButton" class="ui button">Center</button>
             </div>
         </form>
+        <button id="createBoundingBoxButton" class="ui button">Create Bounding Box</button>
+        <button id="deleteBoundingBoxButton" class="ui button">Delete Bounding Box</button>
     <div id="googleMap"></div>
 </div>
 
@@ -71,6 +73,20 @@
 </div>
 
 <script type="text/javascript">
+    var map;
+    var drawingManager;
+    var rectangle = null;
+
+    $('#createBoundingBoxButton').click(function() {
+        drawRec();
+    })
+
+    $('#deleteBoundingBoxButton').click(function() {
+        deleteRec();
+        inboundsMarkers = filterMarkers(null);
+        map.fitBounds(geographicBounds);
+    })
+
 
     $('#form_button').click(function(){
         $('#form_container').toggle();
@@ -119,8 +135,20 @@
                 $('#replaceable').hide()
                 $('#info_container').hide()
                 $('#longitude').val(event.latLng.lng());
-                getReverseGeocodingData(event.latLng.lat(), event.latLng.lng())
+                getReverseGeocodingData(event.latLng.lat(), event.latLng.lng());
         });
+
+        drawingManager = new google.maps.drawing.DrawingManager();
+
+        google.maps.event.addListener(drawingManager, 'overlaycomplete', function(event) {
+            deleteRec();
+            rectangle = event.overlay;
+            var bounds = rectangle.getBounds();
+            map.fitBounds(bounds);
+            inboundsMarkers = filterMarkers(bounds);
+            drawingManager.setMap(null);
+        });
+
         var oms = new OverlappingMarkerSpiderfier(map, {keepSpiderfied: true, nearbyDistance: 10});
 
         // Add click listener to marker for displaying infoWindow
@@ -198,6 +226,41 @@
         });
     });
 
+    function drawRec() {
+        // If already in drawing mode, cancel it.
+        if (drawingManager.getMap()) {
+            drawingManager.setMap(null);
+        } else {
+            //Setting options for the Drawing Tool. In our case, enabling Polygon shape.
+            drawingManager.setOptions({
+                drawingMode : google.maps.drawing.OverlayType.RECTANGLE,
+                drawingControl : true,
+                drawingControlOptions : {
+                    position : google.maps.ControlPosition.TOP_CENTER,
+                    drawingModes : [ google.maps.drawing.OverlayType.RECTANGLE ]
+                },
+                rectangleOptions : {
+                    strokeColor : '#6c6c6c',
+                    strokeWeight : 3.5,
+                    fillColor : '#926239',
+                    fillOpacity : 0.6,
+                    editable: true,
+                    draggable: true
+                }   
+            });
+            // Loading the drawing Tool in the Map.
+            drawingManager.setMap(map);
+        }
+
+    }
+
+    function deleteRec() {
+        if (rectangle) {
+            rectangle.setMap(null);
+        }
+        rectangle = null;
+    }
+
     function getReverseGeocodingData(lat, lng) {
         var latlng = new google.maps.LatLng(lat, lng);
         // This is making the Geocode request
@@ -229,7 +292,6 @@
         };
         navigator.geolocation.getCurrentPosition(success, error);
     }
-
 </script>
 
 {% endblock %}
