@@ -192,10 +192,10 @@ class Incident(db.Model):
     pedestrian_num = db.Column(db.Integer) 
     bicycle_num = db.Column(db.Integer)
     automobile_num = db.Column(db.Integer)
+    other_num = db.Column(db.Integer)
     description = db.Column(db.Text)
-    injuries = db.Column(db.Text)
+    injuries = db.Column(db.Text, default=None) # optional
     picture_url = db.Column(db.Text, default=None) # optional
-    comments = db.Column(db.Text, default=None) # optional
     contact_name = db.Column(db.Text, default=None) # optional
     contact_phone = db.Column(db.Integer, default=None) #optional
     contact_email = db.Column(db.Text, default=None) #optional
