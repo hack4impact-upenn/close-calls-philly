@@ -23,7 +23,6 @@ vendor_js = Bundle(
     'vendor/jquery.min.js',
     'vendor/semantic.min.js',
     'vendor/tablesort.min.js',
-    'vendor/jquery-ui.js',
     'vendor/oms.min.js',
     'vendor/markerclusterer.js',
     filters='jsmin',
