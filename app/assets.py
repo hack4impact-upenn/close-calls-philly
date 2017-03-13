@@ -16,7 +16,6 @@ app_js = Bundle(
 
 vendor_css = Bundle(
     'vendor/semantic.min.css',
-    'vendor/iThing.css',
     output='styles/vendor.css'
 )
 
@@ -25,7 +24,6 @@ vendor_js = Bundle(
     'vendor/semantic.min.js',
     'vendor/tablesort.min.js',
     'vendor/jquery-ui.js',
-    'vendor/jQDateRangeSlider-min.js',
     'vendor/oms.min.js',
     'vendor/markerclusterer.js',
     filters='jsmin',
