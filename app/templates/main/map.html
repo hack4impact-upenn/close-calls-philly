@@ -42,7 +42,6 @@
         <div id="info_container">
             <div id="replaceable"></div>
         </div>
-        <div id="slider"></div>
         <div id="form_button">Report Incident</div>
         <form name="addressForm" id="addressForm">
             <div class="ui action input" id="addressSearch">
@@ -74,6 +73,7 @@
     var map;
     var drawingManager;
     var rectangle = null;
+    var dragging = false;
 
     $('#createBoundingBoxButton').click(function() {
         drawRec();
@@ -119,10 +119,10 @@
         google.maps.event.addListener(drawingManager, 'overlaycomplete', function(event) {
             deleteRec();
             rectangle = event.overlay;
-            var bounds = rectangle.getBounds();
-            map.fitBounds(bounds);
-            inboundsMarkers = filterMarkers(bounds);
-            drawingManager.setMap(null);
+            rectangle.addListener('dragstart', draggingRectangleStart);
+            rectangle.addListener('dragend', draggingRectangleEnd);
+            rectangle.addListener('bounds_changed', updateMarkersFromBounds);
+            updateMarkersFromBounds();
         });
 
         var oms = new OverlappingMarkerSpiderfier(map, {keepSpiderfied: true, nearbyDistance: 10});
@@ -234,6 +234,24 @@
             rectangle.setMap(null);
         }
         rectangle = null;
+    }
+
+    function updateMarkersFromBounds() {
+        if (!dragging) {
+            var bounds = rectangle.getBounds();
+            map.fitBounds(bounds);
+            inboundsMarkers = filterMarkers(bounds);
+            drawingManager.setMap(null);
+        }
+    }
+
+    function draggingRectangleStart() {
+        dragging = true;
+    }
+
+    function draggingRectangleEnd() {
+        dragging = false;
+        updateMarkersFromBounds()
     }
 
     function getReverseGeocodingData(lat, lng) {
