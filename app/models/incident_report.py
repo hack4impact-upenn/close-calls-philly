@@ -5,7 +5,7 @@ from datetime import datetime, timedelta
 from flask import current_app
 from flask_rq import get_queue
 from .. import db
-from . import Agency, User
+from . import User
 from ..email import send_email
 from ..utils import get_current_weather, url_for_external
 
@@ -37,7 +37,6 @@ class IncidentReport(db.Model):
                                backref='incident_report')
     date = db.Column(db.DateTime)  # datetime object
     duration = db.Column(db.Interval)  # timedelta object
-    agency_id = db.Column(db.Integer, db.ForeignKey('agencies.id'))
     picture_url = db.Column(db.Text)
 
     # Should never be exposed to the user. This is the Imgur deletehash, so
@@ -48,17 +47,8 @@ class IncidentReport(db.Model):
     weather = db.Column(db.Text)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
 
-    # True if this report's agency will be publicly shown alongside it. That
-    # is, when a general user sees a report on the map, this report's agency
-    # will only be shown if show_agency_publicly is True. The
-    # show_agency_publicly attribute is inherited from a report's agency's
-    # is_public field.
-    show_agency_publicly = db.Column(db.Boolean, default=False)
-
     def __init__(self, send_email_upon_creation=True, **kwargs):
         super(IncidentReport, self).__init__(**kwargs)
-        if self.agency is not None and 'show_agency_publicly' not in kwargs:
-            self.show_agency_publicly = self.agency.is_public
 
         if self.date is None:
             self.date = datetime.now(pytz.timezone(
@@ -73,40 +63,6 @@ class IncidentReport(db.Model):
 
         self.description = self.description.replace('\n', ' ').strip()
         self.description = self.description.replace('\r', ' ').strip()
-
-        if send_email_upon_creation:
-            all_reports_for_agency_link = url_for_external(
-                'reports.view_reports')
-            index_page_link = url_for_external(
-                'main.index')
-            subject = '{} Idling Incident'.format(self.agency.name)
-
-            if self.location.original_user_text is not None:
-                subject += ' at {}'.format(self.location.original_user_text)
-
-            for agency_worker in self.agency.users:
-                get_queue().enqueue(
-                    send_email,
-                    recipient=agency_worker.email,
-                    subject=subject,
-                    template='reports/email/alert_workers',
-                    incident_report=self,
-                    user=agency_worker.full_name(),
-                    all_reports_for_agency_link=all_reports_for_agency_link,
-                    index_page_link=index_page_link
-                )
-
-            if current_app.config['SEND_ALL_REPORTS_TO']:
-                get_queue().enqueue(
-                    send_email,
-                    recipient=current_app.config['SEND_ALL_REPORTS_TO'],
-                    subject=subject,
-                    template='reports/email/alert_workers',
-                    incident_report=self,
-                    user=current_app.config['SEND_ALL_REPORTS_TO'],
-                    all_reports_for_agency_link=all_reports_for_agency_link,
-                    index_page_link=index_page_link
-                )
 
         traceback.print_stack()  # TODO: Remove
         print (locals())
@@ -131,7 +87,6 @@ class IncidentReport(db.Model):
                         for _ in range(n))
             return r
 
-        agencies = Agency.query.all()
         users = User.query.all()
         fake = Faker()
 
@@ -152,7 +107,6 @@ class IncidentReport(db.Model):
                 location=l,
                 date=fake.date_time_between(start_date="-1y", end_date="now"),
                 duration=timedelta(minutes=randint(1, 30)),
-                agency=choice(agencies),
                 user=choice(users),
                 picture_url=fake.image_url(),
                 description=fake.paragraph(),

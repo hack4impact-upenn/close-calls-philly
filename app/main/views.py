@@ -8,7 +8,7 @@ from werkzeug import secure_filename
 from . import main
 from app import models, db
 from app.reports.forms import IncidentReportForm
-from app.models import IncidentReport, Agency, EditableHTML
+from app.models import IncidentReport, EditableHTML
 from app.utils import upload_image, geocode
 
 
@@ -16,7 +16,6 @@ from app.utils import upload_image, geocode
 @main.route('/map', methods=['GET', 'POST'])
 def index():
     form = IncidentReportForm()
-    agencies = Agency.query.all()
 
     if form.validate_on_submit():
 
@@ -29,24 +28,12 @@ def index():
                             latitude=lat,
                             longitude=lng)
 
-        agency = form.agency.data
-        if agency is None:
-            existing_other_agency = Agency.query.filter_by(
-                name=form.other_agency.data.upper()).first()
-            agency = existing_other_agency or Agency(
-                name=form.other_agency.data.upper(),
-                is_official=False,
-                is_public=False
-            )
-            db.session.add(agency)
-
         new_incident = models.IncidentReport(
             vehicle_id=form.vehicle_id.data,
             license_plate=form.license_plate.data,
             location=l,
             date=datetime.combine(form.date.data, form.time.data),
             duration=timedelta(minutes=form.duration.data),
-            agency=agency,
             description=form.description.data,
         )
 
@@ -78,7 +65,6 @@ def index():
     form.process()
 
     return render_template('main/map.html',
-                           agencies=agencies,
                            form=form,
                            incident_reports=IncidentReport.query.all())
 
