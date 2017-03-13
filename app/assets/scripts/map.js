@@ -13,8 +13,8 @@ INITIAL_CENTER_LONG = -75.195;
 initial_coords = new google.maps.LatLng(INITIAL_CENTER_LAT, INITIAL_CENTER_LONG);
 
 // Bounds for the Date Slider. End date is current date.
-var BOUNDS_MIN;
-var BOUNDS_MAX = new Date();
+var startDate;
+var endDate = new Date();
 
 // Take a list of markers and a map, put them on the map, set the
 // minimum date, and set the location bounds
@@ -28,7 +28,7 @@ function storeMarkerState(markers, map, minDate, bounds, oms) {
         oms.addMarker(globalMarkers[mw]);
 
     }
-    BOUNDS_MIN = minDate;
+    startDate = minDate;
     geographicBounds = bounds;
     map.fitBounds(bounds);
 }
@@ -158,37 +158,45 @@ function getNextDate(startDate) {
     return startDate;
 }
 
+function filterDateRange() {
+  var markersDisplayedOnMap = [];
+  for (mw = 0; mw < globalMarkers.length; mw++) {
+      if ((globalMarkers[mw].incidentDate.getTime() < startDate.getTime()) ||
+          (globalMarkers[mw].incidentDate.getTime() >= endDate.getTime())) {
+          globalMarkers[mw].setMap(null);
+      }
+      else
+      {
+          globalMarkers[mw].setMap(globalMap);
+          markersDisplayedOnMap.push(globalMarkers[mw]);
+      }
+  }
+  markerCluster.clearMarkers();
+  markerCluster = new MarkerClusterer(map, markersDisplayedOnMap, {gridSize: 50, maxZoom: 15, minimumClusterSize: 15, imagePath: 'static/images/clusterer/m'});
+}
+
 function initializeDateRange() {
   $('#start-date').calendar({
     type: 'date',
-    endCalendar: $('#end-date')
+    endCalendar: $('#end-date'),
+    onChange: function (date, text, mode) {
+      startDate = date;
+      filterDateRange();
+    }
   });
 
   $('#end-date').calendar({
     type: 'date',
     startCalendar: $('#start-date'),
     onChange: function (date, text, mode) {
-      var beginDate = $('#start-date').calendar('get date');
-      if (beginDate) {
-        var endDate = date;
-        var markersDisplayedOnMap = [];
-        for (mw = 0; mw < globalMarkers.length; mw++) {
-            if ((globalMarkers[mw].incidentDate.getTime() < beginDate.getTime()) ||
-                (globalMarkers[mw].incidentDate.getTime() >= endDate.getTime())) {
-                globalMarkers[mw].setMap(null);
-            }
-            else
-            {
-                globalMarkers[mw].setMap(globalMap);
-                markersDisplayedOnMap.push(globalMarkers[mw]);
-            }
-        }
-        markerCluster.setMap(null);
-        markerCluster.clearMarkers();
-        markerCluster = new MarkerClusterer(map, markersDisplayedOnMap, {gridSize: 50, maxZoom: 15, minimumClusterSize: 15, imagePath: 'static/images/clusterer/m'});
-      }
+      endDate = date;
+      filterDateRange();
     }
   });
+
+  // initializes the dates for the calendar
+  $('#start-date').calendar('set date', startDate);
+  $('#end-date').calendar('set date', endDate);
 }
 
 function filterMarkers(bounds) {
