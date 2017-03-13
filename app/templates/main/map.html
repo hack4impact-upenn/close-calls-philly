@@ -24,8 +24,6 @@
             {{ f.render_form_field(form.duration) }}
             {{ f.render_form_field(form.location)}}
             <div class="ui button" id="current_location_button" onclick="geoFindMe()">Use Current location</div>
-            {{ f.render_form_field(form.agency)}}
-            {{ f.render_form_field(form.other_agency, extra_classes='other_agency') }}
             {{ f.render_form_field(form.date)}}
             {{ f.render_form_field(form.time)}}
             {{ f.render_form_field(form.bus_number, extra_classes='bus_number') }}
@@ -100,28 +98,6 @@
         $('#form_button').toggle();
     });
 
-    $('#agency').change(function(){
-        console.log($("#agency option:selected").text());
-        if ($("#agency option:selected").text() === 'SEPTA BUS') {
-            $('.bus_number').show()
-            $('.led_screen_number').show()
-        }
-        else {
-            $('.bus_number').hide()
-            $('.led_screen_number').hide()
-        }
-    });
-
-    $('#agency').change(function(){
-        console.log($("#agency option:selected").text());
-        if ($("#agency option:selected").text() === 'Other') {
-            $('.other_agency').show()
-        }
-        else {
-            $('.other_agency').hide()
-        }
-    });
-
     function initializeMapAndMarkers() {
         var mapProp = {
                 mapTypeId: google.maps.MapTypeId.ROADMAP,
@@ -187,10 +163,9 @@
                                 '</button>' +
                                 '<h3>Date: ' + '{{ report.date.strftime('%m-%d-%Y at %I:%M %p') }}' + '</h3>' +
                                 '<p>Duration (h:m:s): ' + '{{ report.duration }}' + '</p>' +
-                                {% if current_user.is_admin() or report.agency in current_user.agencies or report.show_agency_publicly %}
+                                {% if current_user.is_admin() %}
                                 '<p>Vehicle ID: ' + '{{ report.vehicle_id }}' +'</p>' +
                                 '<p>License Plate: ' + '{{ report.license_plate if report.license_plate else '' }}' + '</p>' +
-                                '<p>Agency: ' + '{{ report.agency.name }}' + '</p>' +
                                   {% if report.picture_url %}
                                   '<p><a href="{{ report.picture_url }}" target="_blank" rel="noopener noreferrer">' + 'Link to Picture' + '</a></p>' +
                                   {% endif %}

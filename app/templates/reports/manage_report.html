@@ -41,7 +41,6 @@
         <tr><td>Date</td><td>{{ report.date.strftime('%m-%d-%Y') }}</td></tr>
         <tr><td>Time</td><td>{{ report.date.strftime('%I:%M %p') }}</td></tr>
         <tr><td>Duration (h:m:s)</td><td>{{ report.duration}}</td></tr>
-        <tr><td>Agency</td><td>{{ report.agency.name }}</td></tr>
         <tr><td>Weather Conditions</td>
             <td>
                 {% if report.weather %}
@@ -80,7 +79,7 @@
             {% endif %}
             <h3 class="ui header">
               {% if (report.user) %}
-                {{ '%s\'s report on %s' % (report.user.full_name(), report.agency.name) }}
+                {{ '%s\'s report' % (report.user.full_name()) }}
               {% endif %}
                 <div class="sub header">View and manage this report.</div>
             </h3>
@@ -129,8 +128,6 @@
                     {{ f.render_form_field(form.description) }}
                     {{ f.render_form_field(form.duration) }}
                     {{ f.render_form_field(form.location)}}
-                    {{ f.render_form_field(form.agency)}}
-                    {{ f.render_form_field(form.other_agency, extra_classes='other_agency') }}
                     {{ f.render_form_field(form.date)}}
                     {{ f.render_form_field(form.time)}}
                     {{ f.render_form_field(form.bus_number, extra_classes='bus_number') }}
@@ -155,28 +152,6 @@
             },
             onUnchecked: function() {
                 $('.deletion.button').addClass('disabled').removeAttr('href');
-            }
-        });
-
-        $('#agency').change(function(){
-            console.log($("#agency option:selected").text());
-            if ($("#agency option:selected").text() === 'SEPTA BUS') {
-                $('.bus_number').show()
-                $('.led_screen_number').show()
-            }
-            else {
-                $('.bus_number').hide()
-                $('.led_screen_number').hide()
-            }
-        });
-
-        $('#agency').change(function(){
-            console.log($("#agency option:selected").text());
-            if ($("#agency option:selected").text() === 'Other') {
-                $('.other_agency').show()
-            }
-            else {
-                $('.other_agency').hide()
             }
         });
     </script>

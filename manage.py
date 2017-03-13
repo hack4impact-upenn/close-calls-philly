@@ -15,7 +15,6 @@ from app import create_app, db
 from app.models import (
     User,
     Role,
-    Agency,
     Permission,
     IncidentReport,
     EditableHTML
@@ -97,18 +96,6 @@ def setup_dev():
                  .first(),
                  confirmed=True)
 
-    # Create a default agency worker user
-    worker = User(email='agency@user.com',
-                  phone_number='+11098764321',
-                  password='password',
-                  first_name='AgencyWorker',
-                  last_name='User',
-                  role=Role.query
-                  .filter_by(permissions=Permission.AGENCY_WORKER)
-                  .first(),
-                  confirmed=True)
-    worker.agencies = [Agency.get_agency_by_name('SEPTA')]
-
     # Create a default general user
     general = User(email='general@user.com',
                    phone_number='+15434549876',
@@ -120,7 +107,6 @@ def setup_dev():
                    confirmed=True)
 
     db.session.add(admin)
-    db.session.add(worker)
     db.session.add(general)
 
     db.session.commit()
@@ -146,7 +132,6 @@ def setup_prod():
 def setup_general():
     """Runs the set-up needed for both local development and production."""
     Role.insert_roles()
-    Agency.insert_agencies()
     EditableHTML.add_default_faq()
 
 

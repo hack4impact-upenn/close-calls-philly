@@ -9,7 +9,6 @@ from wtforms.fields import (
     DateField,
     FileField
 )
-from ..models import Agency
 from wtforms.ext.sqlalchemy.fields import QuerySelectField
 from wtforms.validators import (
     InputRequired,
@@ -66,13 +65,6 @@ class IncidentReportForm(Form):
                     message='Idling duration must be between '
                             '0 and 10000 minutes.')
     ])
-
-    agency = QuerySelectField('Vehicle Agency ',
-                              validators=[InputRequired()],
-                              get_label='name',
-                              query_factory=lambda: db.session.query(Agency)
-                              .filter_by(is_official=True)
-                              .order_by(Agency.name))
 
     picture_file = FileField('Upload a picture of the idling vehicle.',
                              validators=[Optional()])
