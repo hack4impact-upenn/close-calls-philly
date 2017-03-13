@@ -72,6 +72,7 @@ $(document).ready(function() {
 });
 
 function initializeDateSlider() {
+  console.log('2');
     $("#slider").dateRangeSlider({
         bounds: {
             min: BOUNDS_MIN,

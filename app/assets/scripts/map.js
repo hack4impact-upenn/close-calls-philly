@@ -158,44 +158,19 @@ function getNextDate(startDate) {
     return startDate;
 }
 
-function initializeDateSlider() {
-    $("#slider").dateRangeSlider({
-        bounds: {
-            min: BOUNDS_MIN,
-            max: BOUNDS_MAX,
-        },
-        arrows: false,
-        defaultValues: {
-            min: BOUNDS_MIN,
-            max: BOUNDS_MAX,
-        },
-    });
-    $("#slider").bind("valuesChanged", function(e, data) {
-        var beginYear = parseInt(String(data.values.min).substring(11, 15), 10);
-        var beginDay = parseInt(String(data.values.min).substring(8, 10), 10);
-        var endYear = parseInt(String(data.values.max).substring(11, 15), 10);
-        var endDay = parseInt(String(data.values.max).substring(8, 10), 10);
-        var beginMonth = 0;
-        var endMonth = 0;
-        monthObj = {
-            "Jan": 0,
-            "Feb": 1,
-            "Mar": 2,
-            "Apr": 3,
-            "May": 4,
-            "Jun": 5,
-            "Jul": 6,
-            "Aug": 7,
-            "Sep": 8,
-            "Oct": 9,
-            "Nov": 10,
-            "Dec": 11
-        };
-        beginMonth = monthObj[String(data.values.min).substring(4, 7)];
-        endMonth = monthObj[String(data.values.max).substring(4, 7)];
-        beginDate = new Date(beginYear, beginMonth, beginDay);
-        endDate = getNextDate(new Date(endYear, endMonth, endDay));
+function initializeDateRange() {
+  $('#start-date').calendar({
+    type: 'date',
+    endCalendar: $('#end-date')
+  });
 
+  $('#end-date').calendar({
+    type: 'date',
+    startCalendar: $('#start-date'),
+    onChange: function (date, text, mode) {
+      var beginDate = $('#start-date').calendar('get date');
+      if (beginDate) {
+        var endDate = date;
         var markersDisplayedOnMap = [];
         for (mw = 0; mw < globalMarkers.length; mw++) {
             if ((globalMarkers[mw].incidentDate.getTime() < beginDate.getTime()) ||
@@ -211,7 +186,9 @@ function initializeDateSlider() {
         markerCluster.setMap(null);
         markerCluster.clearMarkers();
         markerCluster = new MarkerClusterer(map, markersDisplayedOnMap, {gridSize: 50, maxZoom: 15, minimumClusterSize: 15, imagePath: 'static/images/clusterer/m'});
-    });
+      }
+    }
+  });
 }
 
 function filterMarkers(bounds) {
