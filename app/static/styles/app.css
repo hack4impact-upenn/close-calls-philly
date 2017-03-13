@@ -615,6 +615,13 @@ form textarea#description {
   }
 
 @media -sass-debug-info{filename{}line{font-family:\00003188}}
+  #dateRange {
+    position: absolute;
+    width: 90%;
+    left: 5%;
+  }
+
+@media -sass-debug-info{filename{}line{font-family:\00003193}}
   #form_container,
   #info_container {
     position: absolute;
@@ -623,7 +630,7 @@ form textarea#description {
     top: 80px;
   }
 
-@media -sass-debug-info{filename{}line{font-family:\00003195}}
+@media -sass-debug-info{filename{}line{font-family:\00003200}}
   #form_button {
     position: absolute;
     width: 80%;
@@ -631,7 +638,7 @@ form textarea#description {
     bottom: 0px;
   }
 
-@media -sass-debug-info{filename{}line{font-family:\00003201}}
+@media -sass-debug-info{filename{}line{font-family:\00003206}}
   #submitButton {
     left: 95%;
   }
