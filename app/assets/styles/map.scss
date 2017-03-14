@@ -10,8 +10,8 @@
 
 #dateRange {
   position: absolute;
-  left: 2.5%;
-  top: 80px;
+  left: 5%;
+  top: 180px;
   z-index: 5;
   width: 20%;
 }
@@ -181,9 +181,7 @@ form textarea#description {
         left: 5%;
     }
     #dateRange {
-      position: absolute;
-      width: 90%;
-      left: 5%;
+      display: none;
     }
     #form_container,
     #info_container {
