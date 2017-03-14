@@ -179,6 +179,12 @@ function initializeDateRange() {
   $('#start-date').calendar({
     type: 'date',
     endCalendar: $('#end-date'),
+    popupOptions: {
+      position: 'right center',
+      lastResort: 'right center',
+      prefer: 'right',
+      hideOnScroll: false
+    },
     onChange: function (date, text, mode) {
       startDate = date;
       filterDateRange();
@@ -188,6 +194,12 @@ function initializeDateRange() {
   $('#end-date').calendar({
     type: 'date',
     startCalendar: $('#start-date'),
+    popupOptions: {
+      position: 'right center',
+      lastResort: 'right center',
+      prefer: 'right',
+      hideOnScroll: false
+    },
     onChange: function (date, text, mode) {
       endDate = date;
       filterDateRange();
