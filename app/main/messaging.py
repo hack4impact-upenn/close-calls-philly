@@ -11,7 +11,7 @@ from ..utils import (
     attach_image_to_incident_report,
     url_for_external
 )
-from ..models import Agency, IncidentReport, Location, User
+from ..models import IncidentReport, Location, User
 from ..reports.forms import IncidentReportForm
 from datetime import datetime, timedelta
 import twilio.twiml
@@ -20,13 +20,11 @@ from twilio.rest import TwilioRestClient
 
 STEP_INIT = 0
 STEP_LOCATION = 1
-STEP_AGENCY = 2
-STEP_OTHER_AGENCY = 3
-STEP_LICENSE_PLATE = 4
-STEP_VEHICLE_ID = 5
-STEP_DURATION = 6
-STEP_DESCRIPTION = 7
-STEP_PICTURE = 8
+STEP_LICENSE_PLATE = 2
+STEP_VEHICLE_ID = 3
+STEP_DURATION = 4
+STEP_DESCRIPTION = 5
+STEP_PICTURE = 6
 
 
 @main.route('/report_incident', methods=['GET'])  # noqa
@@ -44,7 +42,6 @@ def handle_message():
     # Retrieve incident cookies
     step = int(request.cookies.get('messagecount', 0))
     vehicle_id = str(request.cookies.get('vehicle_id', ''))
-    agency_name = str(request.cookies.get('agency_name', ''))
     license_plate = str(request.cookies.get('license_plate', ''))
     duration = int(request.cookies.get('duration', 0))
     description = str(request.cookies.get('description', ''))
@@ -54,7 +51,6 @@ def handle_message():
     if 'report' == body.lower():
         # reset report variables/cookies
         vehicle_id = ''
-        agency_name = ''
         license_plate = ''
         duration = 0
         description = ''
@@ -65,12 +61,6 @@ def handle_message():
 
     elif step == STEP_LOCATION:
         location, step = handle_location_step(body, step, twiml)
-
-    elif step == STEP_AGENCY:
-        agency_name, step = handle_agency_step(body, step, twiml)
-
-    elif step == STEP_OTHER_AGENCY:
-        agency_name, step = handle_other_agency_step(body, step, twiml)
 
     elif step == STEP_LICENSE_PLATE:
         license_plate, step = handle_license_plate_step(body, step, twiml)
@@ -88,7 +78,7 @@ def handle_message():
         step, image_job_id = handle_picture_step(step, message_sid,
                                                  twilio_hosted_media_url)
 
-        new_incident = handle_create_report(agency_name, description, duration,
+        new_incident = handle_create_report(description, duration,
                                             license_plate, location,
                                             picture_url, vehicle_id,
                                             phone_number)
@@ -123,7 +113,6 @@ def handle_message():
     response = make_response(str(twiml))
 
     set_cookie(response, 'messagecount', str(step))
-    set_cookie(response, 'agency_name', agency_name)
     set_cookie(response, 'vehicle_id', vehicle_id)
     set_cookie(response, 'license_plate', license_plate)
     set_cookie(response, 'duration', str(duration))
@@ -134,19 +123,12 @@ def handle_message():
     return response
 
 
-def handle_create_report(agency_name, description, duration, license_plate,
+def handle_create_report(description, duration, license_plate,
                          location, picture_url, vehicle_id, phone_number):
     """Create a report with given fields."""
     lat, lon = geocode(location)
-    agency = Agency.get_agency_by_name(agency_name)
-    if agency is None:
-        agency = Agency(name=agency_name, is_official=False,
-                        is_public=True)
-        db.session.add(agency)
-        db.session.commit()
 
     new_incident = IncidentReport(
-        agency=agency,
         vehicle_id=vehicle_id,
         license_plate=license_plate if license_plate else None,
         duration=timedelta(minutes=duration),
@@ -182,58 +164,14 @@ def handle_location_step(body, step, twiml):
 
     if len(errors) == 0:
         location = body
-        step = STEP_AGENCY
-        agencies = Agency.query.filter_by(is_official=True).order_by(
-            Agency.name).all()
-        letters = all_strings(len(agencies) + 1)  # one extra letter for Other
-        agencies_listed = get_agencies_listed(agencies, letters)
-        twiml.message('Which agency operates the vehicle you see idling? '
-                      'Select from the following list or enter {} for Other.'
-                      .format(letters[-1]))
-        twiml.message(agencies_listed)
+        step = STEP_LICENSE_PLATE
+        twiml.message('What is the license plate number? Reply "no" to skip. '
+                      '(e.g. MG1234E)')
     else:
         location = ''
         reply_with_errors(errors, twiml, 'location')
 
     return location, step
-
-
-def handle_agency_step(body_upper, step, twiml):
-    """Handle a message from the user containing the report's agency."""
-    body_upper = body_upper.upper()
-    agencies = Agency.query.filter_by(is_official=True).order_by(
-        Agency.name).all()
-    letters = all_strings(len(agencies) + 1)  # one extra letter for Other
-    letters_to_agency = dict(zip(letters, agencies))
-
-    if body_upper == letters[-1]:  # Other
-        step = STEP_OTHER_AGENCY
-        agency_name = ''
-        twiml.message('You selected Other. What is the name of the agency '
-                      'which operates the vehicle?')
-
-    elif body_upper in letters_to_agency.keys():
-        step = STEP_LICENSE_PLATE
-        agency_name = letters_to_agency[body_upper].name
-        twiml.message('What is the license plate number? Reply "no" to skip. '
-                      '(e.g. MG1234E)')
-
-    else:
-        agency_name = ''
-        twiml.message('Please enter a letter A through {}.'
-                      .format(letters[-1]))
-
-    return agency_name, step
-
-
-def handle_other_agency_step(body, step, twiml):
-    """Called when the user wants to enter an 'Other' agency."""
-    agency_name = body
-    step = STEP_LICENSE_PLATE
-    twiml.message('What is the license plate number? Reply "no" to skip. '
-                  '(e.g. MG1234E)')
-
-    return agency_name, step
 
 
 def handle_license_plate_step(body, step, twiml):
@@ -353,22 +291,6 @@ def delete_mms(account_sid, auth_token, message_sid):
     client = TwilioRestClient(account_sid, auth_token)
     for media in client.messages.get(message_sid).media_list.list():
         media.delete()
-
-
-def get_agencies_listed(agencies, letters):
-    """Returns the given agencies joined with the given letters like so
-
-    A: Agency1
-    B: Agency2
-    ...
-    G: Other
-
-    """
-    agencies_listed = '\n'.join(
-        '{}: {}'.format(l, ag.name) for l, ag in zip(letters, agencies)
-    )
-    agencies_listed += '\n{}: Other'.format(letters[-1])
-    return agencies_listed
 
 
 def all_strings(max_count):

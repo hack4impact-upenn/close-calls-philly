@@ -1,24 +1,8 @@
 @import "app";
 
-.ui-rangeSlider-innerBar {
-    width: 100% !important;
-    height: 100%;
-    left: 0px !important;
-}
-
-.ui-rangeSlider-bar {
-    background: $teal;
-    height: 110% !important;
-    width: 100%;
-    top: -1px !important;
-    -webkit-box-shadow: inset 0 -2px 6px RGBA(0,0,0,0.5);
-    -mox-box-shadow: inset 0 -2px 6px RGBA(0,0,0,0.5);
-    box-shadow: inset 0 -2px 6px RGBA(0,0,0,0.5);
-}
-
 #addressSearch {
     position: absolute;
-    left: 2.5%;
+    left: 5%;
     top: 30px;
     z-index: 5;
     width: 20%;
@@ -35,6 +19,7 @@
 #submitButton {
     position: absolute;
     left: 70%;
+    width: 30%;
     background-color: $teal;
     color: $white;
     z-index: 5;
@@ -42,10 +27,25 @@
     text-transform: uppercase;
     text-align: center;
     height: 100%;
+    padding: 0px;
 }
 
 #submitButton:hover, #submit:hover{
     background-color: $light-teal;
+}
+
+#createBoundingBoxButton {
+    position: absolute;
+    left: 5%;
+    width: 20%;
+    top: 85px;
+}
+
+#deleteBoundingBoxButton {
+    position: absolute;
+    left: 5%;
+    width: 20%;
+    top: 130px;
 }
 
 #current_location_button, #submit{
@@ -60,14 +60,6 @@
 #current_location_button:hover, #submit:hover {
     background-color: $light-teal;
     cursor: pointer;
-}
-
-#slider {
-    position: absolute;
-    width: 25%;
-    /* right: 100px; */
-    top: 100px;
-    z-index: 5;
 }
 
 #form_fields {
@@ -172,7 +164,10 @@ form textarea#description {
 }
 
 @media all and (max-width: $mobile-breakpoint) {
-    #slider {
+    #createBoundingBoxButton {
+        display: none;
+    }
+    #deleteBoundingBoxButton {
         display: none;
     }
     #inputPanel {

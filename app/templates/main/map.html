@@ -24,8 +24,6 @@
             {{ f.render_form_field(form.duration) }}
             {{ f.render_form_field(form.location)}}
             <div class="ui button" id="current_location_button" onclick="geoFindMe()">Use Current location</div>
-            {{ f.render_form_field(form.agency)}}
-            {{ f.render_form_field(form.other_agency, extra_classes='other_agency') }}
             {{ f.render_form_field(form.date)}}
             {{ f.render_form_field(form.time)}}
             {{ f.render_form_field(form.bus_number, extra_classes='bus_number') }}
@@ -44,6 +42,7 @@
         <div id="info_container">
             <div id="replaceable"></div>
         </div>
+
         <div class="ui form" id="dateRange">
           <div class="field">
             <label>Start Date</label>
@@ -64,6 +63,7 @@
             </div>
           </div>
         </div>
+
         <div id="form_button">Report Incident</div>
         <form name="addressForm" id="addressForm">
             <div class="ui action input" id="addressSearch">
@@ -95,6 +95,7 @@
     var map;
     var drawingManager;
     var rectangle = null;
+    var dragging = false;
 
     $('#createBoundingBoxButton').click(function() {
         drawRec();
@@ -118,26 +119,6 @@
         $('#form_button').toggle();
     });
 
-    $('#agency').change(function(){
-        if ($("#agency option:selected").text() === 'SEPTA BUS') {
-            $('.bus_number').show()
-            $('.led_screen_number').show()
-        }
-        else {
-            $('.bus_number').hide()
-            $('.led_screen_number').hide()
-        }
-    });
-
-    $('#agency').change(function(){
-        if ($("#agency option:selected").text() === 'Other') {
-            $('.other_agency').show()
-        }
-        else {
-            $('.other_agency').hide()
-        }
-    });
-
     function initializeMapAndMarkers() {
         var mapProp = {
                 mapTypeId: google.maps.MapTypeId.ROADMAP,
@@ -159,10 +140,10 @@
         google.maps.event.addListener(drawingManager, 'overlaycomplete', function(event) {
             deleteRec();
             rectangle = event.overlay;
-            var bounds = rectangle.getBounds();
-            map.fitBounds(bounds);
-            inboundsMarkers = filterMarkers(bounds);
-            drawingManager.setMap(null);
+            rectangle.addListener('dragstart', draggingRectangleStart);
+            rectangle.addListener('dragend', draggingRectangleEnd);
+            rectangle.addListener('bounds_changed', updateMarkersFromBounds);
+            updateMarkersFromBounds();
         });
 
         var oms = new OverlappingMarkerSpiderfier(map, {keepSpiderfied: true, nearbyDistance: 10});
@@ -203,10 +184,9 @@
                                 '</button>' +
                                 '<h3>Date: ' + '{{ report.date.strftime('%m-%d-%Y at %I:%M %p') }}' + '</h3>' +
                                 '<p>Duration (h:m:s): ' + '{{ report.duration }}' + '</p>' +
-                                {% if current_user.is_admin() or report.agency in current_user.agencies or report.show_agency_publicly %}
+                                {% if current_user.is_admin() %}
                                 '<p>Vehicle ID: ' + '{{ report.vehicle_id }}' +'</p>' +
                                 '<p>License Plate: ' + '{{ report.license_plate if report.license_plate else '' }}' + '</p>' +
-                                '<p>Agency: ' + '{{ report.agency.name }}' + '</p>' +
                                   {% if report.picture_url %}
                                   '<p><a href="{{ report.picture_url }}" target="_blank" rel="noopener noreferrer">' + 'Link to Picture' + '</a></p>' +
                                   {% endif %}
@@ -275,6 +255,24 @@
             rectangle.setMap(null);
         }
         rectangle = null;
+    }
+
+    function updateMarkersFromBounds() {
+        if (!dragging) {
+            var bounds = rectangle.getBounds();
+            map.fitBounds(bounds);
+            inboundsMarkers = filterMarkers(bounds);
+            drawingManager.setMap(null);
+        }
+    }
+
+    function draggingRectangleStart() {
+        dragging = true;
+    }
+
+    function draggingRectangleEnd() {
+        dragging = false;
+        updateMarkersFromBounds()
     }
 
     function getReverseGeocodingData(lat, lng) {

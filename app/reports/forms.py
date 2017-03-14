@@ -22,7 +22,6 @@ from wtforms.validators import (
 )
 
 from app.custom_validators import StrippedLength, ValidLocation, RequiredIf
-from ..models import Agency
 from .. import db
 
 
@@ -77,21 +76,6 @@ class IncidentReportForm(Form):
                     message='Idling duration must be positive.')
     ])
 
-    agency = QuerySelectField(
-        'Vehicle Agency ',
-        validators=[InputRequired()],
-        get_label='name',
-        query_factory=lambda: db.session.query(Agency).filter_by(
-            is_official=True).order_by(Agency.name),
-        allow_blank=True,
-        blank_text='Other',
-    )
-
-    other_agency = StringField(
-        'Other Agency',
-        validators=[RequiredIf(agency=None)]
-    )
-
     picture_file = FileField(
         'Upload a picture of the idling vehicle.',
         validators=[
@@ -122,16 +106,5 @@ class EditIncidentReportForm(IncidentReportForm):
         Regexp(r'^(\d{1,2}:)(\d{1,2}:)(\d{1,2})$',
                message='Write duration as HH:MM:SS')
     ])
-
-    # All agencies should be options in the EditForm but only official agencies
-    # should be an option in the ReportForm
-    agency = QuerySelectField(
-        'Vehicle Agency ',
-        validators=[InputRequired()],
-        get_label='name',
-        query_factory=lambda: db.session.query(Agency),
-        allow_blank=True,
-        blank_text='Other',
-    )
 
     submit = SubmitField('Update Report')

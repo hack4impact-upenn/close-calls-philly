@@ -138,18 +138,6 @@ class UserModelTestCase(unittest.TestCase):
         u = AnonymousUser()
         self.assertFalse(u.can(Permission.GENERAL))
 
-    def test_agency_worker_role(self):
-        Role.insert_roles()
-        r = Role.query.filter_by(permissions=Permission.AGENCY_WORKER).first()
-        ag_1 = Agency(name='SEPTA')
-        ag_2 = Agency(name='STREETS')
-        u = User(email='user@example.com', password='password', role=r,
-                 agencies=[ag_1, ag_2])
-        self.assertTrue(u.can(Permission.AGENCY_WORKER))
-        self.assertFalse(u.can(Permission.ADMINISTER))
-        self.assertFalse(u.is_admin())
-        self.assertEqual(u.agencies, [ag_1, ag_2])
-
     def test_reported_incidents(self):
         u = User(email='user@example.com', password='password')
         incident1 = IncidentReport(

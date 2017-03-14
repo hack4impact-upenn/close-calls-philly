@@ -9,8 +9,8 @@ from .forms import EditIncidentReportForm
 
 from . import reports
 from .. import db
-from ..models import IncidentReport, Agency
-from ..decorators import admin_or_agency_required
+from ..models import IncidentReport
+from ..decorators import admin_required
 from ..utils import (
     flash_errors,
     geocode,
@@ -22,28 +22,17 @@ from ..utils import (
 
 @reports.route('/all')
 @login_required
-@admin_or_agency_required
+@admin_required
 def view_reports():
     """View all idling incident reports.
     Admins can see all reports.
-    Agency workers can see reports for their affiliated agencies.
     General users do not have access to this page."""
-
-    agencies = []
 
     if current_user.is_admin():
         incident_reports = IncidentReport.query.all()
-        agencies = Agency.query.all()
-
-    elif current_user.is_agency_worker():
-        incident_reports = []
-        agencies = current_user.agencies
-        for agency in current_user.agencies:
-            incident_reports.extend(agency.incident_reports)
 
     # TODO test using real data
-    return render_template('reports/reports.html', reports=incident_reports,
-                           agencies=agencies)
+    return render_template('reports/reports.html', reports=incident_reports)
 
 
 @reports.route('/my-reports')
@@ -51,10 +40,8 @@ def view_reports():
 def view_my_reports():
     """View all idling incident reports for this user."""
     incident_reports = current_user.incident_reports
-    agencies = []
 
-    return render_template('reports/reports.html', reports=incident_reports,
-                           agencies=agencies)
+    return render_template('reports/reports.html', reports=incident_reports)
 
 
 @reports.route('/<int:report_id>')
@@ -67,10 +54,8 @@ def report_info(report_id):
     if report is None:
         abort(404)
 
-    """Either the user is looking at their own report, or the user is either
-    an admin or agency worker."""
-    if (not (current_user.is_admin() or current_user.is_agency_worker())) and \
-       (report.user_id != current_user.id):
+    # Either the user is looking at their own report, or the user is an admin.
+    if (not current_user.is_admin()) and report.user_id != current_user.id:
         abort(403)
 
     return render_template('reports/manage_report.html', report=report)
@@ -85,7 +70,6 @@ def edit_report_info(report_id):
     if report is None:
         abort(404)
     # Either the user is editing their own report, or the user is an admin.
-    # Agency workers cannot edit reports for their own agency.
     if (report.user_id != current_user.id) and (not current_user.is_admin()):
         abort(403)
 
@@ -104,19 +88,6 @@ def edit_report_info(report_id):
                                hour=t.hour, minute=t.minute, second=t.second)
 
         report.duration = parse_timedelta(form.duration.data)
-
-        agency = form.agency.data
-        if agency is None:
-            existing_other_agency = Agency.query.filter_by(
-                name=form.other_agency.data.upper()).first()
-            agency = existing_other_agency or Agency(
-                name=form.other_agency.data.upper(),
-                is_official=False,
-                is_public=False
-            )
-            db.session.add(agency)
-
-        report.agency = agency
 
         report.picture_url = form.picture_url.data
         report.description = form.description.data
@@ -157,7 +128,6 @@ def edit_report_info(report_id):
     form.time.default = report.date
 
     form.duration.default = report.duration
-    form.agency.default = report.agency
     form.picture_url.default = report.picture_url
     form.description.default = report.description
     form.process()
@@ -175,8 +145,7 @@ def delete_report_request(report_id):
     if report is None:
         abort(404)
 
-    """Either the user is deleting their own report, or the user is an admin.
-    Agency workers cannot delete reports for their own agency."""
+    # Either the user is deleting their own report, or the user is an admin.
     if (report.user_id != current_user.id) and (not current_user.is_admin()):
         abort(403)
 
