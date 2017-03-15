@@ -191,6 +191,8 @@ class Incident(db.Model):
     date = db.Column(db.DateTime)
     pedestrian_num = db.Column(db.Integer) 
     bicycle_num = db.Column(db.Integer)
+    motorcycle_num = db.Column(db.Integer)
+    other_num = db.Column(db.Integer)
     automobile_num = db.Column(db.Integer)
     description = db.Column(db.Text)
     injuries = db.Column(db.Text)

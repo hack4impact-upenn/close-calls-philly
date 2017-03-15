@@ -30,7 +30,9 @@
             {{ f.render_form_field(form.picture_file) }}
             {{ f.render_form_field(form.description) }}
             {{ f.render_form_field(form.injuries)}}
-            {{ f.render_form_field(form.contact_name)}}             
+            {{ f.render_form_field(form.contact_name)}}
+            {{ f.render_form_field(form.contact_phone)}}  
+            {{ f.render_form_field(form.contact_email)}}               
             {{ f.form_message(flashes['error'], header='Something went wrong.', class='error') }}
             {{ f.form_message(flashes['warning'], header='Check your email.', class='warning') }}
             {{ f.form_message(flashes['info'], header='Information', class='info') }}

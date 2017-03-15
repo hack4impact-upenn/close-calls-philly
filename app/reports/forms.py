@@ -81,10 +81,20 @@ class IncidentReportForm(Form):
         Length(max=5000)
     ])
 
-    contact_name = StringField('Contact Name (optional): only visible to administrator', validators=[
+    contact_name = StringField('Contact Name (optional)', validators=[
         Optional(),
         Length(max=1000)
-    ])    
+    ])   
+
+    contact_phone = StringField('Contact Phone (optional)', validators=[
+        Optional(),
+        Length(max=1000)
+    ]) 
+
+    contact_email = StringField('Contact E-mail (optional)', validators=[
+        Optional(),
+        Length(max=100)
+    ])  
 
     submit = SubmitField('Create Report')
 
