@@ -2,7 +2,7 @@ import csv
 import functools
 from datetime import datetime
 from app.utils import geocode, strip_non_alphanumeric_chars
-from app.models import Location, Agency, IncidentReport
+from app.models import Location, IncidentReport
 from app.reports.forms import IncidentReportForm
 
 
@@ -13,7 +13,6 @@ def parse_to_db(db, filename):
     license_plate_index = 9
     location_index = 4
     date_index = 0
-    agency_index = 6
     picture_index = 13
     description_index = 11
 
@@ -41,20 +40,6 @@ def parse_to_db(db, filename):
                 db.session.add(loc)
 
                 time1, time2 = parse_start_end_time(date_index, row)
-
-                # Assign correct agency id
-                agency_name = row[agency_index].rstrip()
-                if agency_name.upper() == 'OTHER':
-                    agency_name = row[agency_index + 1].rstrip()
-                agency = Agency.get_agency_by_name(agency_name)
-
-                # Create new agency object if not in database
-                if agency is None:
-                    agency = Agency(name=agency_name)
-                    agency.is_public = True
-                    agency.is_official = False
-                    db.session.add(agency)
-                    db.session.commit()
 
                 vehicle_id_text = row[vehicle_id_index].strip()
                 license_plate_text = row[license_plate_index].strip()
@@ -104,7 +89,6 @@ def parse_to_db(db, filename):
                         location=loc,
                         date=time1,
                         duration=time2 - time1,
-                        agency=agency,
                         picture_url=row[picture_index],
                         description=row[description_index],
                         send_email_upon_creation=False,

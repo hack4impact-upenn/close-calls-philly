@@ -7,12 +7,10 @@ from itsdangerous import (
     SignatureExpired,
 )
 from .. import db, login_manager
-from . import Agency
 
 
 class Permission:
     GENERAL = 0x01
-    AGENCY_WORKER = 0x10
     ADMINISTER = 0xff
 
 
@@ -32,9 +30,6 @@ class Role(db.Model):
         roles = {
             'User': (
                 Permission.GENERAL, 'main', True
-            ),
-            'AgencyWorker': (
-                Permission.AGENCY_WORKER, 'main', False
             ),
             'Administrator': (
                 Permission.ADMINISTER, 'admin', False  # grants all permissions
@@ -67,7 +62,6 @@ class User(UserMixin, db.Model):
     incident_reports = db.relationship('IncidentReport',
                                        backref='user',
                                        lazy='select')
-    # also related to agencies via the agency_user_table
 
     def __init__(self, **kwargs):
         super(User, self).__init__(**kwargs)
@@ -87,12 +81,6 @@ class User(UserMixin, db.Model):
 
     def is_admin(self):
         return self.role.permissions == Permission.ADMINISTER
-
-    def is_worker(self):
-        return self.role.permissions == Permission.AGENCY_WORKER
-
-    def is_agency_worker(self):
-        return self.can(Permission.AGENCY_WORKER)
 
     def is_general_user(self):
         return self.can(Permission.GENERAL)
@@ -182,7 +170,6 @@ class User(UserMixin, db.Model):
 
         fake = Faker()
         roles = Role.query.all()
-        agencies = Agency.query.all()
 
         seed()
         for i in range(count):
@@ -197,8 +184,6 @@ class User(UserMixin, db.Model):
                 role=choice(roles),
                 **kwargs
             )
-            if u.role.name == 'AgencyWorker':
-                u.agencies = sample(agencies, randint(1, len(agencies)))
             db.session.add(u)
             try:
                 db.session.commit()

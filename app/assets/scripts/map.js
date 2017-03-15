@@ -153,63 +153,16 @@ $(document).ready(function() {
     });
 });
 
-function getNextDate(startDate) {
-    startDate.setDate(startDate.getDate()+1);
-    return startDate;
-}
-
-function initializeDateSlider() {
-    $("#slider").dateRangeSlider({
-        bounds: {
-            min: BOUNDS_MIN,
-            max: BOUNDS_MAX,
-        },
-        arrows: false,
-        defaultValues: {
-            min: BOUNDS_MIN,
-            max: BOUNDS_MAX,
-        },
-    });
-    $("#slider").bind("valuesChanged", function(e, data) {
-        var beginYear = parseInt(String(data.values.min).substring(11, 15), 10);
-        var beginDay = parseInt(String(data.values.min).substring(8, 10), 10);
-        var endYear = parseInt(String(data.values.max).substring(11, 15), 10);
-        var endDay = parseInt(String(data.values.max).substring(8, 10), 10);
-        var beginMonth = 0;
-        var endMonth = 0;
-        monthObj = {
-            "Jan": 0,
-            "Feb": 1,
-            "Mar": 2,
-            "Apr": 3,
-            "May": 4,
-            "Jun": 5,
-            "Jul": 6,
-            "Aug": 7,
-            "Sep": 8,
-            "Oct": 9,
-            "Nov": 10,
-            "Dec": 11
-        };
-        beginMonth = monthObj[String(data.values.min).substring(4, 7)];
-        endMonth = monthObj[String(data.values.max).substring(4, 7)];
-        beginDate = new Date(beginYear, beginMonth, beginDay);
-        endDate = getNextDate(new Date(endYear, endMonth, endDay));
-
-        var markersDisplayedOnMap = [];
-        for (mw = 0; mw < globalMarkers.length; mw++) {
-            if ((globalMarkers[mw].incidentDate.getTime() < beginDate.getTime()) ||
-                (globalMarkers[mw].incidentDate.getTime() >= endDate.getTime())) {
-                globalMarkers[mw].setMap(null);
-            }
-            else
-            {
-                globalMarkers[mw].setMap(globalMap);
-                markersDisplayedOnMap.push(globalMarkers[mw]);
-            }
+function filterMarkers(bounds) {
+    var markersDisplayedOnMap = [];
+    for (mw = 0; mw < globalMarkers.length; mw++) {
+        if (bounds === null || bounds.contains(globalMarkers[mw].getPosition())) {
+            globalMarkers[mw].setMap(globalMap);
+            markersDisplayedOnMap.push(globalMarkers[mw]);
+        } else {
+            globalMarkers[mw].setMap(null);
         }
-        markerCluster.setMap(null);
-        markerCluster.clearMarkers();
-        markerCluster = new MarkerClusterer(map, markersDisplayedOnMap, {gridSize: 50, maxZoom: 15, minimumClusterSize: 15, imagePath: 'static/images/clusterer/m'});
-    });
+    }
+    markerCluster.clearMarkers();
+    markerCluster.addMarkers(markersDisplayedOnMap);
 }

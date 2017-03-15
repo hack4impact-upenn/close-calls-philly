@@ -8,7 +8,11 @@ from werkzeug import secure_filename
 from . import main
 from app import models, db
 from app.reports.forms import IncidentReportForm
+<<<<<<< HEAD
 from app.models import Incident, IncidentReport, Agency, EditableHTML
+=======
+from app.models import IncidentReport, EditableHTML
+>>>>>>> master
 from app.utils import upload_image, geocode
 
 
