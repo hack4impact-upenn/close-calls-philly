@@ -211,14 +211,24 @@ function initializeDateRange() {
   $('#end-date').calendar('set date', endDate);
 }
 
+function withinBounds(marker, bounds) {
+    return bounds === null || bounds.contains(globalMarkers[mw].getPosition());
+}
+
+function withinDateRange(marker) {
+    time = marker.incidentDate.getTime();
+    return time >= startDate.getTime() && time < endDate.getTime();
+}
+
 function filterMarkers(bounds) {
     var markersDisplayedOnMap = [];
     for (mw = 0; mw < globalMarkers.length; mw++) {
-        if (bounds === null || bounds.contains(globalMarkers[mw].getPosition())) {
-            globalMarkers[mw].setMap(globalMap);
-            markersDisplayedOnMap.push(globalMarkers[mw]);
+        var marker = globalMarkers[mw];
+        if (withinBounds(marker, bounds) && withinDateRange(marker)) {
+            marker.setMap(globalMap);
+            markersDisplayedOnMap.push(marker);
         } else {
-            globalMarkers[mw].setMap(null);
+            marker.setMap(null);
         }
     }
     markerCluster.clearMarkers();
