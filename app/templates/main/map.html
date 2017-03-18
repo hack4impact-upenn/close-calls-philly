@@ -103,7 +103,7 @@
 
     $('#deleteBoundingBoxButton').click(function() {
         deleteRec();
-        inboundsMarkers = filterMarkers(null);
+        inboundsMarkers = filterMarkers();
         map.fitBounds(geographicBounds);
     })
 
@@ -261,7 +261,7 @@
         if (!dragging) {
             var bounds = rectangle.getBounds();
             map.fitBounds(bounds);
-            inboundsMarkers = filterMarkers(bounds);
+            inboundsMarkers = filterMarkers();
             drawingManager.setMap(null);
         }
     }

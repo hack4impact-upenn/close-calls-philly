@@ -158,23 +158,6 @@ function getNextDate(startDate) {
     return startDate;
 }
 
-function filterDateRange() {
-  var markersDisplayedOnMap = [];
-  for (mw = 0; mw < globalMarkers.length; mw++) {
-      if ((globalMarkers[mw].incidentDate.getTime() < startDate.getTime()) ||
-          (globalMarkers[mw].incidentDate.getTime() >= endDate.getTime())) {
-          globalMarkers[mw].setMap(null);
-      }
-      else
-      {
-          globalMarkers[mw].setMap(globalMap);
-          markersDisplayedOnMap.push(globalMarkers[mw]);
-      }
-  }
-  markerCluster.clearMarkers();
-  markerCluster = new MarkerClusterer(map, markersDisplayedOnMap, {gridSize: 50, maxZoom: 15, minimumClusterSize: 15, imagePath: 'static/images/clusterer/m'});
-}
-
 function initializeDateRange() {
   $('#start-date').calendar({
     type: 'date',
@@ -187,7 +170,7 @@ function initializeDateRange() {
     },
     onChange: function (date, text, mode) {
       startDate = date;
-      filterDateRange();
+      filterMarkers();
     }
   });
 
@@ -202,7 +185,7 @@ function initializeDateRange() {
     },
     onChange: function (date, text, mode) {
       endDate = date;
-      filterDateRange();
+      filterMarkers();
     }
   });
 
@@ -212,7 +195,7 @@ function initializeDateRange() {
 }
 
 function withinBounds(marker, bounds) {
-    return bounds === null || bounds.contains(globalMarkers[mw].getPosition());
+    return bounds === null || bounds.contains(marker.getPosition());
 }
 
 function withinDateRange(marker) {
@@ -220,8 +203,9 @@ function withinDateRange(marker) {
     return time >= startDate.getTime() && time < endDate.getTime();
 }
 
-function filterMarkers(bounds) {
+function filterMarkers() {
     var markersDisplayedOnMap = [];
+    var bounds = (rectangle === null) ? null : rectangle.getBounds();
     for (mw = 0; mw < globalMarkers.length; mw++) {
         var marker = globalMarkers[mw];
         if (withinBounds(marker, bounds) && withinDateRange(marker)) {
@@ -233,4 +217,5 @@ function filterMarkers(bounds) {
     }
     markerCluster.clearMarkers();
     markerCluster.addMarkers(markersDisplayedOnMap);
+    //   markerCluster = new MarkerClusterer(map, markersDisplayedOnMap, {gridSize: 50, maxZoom: 15, minimumClusterSize: 15, imagePath: 'static/images/clusterer/m'});
 }
