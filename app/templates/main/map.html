@@ -73,7 +73,7 @@
         </form>
         <button id="createBoundingBoxButton" class="ui button">Create Bounding Box</button>
         <button id="deleteBoundingBoxButton" class="ui button">Delete Bounding Box</button>
-        <a id="downloadCSVButton" class="ui button" href="{{ url_for('main.download_reports') }}">Download CSV</a>
+        <button id="downloadCSVButton" class="ui button">Download CSV</button>
     <div id="googleMap"></div>
 </div>
 
@@ -98,13 +98,11 @@
     var rectangle = null;
     var dragging = false;
 
-    $('#createBoundingBoxButton').click(function() {
-        drawRec();
-    })
+    $('#createBoundingBoxButton').click(drawRec);
 
     $('#deleteBoundingBoxButton').click(function() {
         deleteRec();
-        inboundsMarkers = filterMarkers();
+        filterMarkers();
         map.fitBounds(geographicBounds);
     })
 
@@ -119,6 +117,8 @@
         $('#form_container').hide();
         $('#form_button').toggle();
     });
+
+    $('#downloadCSVButton').click(downloadCSV);
 
     function initializeMapAndMarkers() {
         var mapProp = {
@@ -198,7 +198,13 @@
 
             // Dynamically add state to marker object.
             marker.incidentDate = incidentDate;
+            marker.locationName = '\"{{ report.location | replace("\n", ", ") }}\"';
+            marker.vehicleID = '{{ report.date }}';
+            marker.duration = '{{ report.duration }}';
+            marker.licensePlate = '{{ report.license_plate if report.license_plate else '' }}';
+            marker.description = '{{ report.description }}';
             marker.contentString = contentString;
+
             markers.push(marker);
             var infoWindow = new google.maps.InfoWindow({
                 content: contentString
@@ -262,7 +268,7 @@
         if (!dragging) {
             var bounds = rectangle.getBounds();
             map.fitBounds(bounds);
-            inboundsMarkers = filterMarkers();
+            filterMarkers();
             drawingManager.setMap(null);
         }
     }
