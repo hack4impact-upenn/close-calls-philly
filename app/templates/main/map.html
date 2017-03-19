@@ -42,6 +42,28 @@
         <div id="info_container">
             <div id="replaceable"></div>
         </div>
+
+        <div class="ui form" id="dateRange">
+          <div class="field">
+            <label>Start Date</label>
+            <div class="ui calendar" id="start-date">
+              <div class="ui input left icon">
+                <i class="calendar icon"></i>
+                <input type="text" placeholder="Start" />
+              </div>
+            </div>
+          </div>
+          <div class="field">
+            <label>End Date</label>
+            <div class="ui calendar" id="end-date">
+              <div class="ui input left icon">
+                <i class="calendar icon"></i>
+                <input type="text" placeholder="End">
+              </div>
+            </div>
+          </div>
+        </div>
+
         <div id="form_button">Report Incident</div>
         <form name="addressForm" id="addressForm">
             <div class="ui action input" id="addressSearch">
@@ -81,7 +103,7 @@
 
     $('#deleteBoundingBoxButton').click(function() {
         deleteRec();
-        inboundsMarkers = filterMarkers(null);
+        inboundsMarkers = filterMarkers();
         map.fitBounds(geographicBounds);
     })
 
@@ -93,7 +115,6 @@
     });
 
     $('#close_form').click(function(){
-        console.log('form close');
         $('#form_container').hide();
         $('#form_button').toggle();
     });
@@ -184,7 +205,7 @@
         });
         {% endfor %}
         storeMarkerState(markers, map, minDate, bounds, oms);
-        initializeDateSlider();
+        initializeDateRange();
         addLocationButton(map);
         addCenterButton(map);
     }
@@ -221,7 +242,7 @@
                     fillOpacity : 0.6,
                     editable: true,
                     draggable: true
-                }   
+                }
             });
             // Loading the drawing Tool in the Map.
             drawingManager.setMap(map);
@@ -240,7 +261,7 @@
         if (!dragging) {
             var bounds = rectangle.getBounds();
             map.fitBounds(bounds);
-            inboundsMarkers = filterMarkers(bounds);
+            inboundsMarkers = filterMarkers();
             drawingManager.setMap(null);
         }
     }
@@ -264,7 +285,6 @@
             }
             // This is checking to see if the Geoeode Status is OK before proceeding
             if (status == google.maps.GeocoderStatus.OK) {
-                console.log(results);
                  $('#location').val(results[0].formatted_address);
             }
         });

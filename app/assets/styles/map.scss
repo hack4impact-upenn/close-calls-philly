@@ -8,6 +8,14 @@
     width: 20%;
 }
 
+#dateRange {
+  position: absolute;
+  left: 5%;
+  top: 180px;
+  z-index: 5;
+  width: 20%;
+}
+
 #submitButton {
     position: absolute;
     left: 70%;
@@ -171,6 +179,9 @@ form textarea#description {
     #addressSearch {
         width: 80%;
         left: 5%;
+    }
+    #dateRange {
+      display: none;
     }
     #form_container,
     #info_container {

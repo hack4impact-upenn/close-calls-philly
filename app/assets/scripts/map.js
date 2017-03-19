@@ -13,8 +13,8 @@ INITIAL_CENTER_LONG = -75.195;
 initial_coords = new google.maps.LatLng(INITIAL_CENTER_LAT, INITIAL_CENTER_LONG);
 
 // Bounds for the Date Slider. End date is current date.
-var BOUNDS_MIN;
-var BOUNDS_MAX = new Date();
+var startDate;
+var endDate = new Date();
 
 // Take a list of markers and a map, put them on the map, set the
 // minimum date, and set the location bounds
@@ -28,7 +28,7 @@ function storeMarkerState(markers, map, minDate, bounds, oms) {
         oms.addMarker(globalMarkers[mw]);
 
     }
-    BOUNDS_MIN = minDate;
+    startDate = minDate;
     geographicBounds = bounds;
     map.fitBounds(bounds);
 }
@@ -153,16 +153,69 @@ $(document).ready(function() {
     });
 });
 
-function filterMarkers(bounds) {
+function getNextDate(startDate) {
+    startDate.setDate(startDate.getDate()+1);
+    return startDate;
+}
+
+function initializeDateRange() {
+  $('#start-date').calendar({
+    type: 'date',
+    endCalendar: $('#end-date'),
+    popupOptions: {
+      position: 'right center',
+      lastResort: 'right center',
+      prefer: 'right',
+      hideOnScroll: false
+    },
+    onChange: function (date, text, mode) {
+      startDate = date;
+      filterMarkers();
+    }
+  });
+
+  $('#end-date').calendar({
+    type: 'date',
+    startCalendar: $('#start-date'),
+    popupOptions: {
+      position: 'right center',
+      lastResort: 'right center',
+      prefer: 'right',
+      hideOnScroll: false
+    },
+    onChange: function (date, text, mode) {
+      endDate = date;
+      filterMarkers();
+    }
+  });
+
+  // initializes the dates for the calendar
+  $('#start-date').calendar('set date', startDate);
+  $('#end-date').calendar('set date', endDate);
+}
+
+function withinBounds(marker, bounds) {
+    return bounds === null || bounds.contains(marker.getPosition());
+}
+
+function withinDateRange(marker) {
+    time = marker.incidentDate.getTime();
+    return time >= startDate.getTime() && time < endDate.getTime();
+}
+
+function filterMarkers() {
     var markersDisplayedOnMap = [];
+    var bounds = (rectangle === null) ? null : rectangle.getBounds();
     for (mw = 0; mw < globalMarkers.length; mw++) {
-        if (bounds === null || bounds.contains(globalMarkers[mw].getPosition())) {
-            globalMarkers[mw].setMap(globalMap);
-            markersDisplayedOnMap.push(globalMarkers[mw]);
+        var marker = globalMarkers[mw];
+        if (withinBounds(marker, bounds) && withinDateRange(marker)) {
+            marker.setMap(globalMap);
+            markersDisplayedOnMap.push(marker);
         } else {
-            globalMarkers[mw].setMap(null);
+            marker.setMap(null);
         }
     }
     markerCluster.clearMarkers();
     markerCluster.addMarkers(markersDisplayedOnMap);
+    //   markerCluster = new MarkerClusterer(map, markersDisplayedOnMap, {gridSize: 50, maxZoom: 15, minimumClusterSize: 15, imagePath: 'static/images/clusterer/m'});
 }
