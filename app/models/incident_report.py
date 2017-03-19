@@ -12,7 +12,6 @@ from ..email import send_email
 from ..utils import get_current_weather, url_for_external
 from sqlalchemy.dialects.postgresql import ENUM
 
-
 class Location(db.Model):
     __tablename__ = 'locations'
     id = db.Column(db.Integer, primary_key=True)
@@ -25,19 +24,6 @@ class Location(db.Model):
 
     def __repr__(self):
         return str(self.original_user_text)
-
-class IncidentLocation(db.Model):
-    __tablename__ = 'incident_locations'
-    id = db.Column(db.Integer, primary_key=True)
-    latitude = db.Column(db.String(50))
-    longitude = db.Column(db.String(50))
-    # TODO: ensure original_user_text is always non-null
-    original_user_text = db.Column(db.Text)  # the raw text which we geocoded
-    incident_id = db.Column(db.Integer,
-                                   db.ForeignKey('incidents.id'))
-
-    def __repr__(self):
-        return str(self.original_user_text)        
 
 class IncidentReport(db.Model):
     __tablename__ = 'incident_reports'
@@ -134,6 +120,19 @@ class IncidentReport(db.Model):
             except IntegrityError:
                 db.session.rollback()
 
+class IncidentLocation(db.Model):
+    __tablename__ = 'incident_locations'
+    id = db.Column(db.Integer, primary_key=True)
+    latitude = db.Column(db.String(50))
+    longitude = db.Column(db.String(50))
+    # TODO: ensure original_user_text is always non-null
+    original_user_text = db.Column(db.Text)  # the raw text which we geocoded
+    incident_id = db.Column(db.Integer,
+                                   db.ForeignKey('incidents.id'))
+
+    def __repr__(self):
+        return str(self.original_user_text)        
+
 class Incident(db.Model):
     __tablename__ = 'incidents'
 
@@ -155,7 +154,7 @@ class Incident(db.Model):
     contact_email = db.Column(db.Text, default=None) #optional
 
     def __init__(self, **kwargs):
-        super(ncident, self).__init__(**kwargs)
+        super(Incident, self).__init__(**kwargs)
 
         if self.date is None:
             self.date = datetime.now(pytz.timezone(
@@ -196,19 +195,22 @@ class Incident(db.Model):
                 longitude=str(fake.geo_coordinate(center=-75.197243,
                                                   radius=0.01))
             )
+            injuries_entry = ""
+            if random.random() >= 0.5:
+                injuries_entry = "An injury occurred."
             r = Incident(
                 location=l,
                 date=fake.date_time_between(start_date="-1y", end_date="now"),
-                pedestrian_num=0,
-                bicycle_num=0,
-                automobile_num=0,
+                pedestrian_num=random.randint(0, 2),
+                bicycle_num=random.randint(0, 2),
+                automobile_num=random.randint(0, 2),
+                other_num=random.randint(0, 2),
                 description=fake.paragraph(),
-                injuries=fake.paragraph(),
+                injuries=injuries_entry,
                 picture_url=fake.image_url(),
-                comments=fake.paragraph(),
                 contact_name = "Test Contact",
                 contact_phone=1234567890,
-                contact_email = fake.email()
+                contact_email = fake.email(),
                 **kwargs
             )
             db.session.add(r)
