@@ -11,7 +11,7 @@
 #dateRange {
   position: absolute;
   left: 5%;
-  top: 180px;
+  top: 225px;
   z-index: 5;
   width: 20%;
 }
@@ -47,6 +47,13 @@
     left: 5%;
     width: 20%;
     top: 130px;
+}
+
+#downloadCSVButton {
+    position: absolute;
+    left: 5%;
+    width: 20%;
+    top: 175px;
 }
 
 #current_location_button, #submit{
