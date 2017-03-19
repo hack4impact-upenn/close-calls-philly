@@ -1,8 +1,9 @@
+import csv
 import pytz
 
-from datetime import timedelta, datetime
+from datetime import date, timedelta, datetime
 
-from flask import render_template, current_app, flash
+from flask import render_template, current_app, flash, Response
 from werkzeug import secure_filename
 
 from . import main
@@ -81,3 +82,31 @@ def faq():
     editable_html_obj = EditableHTML.get_editable_html('faq')
     return render_template('main/faq.html',
                            editable_html_obj=editable_html_obj)
+
+@main.route('/download_reports', methods=['GET'])
+def download_reports():
+    """Download a csv file of all incident reports visible on the map."""
+
+    def encode(s):
+        return s.encode('utf-8') if s else ''
+
+    current_date = str(date.today())
+    csv_name = 'IncidentReports-' + current_date + '.csv'
+    outfile = open(csv_name, 'w+')
+    print('initial file contents:', outfile.read())
+
+    wr = csv.writer(outfile, delimiter=',', quoting=csv.QUOTE_MINIMAL)
+    reports = db.session.query(IncidentReport).all()
+    wr.writerow(['DATE', 'LOCATION', 'VEHICLE ID', 'DURATION',
+                'LICENSE PLATE', 'DESCRIPTION'])
+    for r in reports:
+        wr.writerow([r.date, r.location,
+                     r.vehicle_id, r.duration,
+                     r.license_plate, encode(r.description)])
+
+    endfile = open(csv_name, 'r+')
+    data = endfile.read()
+    return Response(
+        data,
+        mimetype="text/csv",
+        headers={"Content-disposition": "attachment; filename=" + csv_name})
