@@ -19,7 +19,7 @@ from .forms import (
     InviteUserForm,
 )
 from . import admin
-from ..models import User, Role, EditableHTML, IncidentReport
+from ..models import User, Role, EditableHTML, Incident
 from .. import db
 from ..utils import parse_phone_number, url_for_external
 from ..email import send_email
@@ -214,7 +214,7 @@ def download_reports():
     print('initial file contents:', outfile.read())
 
     wr = csv.writer(outfile, delimiter=',', quoting=csv.QUOTE_MINIMAL)
-    reports = db.session.query(IncidentReport).all()
+    reports = db.session.query(Incident).all()
     wr.writerow(['DATE', 'LOCATION', 'VEHICLE ID', 'DURATION',
                 'LICENSE PLATE', 'DESCRIPTION'])
     for r in reports:

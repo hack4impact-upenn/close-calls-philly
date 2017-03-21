@@ -8,7 +8,7 @@ from werkzeug import secure_filename
 from . import main
 from app import models, db
 from app.reports.forms import IncidentReportForm
-from app.models import IncidentReport, EditableHTML
+from app.models import Incident, EditableHTML
 from app.utils import upload_image, geocode
 
 
@@ -66,7 +66,7 @@ def index():
 
     return render_template('main/map.html',
                            form=form,
-                           incident_reports=IncidentReport.query.all())
+                           incident_reports=Incident.query.all())
 
 
 @main.route('/about')

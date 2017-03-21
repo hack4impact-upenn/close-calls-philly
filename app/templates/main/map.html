@@ -148,15 +148,25 @@
 
         var oms = new OverlappingMarkerSpiderfier(map, {keepSpiderfied: true, nearbyDistance: 10});
 
+        var selectedMarker;
+        var selectedMarkerIcon;
         // Add click listener to marker for displaying infoWindow
         oms.addListener('click', function(marker, event) {
           $('#form_container').hide()
           $('#info_container').show();
+          $('#form_button').hide();
           $('#replaceable').replaceWith(marker.contentString);
+          if (selectedMarker != null) {
+              selectedMarker.setIcon(selectedMarkerIcon);
+          }
+          selectedMarker = marker;
+          selectedMarkerIcon = marker.icon;
           marker.setIcon("../static/images/marker_selected.png");
           $('#close_info').on('click', function() {
               $('#info_container').hide();
               $('#form_button').show();
+              marker.setIcon(selectedMarkerIcon);
+              selectedMarker = null;
           });
         });
 
@@ -164,12 +174,18 @@
         var minDate = new Date(2015, 0, 1);
         var bounds = new google.maps.LatLngBounds();
         {% for report in incident_reports %}
-        $(function() {
+            var iconFile = "";
+            {% if report.injuries and report.injuries|length > 0 %}
+                iconFile = "../static/images/marker_injury.png";
+            {% else %}
+                iconFile = "../static/images/marker.png";
+            {% endif %}
+            $(function() {
             var marker = new google.maps.Marker({
                 // Use latitude and longitude values from incident report
                 // to set position of marker
                 position:{lat: parseFloat('{{ report.location.latitude }}'), lng: parseFloat('{{ report.location.longitude }}')},
-                icon: "../static/images/marker.png"
+                icon: iconFile
             });
             var dateString = '{{ report.date }}';
             year = parseInt((dateString.split(' '))[0].split('-')[0]);
@@ -183,16 +199,22 @@
                                 '<i class="remove icon"></i>' +
                                 '</button>' +
                                 '<h3>Date: ' + '{{ report.date.strftime('%m-%d-%Y at %I:%M %p') }}' + '</h3>' +
-                                '<p>Duration (h:m:s): ' + '{{ report.duration }}' + '</p>' +
-                                {% if current_user.is_admin() %}
-                                '<p>Vehicle ID: ' + '{{ report.vehicle_id }}' +'</p>' +
-                                '<p>License Plate: ' + '{{ report.license_plate if report.license_plate else '' }}' + '</p>' +
+                                '<p><b>Description:</b> ' + '{{ report.description }}' + '</p>' +
+                                '<p><b>Injuries:</b> ' + '{{ report.injuries if report.injuries else '' }} ' +
+                                '<p><b>Number of Pedestrians:</b> ' + '{{ report.pedestrian_num }}' + '</p>' +
+                                '<p><b>Number of automobiles:</b> ' + '{{ report.automobile_num }}' + '</p>' +
+                                '<p><b>Number of bicycles:</b> ' + '{{ report.bicycle_num }}' + '</p>' +
+                                '<p><b>Number of other vehicles:</b> ' + '{{ report.other_num }}' + '</p>' +
                                   {% if report.picture_url %}
                                   '<p><a href="{{ report.picture_url }}" target="_blank" rel="noopener noreferrer">' + 'Link to Picture' + '</a></p>' +
                                   {% endif %}
-                                {% endif %}
-                                '<p>Description: ' + '{{ report.description }}' + '</p>' +
+                                {% if current_user.is_admin() %}
+                                '<p><b>Contact Name:</b> ' + '{{ report.contact_name if report.contact_name else '' }}' +'</p>' +
+                                '<p><b>Contact Phone:</b> ' + '{{ report.contact_phone if report.contact_phone else '' }}' + '</p>' +
+                                '<p><b>Contact Email:</b> ' + '{{ report.contact_email if report.contact_email else '' }}</div>';
+                                {% else %}
                                 '</div>';
+                                {% endif %}
             bounds.extend(marker.getPosition());
 
             // Dynamically add state to marker object.
