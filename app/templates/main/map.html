@@ -211,9 +211,10 @@
                                 {% if current_user.is_admin() %}
                                 '<p><b>Contact Name:</b> ' + '{{ report.contact_name if report.contact_name else '' }}' +'</p>' +
                                 '<p><b>Contact Phone:</b> ' + '{{ report.contact_phone if report.contact_phone else '' }}' + '</p>' +
-                                '<p><b>Contact Email:</b> ' + '{{ report.contact_email if report.contact_email else '' }}'
-                                {% endif %} +
+                                '<p><b>Contact Email:</b> ' + '{{ report.contact_email if report.contact_email else '' }}</div>';
+                                {% else %}
                                 '</div>';
+                                {% endif %}
             bounds.extend(marker.getPosition());
 
             // Dynamically add state to marker object.
