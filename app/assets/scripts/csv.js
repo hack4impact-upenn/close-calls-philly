@@ -1,5 +1,4 @@
 function downloadCSV(isAdmin) {
-    console.log(isAdmin);
     // Init CSV array.
     var csv;
     if (isAdmin) {
@@ -16,16 +15,13 @@ function downloadCSV(isAdmin) {
         ];
     }
     markersDisplayedOnMap.forEach(function(marker) {
-        console.log(isAdmin);
         var line;
         if (isAdmin) {
-            console.log("should be true: " + isAdmin);
             line = [marker.incidentDate, marker.locationName, marker.pedestrianNum,
                     marker.automobileNum, marker.bicycleNum, marker.otherNum,
                     marker.description, marker.injuries, marker.pictureUrl,
                     marker.contactName, marker.contactPhone, marker.contactEmail];
         } else {
-            console.log("no admin lines");
             line = [marker.incidentDate, marker.locationName, marker.pedestrianNum,
                     marker.automobileNum, marker.bicycleNum, marker.otherNum,
                     marker.description, marker.injuries, marker.pictureUrl];
