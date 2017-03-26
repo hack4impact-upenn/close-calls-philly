@@ -16,6 +16,14 @@
   width: 20%;
 }
 
+#resetDatesButton {
+  position: absolute;
+  left: 5%;
+  top: 375px;
+  z-index: 5;
+  width: 20%;
+}
+
 #submitButton {
     position: absolute;
     display: inline-block;
@@ -172,12 +180,10 @@ form textarea#description {
 }
 
 @media all and (max-width: $mobile-breakpoint) {
-    #createBoundingBoxButton {
-        display: none;
-    }
-    #deleteBoundingBoxButton {
-        display: none;
-    }
+    #createBoundingBoxButton,
+    #deleteBoundingBoxButton,
+    #resetDatesButton,
+    #dateRange,
     #inputPanel {
         display: none;
     }
@@ -187,9 +193,6 @@ form textarea#description {
     #addressSearch {
         width: 80%;
         left: 5%;
-    }
-    #dateRange {
-      display: none;
     }
     #form_container,
     #info_container {
