@@ -118,7 +118,6 @@
         $('#form_button').toggle();
     });
 
-<<<<<<< HEAD
     $('#downloadCSVButton').click(function() {
         {% if current_user.is_admin() %}
             downloadCSV(true);
@@ -126,9 +125,6 @@
             downloadCSV(false);
         {% endif %}
     });
-=======
-    $('#downloadCSVButton').click(downloadCSV);
->>>>>>> 76473a6c2390873e4f0faf0146d7cd0a62d73bf1
 
     function initializeMapAndMarkers() {
         var mapProp = {
@@ -231,13 +227,6 @@
             // Dynamically add state to marker object.
             marker.incidentDate = incidentDate;
             marker.locationName = '\"{{ report.location | replace("\n", ", ") }}\"';
-<<<<<<< HEAD
-
-            // From old model.
-            //marker.vehicleID = '{{ report.vehicle_id }}';
-            //marker.duration = '{{ report.duration }}';
-            //marker.licensePlate = '{{ report.license_plate if report.license_plate else '' }}';
-            //marker.busNumber = '{{ report.bus_number if report.bus_number else '' }}';
 
             marker.pedestrianNum = '{{ report.pedestrian_num }}';
             marker.automobileNum = '{{ report.automobile_num }}';
@@ -254,12 +243,6 @@
             marker.contactEmail = '{{ report.contact_email if report.contact_email else '' }}';
             {% endif %}
 
-=======
-            marker.vehicleID = '{{ report.date }}';
-            marker.duration = '{{ report.duration }}';
-            marker.licensePlate = '{{ report.license_plate if report.license_plate else '' }}';
-            marker.description = '{{ report.description }}';
->>>>>>> 76473a6c2390873e4f0faf0146d7cd0a62d73bf1
             marker.contentString = contentString;
 
             markers.push(marker);
