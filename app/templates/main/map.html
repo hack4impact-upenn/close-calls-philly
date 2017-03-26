@@ -64,6 +64,8 @@
           </div>
         </div>
 
+        <div class="ui button" id="resetDatesButton">Reset Dates</div>
+
         <div id="form_button">Report Incident</div>
         <form name="addressForm" id="addressForm">
             <div class="ui action input" id="addressSearch">
@@ -99,14 +101,17 @@
 
     $('#createBoundingBoxButton').click(function() {
         drawRec();
-    })
+    });
 
     $('#deleteBoundingBoxButton').click(function() {
         deleteRec();
         inboundsMarkers = filterMarkers();
         map.fitBounds(geographicBounds);
-    })
+    });
 
+    $('#resetDatesButton').click(function() {
+        resetDates();
+    });
 
     $('#form_button').click(function(){
         $('#form_container').toggle();

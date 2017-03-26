@@ -13,6 +13,7 @@ INITIAL_CENTER_LONG = -75.195;
 initial_coords = new google.maps.LatLng(INITIAL_CENTER_LAT, INITIAL_CENTER_LONG);
 
 // Bounds for the Date Slider. End date is current date.
+var MIN_DATE;
 var startDate;
 var endDate = new Date();
 
@@ -28,6 +29,7 @@ function storeMarkerState(markers, map, minDate, bounds, oms) {
         oms.addMarker(globalMarkers[mw]);
 
     }
+    MIN_DATE = minDate;
     startDate = minDate;
     geographicBounds = bounds;
     map.fitBounds(bounds);
@@ -218,4 +220,12 @@ function filterMarkers() {
     markerCluster.clearMarkers();
     markerCluster.addMarkers(markersDisplayedOnMap);
     //   markerCluster = new MarkerClusterer(map, markersDisplayedOnMap, {gridSize: 50, maxZoom: 15, minimumClusterSize: 15, imagePath: 'static/images/clusterer/m'});
+}
+
+function resetDates() {
+    startDate = MIN_DATE;
+    endDate = new Date();
+    $('#start-date').calendar('set date', startDate);
+    $('#end-date').calendar('set date', endDate);
+    filterMarkers();
 }
