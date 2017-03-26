@@ -1,5 +1,6 @@
 // Global Marker Wrappers and Map
 var globalMarkers = null;
+var markersDisplayedOnMap = null;
 var globalMap = null;
 var markerCluster = null;
 
@@ -13,6 +14,7 @@ INITIAL_CENTER_LONG = -75.195;
 initial_coords = new google.maps.LatLng(INITIAL_CENTER_LAT, INITIAL_CENTER_LONG);
 
 // Bounds for the Date Slider. End date is current date.
+var MIN_DATE;
 var startDate;
 var endDate = new Date();
 
@@ -20,6 +22,7 @@ var endDate = new Date();
 // minimum date, and set the location bounds
 function storeMarkerState(markers, map, minDate, bounds, oms) {
     globalMarkers = markers;
+    markersDisplayedOnMap = markers;
     globalMap = map;
     markerCluster = new MarkerClusterer(map, markers, {gridSize: 50, maxZoom: 15, minimumClusterSize: 15, imagePath: 'static/images/clusterer/m'});
     for (mw = 0; mw < globalMarkers.length; mw++)
@@ -28,6 +31,7 @@ function storeMarkerState(markers, map, minDate, bounds, oms) {
         oms.addMarker(globalMarkers[mw]);
 
     }
+    MIN_DATE = minDate;
     startDate = minDate;
     geographicBounds = bounds;
     map.fitBounds(bounds);
@@ -204,7 +208,7 @@ function withinDateRange(marker) {
 }
 
 function filterMarkers() {
-    var markersDisplayedOnMap = [];
+    markersDisplayedOnMap = [];
     var bounds = (rectangle === null) ? null : rectangle.getBounds();
     for (mw = 0; mw < globalMarkers.length; mw++) {
         var marker = globalMarkers[mw];
@@ -218,4 +222,12 @@ function filterMarkers() {
     markerCluster.clearMarkers();
     markerCluster.addMarkers(markersDisplayedOnMap);
     //   markerCluster = new MarkerClusterer(map, markersDisplayedOnMap, {gridSize: 50, maxZoom: 15, minimumClusterSize: 15, imagePath: 'static/images/clusterer/m'});
+}
+
+function resetDates() {
+    startDate = MIN_DATE;
+    endDate = new Date();
+    $('#start-date').calendar('set date', startDate);
+    $('#end-date').calendar('set date', endDate);
+    filterMarkers();
 }
