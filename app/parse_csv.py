@@ -5,7 +5,6 @@ from app.utils import geocode, strip_non_alphanumeric_chars
 from app.models import Location, IncidentReport
 from app.reports.forms import IncidentReportForm
 
-
 def parse_to_db(db, filename):
     """Reads a csv and imports the data into a database."""
     # The indices in the csv of different data
@@ -57,7 +56,6 @@ def parse_to_db(db, filename):
                 contact_phone_text = row[contact_phone_index].strip()
                 contact_email_text = row[contact_email_index].strip()
 
-
                 # Validate all the fields
                 validate_field = functools.partial(
                     validate_field_partial,
@@ -103,11 +101,11 @@ def parse_to_db(db, filename):
                         injuries=row[injuries_index],
                         picture_url=row[picture_index],
                         contact_name=contact_name_text if len(contact_name_text) > 0
-                        else 0,
+                        else None,
                         contact_phone=int(contact_phone_text) if len(contact_phone_text) > 0
                         else None,
                         contact_email=contact_email_text if len(contact_email_text) > 0
-                        else 0,
+                        else None,
                     )
                     db.session.add(incident)
 
