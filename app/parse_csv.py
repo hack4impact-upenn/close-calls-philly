@@ -9,14 +9,21 @@ from app.reports.forms import IncidentReportForm
 def parse_to_db(db, filename):
     """Reads a csv and imports the data into a database."""
     # The indices in the csv of different data
-    vehicle_id_index = 8
-    license_plate_index = 9
-    location_index = 4
+    
     date_index = 0
-    picture_index = 13
-    description_index = 11
-
-    validator_form = IncidentReportForm()
+    location_index = 1
+    description_index = 2
+    injuries_index = 3
+    pedestrian_num_index = 4
+    bicycle_num_index = 5
+    automobile_num_index = 6
+    other_num_index = 7
+    picture_index = 8
+    contact_name_index = 9
+    contact_phone_index = 10
+    contact_email_index = 11
+    
+    validator_form = IncidentForm()
 
     with open(filename, 'rb') as csv_file:
         reader = csv.reader(csv_file)
@@ -41,12 +48,15 @@ def parse_to_db(db, filename):
 
                 time1, time2 = parse_start_end_time(date_index, row)
 
-                vehicle_id_text = row[vehicle_id_index].strip()
-                license_plate_text = row[license_plate_index].strip()
+                pedestrian_num_text = row[pedestrian_num_index].strip()
+                bicycle_num_text = row[bicycle_num_index].strip()
+                automobile_num_text = row[automobile_num_index].strip()
+                other_num_text = row[other_num_index].strip()
 
-                # If the license plate is too short, just ignore it
-                if len(strip_non_alphanumeric_chars(license_plate_text)) < 3:
-                    license_plate_text = ''
+                contact_name_text = row[contact_name_index].strip()
+                contact_phone_text = row[contact_phone_index].strip()
+                contact_email_text = row[contact_email_index].strip()
+
 
                 # Validate all the fields
                 validate_field = functools.partial(
@@ -56,12 +66,6 @@ def parse_to_db(db, filename):
                 )
 
                 errors = 0
-
-                if not validate_field(
-                    field=validator_form.vehicle_id,
-                    data=vehicle_id_text
-                ):
-                    errors += 1
 
                 if not validate_field(
                     field=validator_form.description,
@@ -76,22 +80,34 @@ def parse_to_db(db, filename):
                     errors += 1
 
                 if errors == 0:
-                    vehicle_id_text = strip_non_alphanumeric_chars(
-                        vehicle_id_text)
-                    license_plate_text = strip_non_alphanumeric_chars(
-                        license_plate_text)
+                    pedestrian_num_text = strip_non_alphanumeric_chars(pedestrian_num_text)
+                    bicycle_num_text = strip_non_alphanumeric_chars(bicycle_num_index)
+                    automobile_num_text = strip_non_alphanumeric_chars(automobile_num_index)
+                    other_num_text = strip_non_alphanumeric_chars(other_num_index)
 
-                    incident = IncidentReport(
-                        vehicle_id=vehicle_id_text if len(vehicle_id_text) > 0
-                        else None,
-                        license_plate=license_plate_text if
-                        len(license_plate_text) > 0 else None,
-                        location=loc,
+                    contact_name_text = strip_non_alphanumeric_chars(contact_name_index)
+                    contact_phone_text = strip_non_alphanumeric_chars(contact_phone_index)
+                    contact_email_text = strip_non_alphanumeric_chars(contact_email_index)
+
+                    incident = Incident(
                         date=time1,
-                        duration=time2 - time1,
-                        picture_url=row[picture_index],
+                        pedestrian_num=int(pedestrian_num_text) if len(pedestrian_num_text) > 0
+                        else 0,
+                        bicycle_num=int(bicycle_num_text) if len(bicycle_num_text) > 0
+                        else 0,
+                        automobile_num=int(automobile_num_text) if len(automobile_num_text) > 0
+                        else 0,
+                        other_num=int(other_num_text) if len(other_num_text) > 0
+                        else 0,
                         description=row[description_index],
-                        send_email_upon_creation=False,
+                        injuries=row[injuries_index],
+                        picture_url=row[picture_index],
+                        contact_name=contact_name_text if len(contact_name_text) > 0
+                        else 0,
+                        contact_phone=int(contact_phone_text) if len(contact_phone_text) > 0
+                        else None,
+                        contact_email=contact_email_text if len(contact_email_text) > 0
+                        else 0,
                     )
                     db.session.add(incident)
 
