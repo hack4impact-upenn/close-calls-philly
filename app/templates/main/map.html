@@ -75,6 +75,7 @@
         </form>
         <button id="createBoundingBoxButton" class="ui button">Create Bounding Box</button>
         <button id="deleteBoundingBoxButton" class="ui button">Delete Bounding Box</button>
+        <button id="downloadCSVButton" class="ui button">Download CSV</button>
     <div id="googleMap"></div>
 </div>
 
@@ -99,19 +100,16 @@
     var rectangle = null;
     var dragging = false;
 
-    $('#createBoundingBoxButton').click(function() {
-        drawRec();
-    });
+
+    $('#createBoundingBoxButton').click(drawRec);
 
     $('#deleteBoundingBoxButton').click(function() {
         deleteRec();
-        inboundsMarkers = filterMarkers();
+        filterMarkers();
         map.fitBounds(geographicBounds);
     });
 
-    $('#resetDatesButton').click(function() {
-        resetDates();
-    });
+    $('#resetDatesButton').click(resetDates);
 
     $('#form_button').click(function(){
         $('#form_container').toggle();
@@ -122,6 +120,14 @@
     $('#close_form').click(function(){
         $('#form_container').hide();
         $('#form_button').toggle();
+    });
+
+    $('#downloadCSVButton').click(function() {
+        {% if current_user.is_admin() %}
+            downloadCSV(true);
+        {% else %}
+            downloadCSV(false);
+        {% endif %}
     });
 
     function initializeMapAndMarkers() {
@@ -224,7 +230,25 @@
 
             // Dynamically add state to marker object.
             marker.incidentDate = incidentDate;
+            marker.locationName = '\"{{ report.location | replace("\n", ", ") }}\"';
+
+            marker.pedestrianNum = '{{ report.pedestrian_num }}';
+            marker.automobileNum = '{{ report.automobile_num }}';
+            marker.bicycleNum = '{{ report.bicycle_num }}';
+            marker.otherNum = '{{ report.other_num }}';
+            marker.description = '{{ report.description }}';
+
+            marker.injuries = '{{ report.injuries if report.injuries else '' }}';
+            marker.pictureUrl = '{{ report.picture_url if report.picture_url else '' }}';
+
+            {% if current_user.is_admin() %}
+            marker.contactName = '{{ report.contact_name if report.contact_name else '' }}';
+            marker.contactPhone = '{{ report.contact_phone if report.contact_phone else '' }}';
+            marker.contactEmail = '{{ report.contact_email if report.contact_email else '' }}';
+            {% endif %}
+
             marker.contentString = contentString;
+
             markers.push(marker);
             var infoWindow = new google.maps.InfoWindow({
                 content: contentString
@@ -288,7 +312,7 @@
         if (!dragging) {
             var bounds = rectangle.getBounds();
             map.fitBounds(bounds);
-            inboundsMarkers = filterMarkers();
+            filterMarkers();
             drawingManager.setMap(null);
         }
     }

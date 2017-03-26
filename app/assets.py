@@ -9,6 +9,7 @@ app_css = Bundle(
 
 app_js = Bundle(
     'app.js',
+    'csv.js',
     'map.js',
     filters='jsmin',
     output='scripts/app.js'
