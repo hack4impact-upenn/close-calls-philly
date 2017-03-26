@@ -8,11 +8,7 @@ from werkzeug import secure_filename
 from . import main
 from app import models, db
 from app.reports.forms import IncidentReportForm
-<<<<<<< HEAD
-from app.models import Incident, IncidentReport, Agency, EditableHTML
-=======
 from app.models import IncidentReport, EditableHTML
->>>>>>> master
 from app.utils import upload_image, geocode
 
 
@@ -45,7 +41,7 @@ def index():
             # comments=form.comments.data (THERE ARE NO COMMENTS).
             contact_name=form.contact_name.data,
             contact_phone=form.contact_phone.data,
-            contact_email=form.contacdt_email.data            
+            contact_email=form.contacdt_email.data
         )
 
         if form.picture_file.data.filename:
