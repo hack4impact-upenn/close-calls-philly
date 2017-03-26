@@ -216,7 +216,7 @@
                                 '<p><b>Number of automobiles:</b> ' + '{{ report.automobile_num }}' + '</p>' +
                                 '<p><b>Number of bicycles:</b> ' + '{{ report.bicycle_num }}' + '</p>' +
                                 '<p><b>Number of other vehicles:</b> ' + '{{ report.other_num }}' + '</p>' +
-                                '<p><b>License Plate Numbers:</b> ' + '{{ report.license_plates }}' + '</p>' +
+                                '<p><b>License Plates:</b> ' + "{{ report.license_plates if report.license_plates else '' }}" + '</p>' +
                                   {% if report.picture_url %}
                                   '<p><a href="{{ report.picture_url }}" target="_blank" rel="noopener noreferrer">' + 'Link to Picture' + '</a></p>' +
                                   {% endif %}
@@ -240,6 +240,7 @@
             marker.description = '{{ report.description }}';
 
             marker.injuries = '{{ report.injuries if report.injuries else '' }}';
+            marker.license_plates = "{{ report.license_plates if report.license_plates else ''}}";
             marker.pictureUrl = '{{ report.picture_url if report.picture_url else '' }}';
 
             {% if current_user.is_admin() %}
