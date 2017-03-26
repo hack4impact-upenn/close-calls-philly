@@ -145,11 +145,27 @@ function addCenterButton(map) {
     map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push(centerDiv);
 }
 
-// Get address submit event
+// Get address submit event and checkbox change events
 $(document).ready(function() {
     $('#addressForm').on('submit', function (event) {
         update_center();
         return false;
+    });
+    $('#automobile').prop('checked', true);
+    $('#pedestrian').prop('checked', true);
+    $('#bicycle').prop('checked', true);
+    $('#other').prop('checked', true);
+    $('#automobile').on('change', function(event) {
+        filterMarkers();
+    });
+    $('#bicycle').on('change', function(event) {
+        filterMarkers();
+    });
+    $('#pedestrian').on('change', function(event) {
+        filterMarkers();
+    });
+    $('#other').on('change', function(event) {
+        filterMarkers();
     });
 });
 
@@ -203,12 +219,19 @@ function withinDateRange(marker) {
     return time >= startDate.getTime() && time < endDate.getTime();
 }
 
+function fitsVehicleType(marker) {
+    return (marker.automobiles > 0 && $('#automobile').is(':checked')) ||
+           (marker.pedestrians > 0 && $('#pedestrian').is(':checked')) ||
+           (marker.bicycles > 0 && $('#bicycle').is(':checked')) ||
+           (marker.other > 0 && $('#other').is(':checked'));
+}
+
 function filterMarkers() {
     var markersDisplayedOnMap = [];
     var bounds = (rectangle === null) ? null : rectangle.getBounds();
     for (mw = 0; mw < globalMarkers.length; mw++) {
         var marker = globalMarkers[mw];
-        if (withinBounds(marker, bounds) && withinDateRange(marker)) {
+        if (withinBounds(marker, bounds) && withinDateRange(marker) && fitsVehicleType(marker)) {
             marker.setMap(globalMap);
             markersDisplayedOnMap.push(marker);
         } else {

@@ -73,6 +73,15 @@
         </form>
         <button id="createBoundingBoxButton" class="ui button">Create Bounding Box</button>
         <button id="deleteBoundingBoxButton" class="ui button">Delete Bounding Box</button>
+        <div id="typeForm">
+        <b>Vehicle Type</b>
+        <form>
+            <div><input class="ui checkbox" type="checkbox" id="automobile">Automobile</input></div>
+            <div><input class="ui checkbox" type="checkbox" id="bicycle">Bicycle</input></div>
+            <div><input class="ui checkbox" type="checkbox" id="pedestrian">Pedestrian</input></div>
+            <div><input class="ui checkbox" type="checkbox" id="other">Other</input></div>
+        </form>
+        </div>
     <div id="googleMap"></div>
 </div>
 
@@ -219,6 +228,10 @@
 
             // Dynamically add state to marker object.
             marker.incidentDate = incidentDate;
+            marker.automobiles = {{ report.automobile_num }};
+            marker.pedestrians = {{ report.pedestrian_num }};
+            marker.bicycles = {{ report.bicycle_num }};
+            marker.other = {{ report.other_num }};
             marker.contentString = contentString;
             markers.push(marker);
             var infoWindow = new google.maps.InfoWindow({
