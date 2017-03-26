@@ -118,7 +118,13 @@
         $('#form_button').toggle();
     });
 
-    $('#downloadCSVButton').click(downloadCSV);
+    $('#downloadCSVButton').click(function() {
+        {% if current_user.is_admin() %}
+            downloadCSV(true);
+        {% else %}
+            downloadCSV(false);
+        {% endif %}
+    });
 
     function initializeMapAndMarkers() {
         var mapProp = {
@@ -221,10 +227,28 @@
             // Dynamically add state to marker object.
             marker.incidentDate = incidentDate;
             marker.locationName = '\"{{ report.location | replace("\n", ", ") }}\"';
-            marker.vehicleID = '{{ report.date }}';
-            marker.duration = '{{ report.duration }}';
-            marker.licensePlate = '{{ report.license_plate if report.license_plate else '' }}';
+
+            // From old model.
+            //marker.vehicleID = '{{ report.vehicle_id }}';
+            //marker.duration = '{{ report.duration }}';
+            //marker.licensePlate = '{{ report.license_plate if report.license_plate else '' }}';
+            //marker.busNumber = '{{ report.bus_number if report.bus_number else '' }}';
+
+            marker.pedestrianNum = '{{ report.pedestrian_num }}';
+            marker.automobileNum = '{{ report.automobile_num }}';
+            marker.bicycleNum = '{{ report.bicycle_num }}';
+            marker.otherNum = '{{ report.other_num }}';
             marker.description = '{{ report.description }}';
+
+            marker.injuries = '{{ report.injuries if report.injuries else '' }}';
+            marker.pictureUrl = '{{ report.picture_url if report.picture_url else '' }}';
+
+            {% if current_user.is_admin() %}
+            marker.contactName = '{{ report.contact_name if report.contact_name else '' }}';
+            marker.contactPhone = '{{ report.contact_phone if report.contact_phone else '' }}';
+            marker.contactEmail = '{{ report.contact_email if report.contact_email else '' }}';
+            {% endif %}
+
             marker.contentString = contentString;
 
             markers.push(marker);
