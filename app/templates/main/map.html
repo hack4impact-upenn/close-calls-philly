@@ -76,6 +76,31 @@
         <button id="createBoundingBoxButton" class="ui button">Create Bounding Box</button>
         <button id="deleteBoundingBoxButton" class="ui button">Delete Bounding Box</button>
         <button id="downloadCSVButton" class="ui button">Download CSV</button>
+        <div id="typeForm">
+        <b>Vehicle Type</b>
+        <form>
+            <div class="ui checkbox">
+              <input type="checkbox" id="automobile"></input>
+              <label>Automobile</label>
+            </div>
+            <br />
+            <div class="ui checkbox">
+              <input type="checkbox" id="bicycle"></input>
+              <label>Bicycle</label>
+            </div>
+            <br />
+            <div class="ui checkbox">
+              <input type="checkbox" id="pedestrian"></input>
+              <label>Pedestrian</label>
+            </div>
+            <br />
+            <div class="ui checkbox">
+              <input type="checkbox" id="other"></input>
+              <label>Other</label>
+            </div>
+            <br />
+        </form>
+        </div>
     <div id="googleMap"></div>
 </div>
 
@@ -248,7 +273,6 @@
             {% endif %}
 
             marker.contentString = contentString;
-
             markers.push(marker);
             var infoWindow = new google.maps.InfoWindow({
                 content: contentString
