@@ -131,7 +131,7 @@ class IncidentLocation(db.Model):
                                    db.ForeignKey('incidents.id'))
 
     def __repr__(self):
-        return str(self.original_user_text)        
+        return str(self.original_user_text)
 
 class Incident(db.Model):
     __tablename__ = 'incidents'
@@ -142,16 +142,17 @@ class Incident(db.Model):
                                 lazy='joined',
                                 backref='incident')
     date = db.Column(db.DateTime)
-    pedestrian_num = db.Column(db.Integer) 
-    bicycle_num = db.Column(db.Integer)
-    automobile_num = db.Column(db.Integer)
-    other_num = db.Column(db.Integer)
+    pedestrian_num = db.Column(db.Integer, default=0)
+    bicycle_num = db.Column(db.Integer, default=0)
+    automobile_num = db.Column(db.Integer, default=0)
+    other_num = db.Column(db.Integer, default=0)
     description = db.Column(db.Text)
     injuries = db.Column(db.Text, default=None) # optional
     picture_url = db.Column(db.Text, default=None) # optional
     contact_name = db.Column(db.Text, default=None) # optional
     contact_phone = db.Column(db.Integer, default=None) #optional
     contact_email = db.Column(db.Text, default=None) #optional
+    picture_deletehash = db.Column(db.Text, default=None)
 
     def __init__(self, **kwargs):
         super(Incident, self).__init__(**kwargs)
@@ -217,7 +218,4 @@ class Incident(db.Model):
             try:
                 db.session.commit()
             except IntegrityError:
-                db.session.rollback()    
-
-
-
+                db.session.rollback()
