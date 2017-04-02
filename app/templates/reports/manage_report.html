@@ -37,6 +37,7 @@
         <tr><td>Other</td><td>{{ report.other_num }}</td></tr>
         <tr><td>Description</td><td>{{ report.description }}</td></tr>
         <tr><td>Injuries</td><td>{{ report.injuries }}</td></tr>
+        <tr><td>License Plates</td><td>{{ report.license_plates }}</td></tr>
         <tr><td>Picture</td>
             <td>
                 {% if report.picture_url %}
@@ -118,6 +119,7 @@
                     {{ f.render_form_field(form.picture_file) }}
                     {{ f.render_form_field(form.description) }}
                     {{ f.render_form_field(form.injuries)}}
+                    {{ f.render_form_field(form.license_plates) }}
                     {{ f.render_form_field(form.contact_name)}}
                     {{ f.render_form_field(form.contact_phone)}}
                     {{ f.render_form_field(form.contact_email)}}

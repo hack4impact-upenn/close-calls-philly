@@ -133,9 +133,10 @@ def edit_report_info(report_id):
 
     form.picture_url.default = report.picture_url
     form.description.default = report.description
-    # report.contact_name.default = report.contact_name
-    # report.contact_phone.default = form.contact_phone
-    # report.contact_email.default = form.contact_email
+    form.license_plates.default = report.license_plates
+    form.contact_name.default = report.contact_name
+    form.contact_phone.default = report.contact_phone
+    form.contact_email.default = report.contact_email
 
     form.process()
 
