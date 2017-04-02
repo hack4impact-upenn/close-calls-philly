@@ -131,7 +131,7 @@ class IncidentLocation(db.Model):
                                    db.ForeignKey('incidents.id'))
 
     def __repr__(self):
-        return str(self.original_user_text)        
+        return str(self.original_user_text)
 
 class Incident(db.Model):
     __tablename__ = 'incidents'
@@ -142,7 +142,7 @@ class Incident(db.Model):
                                 lazy='joined',
                                 backref='incident')
     date = db.Column(db.DateTime)
-    pedestrian_num = db.Column(db.Integer) 
+    pedestrian_num = db.Column(db.Integer)
     bicycle_num = db.Column(db.Integer)
     automobile_num = db.Column(db.Integer)
     other_num = db.Column(db.Integer)
@@ -217,7 +217,4 @@ class Incident(db.Model):
             try:
                 db.session.commit()
             except IntegrityError:
-                db.session.rollback()    
-
-
-
+                db.session.rollback()

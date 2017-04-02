@@ -9,7 +9,7 @@ from werkzeug import secure_filename
 from . import main
 from app import models, db
 from app.reports.forms import IncidentReportForm
-from app.models import Incident, EditableHTML
+from app.models import Incident, IncidentLocation, EditableHTML
 from app.utils import upload_image, geocode
 
 
@@ -25,17 +25,22 @@ def index():
         if not lat or not lng:
             lat, lng = geocode(form.location.data)
 
-        l = models.Location(original_user_text=form.location.data,
+        l = models.IncidentLocation(original_user_text=form.location.data,
                             latitude=lat,
                             longitude=lng)
 
-        new_incident = models.IncidentReport(
-            vehicle_id=form.vehicle_id.data,
-            license_plate=form.license_plate.data,
+        new_incident = models.Incident(
             location=l,
             date=datetime.combine(form.date.data, form.time.data),
-            duration=timedelta(minutes=form.duration.data),
+            pedestrian_num=form.pedestrian_num.data,
+            bicycle_num=form.bicycle_num.data,
+            automobile_num=form.automobile_num.data,
+            other_num=form.other_num.data,
             description=form.description.data,
+            injuries=form.injuries.data,
+            contact_name=form.contact_name.data,
+            contact_phone=form.contact_phone.data,
+            contact_email=form.contact_email.data
         )
 
         if form.picture_file.data.filename:
