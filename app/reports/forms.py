@@ -31,23 +31,23 @@ class IncidentReportForm(Form):
         ValidLocation()
         ])
 
-    automobile_num = IntegerField('Automobile', validators=[
+    automobile_num = IntegerField('Number of Automobiles', validators=[
         Optional()
     ])
 
-    bicycle_num = IntegerField('Bicycle', validators=[
+    bicycle_num = IntegerField('Number of Bicycles', validators=[
         Optional()
     ])
 
-    motorcycle_num = IntegerField('Motorcycle', validators=[
+    motorcycle_num = IntegerField('Number of Motorcycles', validators=[
         Optional()
     ])
 
-    pedestrian_num = IntegerField('Pedestrian', validators=[
+    pedestrian_num = IntegerField('Number of Pedestrians', validators=[
         Optional()
     ])
 
-    other_num = IntegerField('Other', validators=[
+    other_num = IntegerField('Number of Other Vehicles', validators=[
         Optional()
     ])
 
@@ -70,7 +70,7 @@ class IncidentReportForm(Form):
         ]
     )
 
-    description = TextAreaField('Additional Notes', validators=[
+    description = TextAreaField('Description', validators=[
         InputRequired(),
         Length(max=5000)
     ])
