@@ -28,29 +28,15 @@
 
 {% macro report_info(report) %}
     <table class="ui compact definition table">
-        <tr><td>Report ID</td><td>{{ report.id }}</td></tr>
-        <tr><td>Vehicle ID</td><td>{{ report.vehicle_id }}</td></tr>
-        <tr><td>License Plate</td><td>{{ report.license_plate if report.license_plate else '' }}</td></tr>
-        <tr><td>Bus Number</td><td>
-                {{ report.bus_number if report.bus_number else '' }}
-            </td></tr>
-        <tr><td>LED Screen Number</td><td>
-                {{ report.led_screen_number if report.led_screen_number else '' }}
-            </td></tr>
-        <tr><td>Location</td><td>{{ report.location }}</td></tr>
+        <tr><td>Address</td><td>{{ report.location }}</td></tr>
         <tr><td>Date</td><td>{{ report.date.strftime('%m-%d-%Y') }}</td></tr>
         <tr><td>Time</td><td>{{ report.date.strftime('%I:%M %p') }}</td></tr>
-        <tr><td>Duration (h:m:s)</td><td>{{ report.duration}}</td></tr>
-        <tr><td>Weather Conditions</td>
-            <td>
-                {% if report.weather %}
-                    {% for line in report.weather.splitlines() %}
-                        {{ line }}<br>
-                    {% endfor %}
-                    <br>
-                {% endif %}
-            </td>
-        </tr>
+        <tr><td>Pedestrians</td><td>{{ report.pedestrian_num }}</td></tr>
+        <tr><td>Automobiles</td><td>{{ report.autombile_num }}</td></tr>
+        <tr><td>Bicycles</td><td>{{ report.bicycle_num }}</td></tr>
+        <tr><td>Other</td><td>{{ report.other_num }}</td></tr>
+        <tr><td>Description</td><td>{{ report.description }}</td></tr>
+        <tr><td>Injuries</td><td>{{ report.injuries }}</td></tr>
         <tr><td>Picture</td>
             <td>
                 {% if report.picture_url %}
@@ -58,8 +44,9 @@
                 {% endif %}
             </td>
         </tr>
-        <!-- TODO add width attr to styles -->
-        <tr><td>Description</td><td>{{ report.description }}</td></tr>
+        <tr><td>Contact Name</td><td>{{ report.contact_name }}</td></tr>
+        <tr><td>Contact Phone</td><td>{{ report.contact_phone }}</td></tr>
+        <tr><td>Contact Email</td><td>{{ report.contact_email }}</td></tr>
     </table>
 {% endmacro %}
 

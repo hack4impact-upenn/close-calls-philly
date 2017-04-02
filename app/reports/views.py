@@ -9,7 +9,7 @@ from .forms import EditIncidentReportForm
 
 from . import reports
 from .. import db
-from ..models import IncidentReport
+from ..models import Incident
 from ..decorators import admin_required
 from ..utils import (
     flash_errors,
@@ -29,7 +29,7 @@ def view_reports():
     General users do not have access to this page."""
 
     if current_user.is_admin():
-        incident_reports = IncidentReport.query.all()
+        incident_reports = Incident.query.all()
 
     # TODO test using real data
     return render_template('reports/reports.html', reports=incident_reports)
@@ -49,7 +49,7 @@ def view_my_reports():
 @login_required
 def report_info(report_id):
     """View a report"""
-    report = IncidentReport.query.filter_by(id=report_id).first()
+    report = Incident.query.filter_by(id=report_id).first()
 
     if report is None:
         abort(404)
@@ -65,7 +65,7 @@ def report_info(report_id):
 @login_required
 def edit_report_info(report_id):
     """Change the fields for a report"""
-    report = IncidentReport.query.filter_by(id=report_id).first()
+    report = Incident.query.filter_by(id=report_id).first()
 
     if report is None:
         abort(404)
@@ -140,7 +140,7 @@ def edit_report_info(report_id):
 @login_required
 def delete_report_request(report_id):
     """Request deletion of a report."""
-    report = IncidentReport.query.filter_by(id=report_id).first()
+    report = Incident.query.filter_by(id=report_id).first()
 
     if report is None:
         abort(404)
@@ -157,7 +157,7 @@ def delete_report_request(report_id):
 def delete_report(report_id):
     """Delete a report"""
 
-    report = IncidentReport.query.filter_by(id=report_id).first()
+    report = Incident.query.filter_by(id=report_id).first()
 
     if report.picture_deletehash:
         # Asynchronously delete the report's image
