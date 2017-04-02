@@ -5,9 +5,9 @@ function downloadCSV(isAdmin) {
             'BICYCLE NUMBER,OTHER NUMBER,DESCRIPTION,INJURIES,LICENSE PLATES,PICTURE URL']
     ];
     if (isAdmin) {
-        csv.push('CONTACT NAME');
-        csv.push('CONTACT PHONE');
-        csv.push('CONTACT EMAIL');
+        csv[0] = csv[0] + ',CONTACT NAME';
+        csv[0] = csv[0] + ',CONTACT PHONE';
+        csv[0] = csv[0] + ',CONTACT EMAIL';
     }
     markersDisplayedOnMap.forEach(function(marker) {
         var license_plates = marker.license_plates.split(',').join(';');
