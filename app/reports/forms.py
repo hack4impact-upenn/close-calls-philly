@@ -31,6 +31,9 @@ class IncidentReportForm(Form):
         ValidLocation()
         ])
 
+    latitude = HiddenField('Latitude')
+    longitude = HiddenField('Longitude')
+
     automobile_num = IntegerField('Automobile', validators=[
         Optional()
     ])
@@ -95,10 +98,10 @@ class IncidentReportForm(Form):
 
 
 class EditIncidentReportForm(IncidentReportForm):
-    duration = StringField('Idling Duration (h:m:s)', validators=[
-        InputRequired('Idling duration is required.'),
-        Regexp(r'^(\d{1,2}:)(\d{1,2}:)(\d{1,2})$',
-               message='Write duration as HH:MM:SS')
-    ])
+    # duration = StringField('Idling Duration (h:m:s)', validators=[
+    #     InputRequired('Idling duration is required.'),
+    #     Regexp(r'^(\d{1,2}:)(\d{1,2}:)(\d{1,2})$',
+    #            message='Write duration as HH:MM:SS')
+    # ])
 
     submit = SubmitField('Update Report')

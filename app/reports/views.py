@@ -55,7 +55,7 @@ def report_info(report_id):
         abort(404)
 
     # Either the user is looking at their own report, or the user is an admin.
-    if (not current_user.is_admin()) and report.user_id != current_user.id:
+    if not current_user.is_admin():
         abort(403)
 
     return render_template('reports/manage_report.html', report=report)
@@ -70,7 +70,7 @@ def edit_report_info(report_id):
     if report is None:
         abort(404)
     # Either the user is editing their own report, or the user is an admin.
-    if (report.user_id != current_user.id) and (not current_user.is_admin()):
+    if not current_user.is_admin():
         abort(403)
 
     form = EditIncidentReportForm()
@@ -145,8 +145,7 @@ def delete_report_request(report_id):
     if report is None:
         abort(404)
 
-    # Either the user is deleting their own report, or the user is an admin.
-    if (report.user_id != current_user.id) and (not current_user.is_admin()):
+    if not current_user.is_admin():
         abort(403)
 
     return render_template('reports/manage_report.html', report=report)
@@ -167,7 +166,7 @@ def delete_report(report_id):
             imgur_client_id=current_app.config['IMGUR_CLIENT_ID'],
             imgur_client_secret=current_app.config['IMGUR_CLIENT_SECRET'],
         )
-    report_user_id = report.user_id
+    # report_user_id = report.user_id
 
     db.session.delete(report)
     db.session.commit()
@@ -175,7 +174,7 @@ def delete_report(report_id):
 
     # TODO - address edge case where an admin clicks on their own report from
     # reports/all endpoint, should redirect back to /all. use cookies
-    if report_user_id == current_user.id:
-        return redirect(url_for('reports.view_my_reports'))
-    else:
-        return redirect(url_for('reports.view_reports'))
+    # if report_user_id == current_user.id:
+    #     return redirect(url_for('reports.view_my_reports'))
+    # else:
+    return redirect(url_for('reports.view_reports'))

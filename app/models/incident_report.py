@@ -142,16 +142,17 @@ class Incident(db.Model):
                                 lazy='joined',
                                 backref='incident')
     date = db.Column(db.DateTime)
-    pedestrian_num = db.Column(db.Integer)
-    bicycle_num = db.Column(db.Integer)
-    automobile_num = db.Column(db.Integer)
-    other_num = db.Column(db.Integer)
+    pedestrian_num = db.Column(db.Integer, default=0)
+    bicycle_num = db.Column(db.Integer, default=0)
+    automobile_num = db.Column(db.Integer, default=0)
+    other_num = db.Column(db.Integer, default=0)
     description = db.Column(db.Text)
     injuries = db.Column(db.Text, default=None) # optional
     picture_url = db.Column(db.Text, default=None) # optional
     contact_name = db.Column(db.Text, default=None) # optional
     contact_phone = db.Column(db.Integer, default=None) #optional
     contact_email = db.Column(db.Text, default=None) #optional
+    # picture_deletehash = db.Column(db.Text)
 
     def __init__(self, **kwargs):
         super(Incident, self).__init__(**kwargs)
