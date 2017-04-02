@@ -20,11 +20,11 @@ def index():
     if form.validate_on_submit():
 
         # If geocode happened client-side, it's not necessary to geocode again.
-        lat, lng = form.latitude.data, form.longitude.data
-        if not lat or not lng:
-            lat, lng = geocode(form.location.data)
+        # lat = form.latitude.data if form.latitude else None
+        # lng = form.longitude.data if form.longitude else None
+        lat, lng = geocode(form.address.data)
 
-        l = models.Location(original_user_text=form.location.data,
+        l = models.IncidentLocation(original_user_text=form.address.data,
                             latitude=lat,
                             longitude=lng)
 
@@ -41,7 +41,7 @@ def index():
             # comments=form.comments.data (THERE ARE NO COMMENTS).
             contact_name=form.contact_name.data,
             contact_phone=form.contact_phone.data,
-            contact_email=form.contacdt_email.data
+            contact_email=form.contact_email.data
         )
 
         if form.picture_file.data.filename:
