@@ -31,6 +31,10 @@ class IncidentReportForm(Form):
         ValidLocation()
         ])
 
+    latitude = HiddenField('Latitude')
+
+    longitude = HiddenField('Longitude')
+
     automobile_num = IntegerField('Number of Automobiles', validators=[
         Optional()
     ])

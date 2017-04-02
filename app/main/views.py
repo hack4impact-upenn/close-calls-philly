@@ -13,6 +13,7 @@ from app.utils import upload_image, geocode
 
 
 @main.route('/', methods=['GET', 'POST'])
+
 @main.route('/map', methods=['GET', 'POST'])
 def index():
     form = IncidentReportForm()
@@ -20,9 +21,9 @@ def index():
     if form.validate_on_submit():
 
         # If geocode happened client-side, it's not necessary to geocode again.
-        # lat = form.latitude.data if form.latitude else None
-        # lng = form.longitude.data if form.longitude else None
-        lat, lng = geocode(form.address.data)
+        lat, lng = form.latitude.data, form.longitude.data
+        if not lat or not lng:
+            lat, lng = geocode(form.address.data)
 
         l = IncidentLocation(original_user_text=form.address.data,
                             latitude=lat,

@@ -269,7 +269,7 @@
             // This is checking to see if the Geoeode Status is OK before proceeding
             if (status == google.maps.GeocoderStatus.OK) {
                 console.log(results);
-                 $('#location').val(results[0].formatted_address);
+                 $('#address').val(results[0].formatted_address);
             }
         });
     }
@@ -280,6 +280,7 @@
         }
         function success(position) {
             var geocoder = new google.maps.Geocoder;
+            console.log(position.coords);
             $('#latitude').val(position.coords.latitude);
             $('#longitude').val(position.coords.longitude);
             getReverseGeocodingData(position.coords.latitude,
