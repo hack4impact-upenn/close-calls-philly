@@ -147,7 +147,7 @@
         markers = [];
         var minDate = new Date(2015, 0, 1);
         var bounds = new google.maps.LatLngBounds();
-        {% for report in incident_reports %}
+        {% for report in incidents %}
         $(function() {
             var marker = new google.maps.Marker({
                 // Use latitude and longitude values from incident report
