@@ -68,6 +68,14 @@ class IncidentReportForm(Form):
                         'Only images are allowed.')
         ]
     )
+    
+    picture_url = StringField('Picture URL', validators=[
+        Optional(),
+        URL(message='Picture URL must be a valid URL. '
+                    'Please upload the image to an image hosting website '
+                    'and paste the link here.')
+        ])
+
 
     description = TextAreaField('Additional Notes', validators=[
         InputRequired(),
