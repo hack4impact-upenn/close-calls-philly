@@ -26,12 +26,14 @@ from .. import db
 
 
 class IncidentReportForm(Form):
-    location = StringField('Address', validators=[
+    
+    address = StringField('Address', validators=[
         InputRequired('Address is required.'),
         ValidLocation()
         ])
 
     latitude = HiddenField('Latitude')
+
     longitude = HiddenField('Longitude')
 
     automobile_num = IntegerField('Automobile', validators=[
@@ -68,16 +70,8 @@ class IncidentReportForm(Form):
                         'Only images are allowed.')
         ]
     )
-    
-    picture_url = StringField('Picture URL', validators=[
-        Optional(),
-        URL(message='Picture URL must be a valid URL. '
-                    'Please upload the image to an image hosting website '
-                    'and paste the link here.')
-        ])
 
-
-    description = TextAreaField('Additional Notes', validators=[
+    description = TextAreaField('Description', validators=[
         InputRequired(),
         Length(max=5000)
     ])

@@ -18,7 +18,7 @@
             } %}
 
             {{ f.begin_form(form, flashes) }}
-            {{ f.render_form_field(form.location) }}
+            {{ f.render_form_field(form.address) }}
             <div class="ui button" id="current_location_button" onclick="geoFindMe()">Use Current location</div>
             <h3>Type</h3>
             {{ f.render_form_field(form.automobile_num) }}
@@ -366,7 +366,8 @@
             }
             // This is checking to see if the Geoeode Status is OK before proceeding
             if (status == google.maps.GeocoderStatus.OK) {
-                 $('#location').val(results[0].formatted_address);
+                console.log(results);
+                 $('#address').val(results[0].formatted_address);
             }
         });
     }
@@ -377,6 +378,7 @@
         }
         function success(position) {
             var geocoder = new google.maps.Geocoder;
+            console.log(position.coords);
             $('#latitude').val(position.coords.latitude);
             $('#longitude').val(position.coords.longitude);
             getReverseGeocodingData(position.coords.latitude,
