@@ -14,6 +14,7 @@ from app.parse_csv import parse_to_db
 from app import create_app, db
 from app.models import (
     User,
+    Incident,
     Role,
     Permission,
     IncidentReport,
@@ -78,7 +79,8 @@ def add_fake_data(number_users, number_reports):
     Adds fake data to the database.
     """
     User.generate_fake(count=number_users)
-    IncidentReport.generate_fake(count=number_reports)
+    # IncidentReport.generate_fake(count=number_reports)
+    Incident.generate_fake(count=number_reports)
 
 
 @manager.command

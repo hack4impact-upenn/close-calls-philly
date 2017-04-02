@@ -157,7 +157,7 @@ class Incident(db.Model):
     contact_email = db.Column(db.Text, default=None) #optional
 
     def __init__(self, **kwargs):
-        super(ncident, self).__init__(**kwargs)
+        super(Incident, self).__init__(**kwargs)
 
         if self.date is None:
             self.date = datetime.now(pytz.timezone(
@@ -207,10 +207,9 @@ class Incident(db.Model):
                 description=fake.paragraph(),
                 injuries=fake.paragraph(),
                 picture_url=fake.image_url(),
-                comments=fake.paragraph(),
                 contact_name = "Test Contact",
                 contact_phone=1234567890,
-                contact_email = fake.email()
+                contact_email = fake.email(),
                 **kwargs
             )
             db.session.add(r)
