@@ -5,28 +5,62 @@ from app.utils import geocode, strip_non_alphanumeric_chars
 from app.models import Location, IncidentReport
 from app.reports.forms import IncidentReportForm
 
+def parse_start_end_time(date_index, row):
+    for date_format in ['%m/%d/%Y %H:%M', '%m/%d/%y %H:%M']:
+        try:
+            time_1 = datetime.strptime(row[date_index], date_format)
+        except ValueError:
+            time_1 = None
+
+        try:
+            time_2 = datetime.strptime(row[date_index + 1],
+                                      date_format)
+        except ValueError:
+            time_2 = None
+
+    return time_1, time_2
+
+
+def validate_field_partial(field, data, form, row_number):
+    """TODO: docstring"""
+    field.data = data
+    field.raw_data = data
+    validated = field.validate(form)
+
+    if not validated:
+        for error in field.errors:
+            print_error(row_number, error)
+
+    return validated
+
+
+def print_error(row_number, error_message):
+    """TODO: docstring"""
+    print ('Row {:d}: {}'.format(row_number, error_message))
+
+
 def parse_to_db(db, filename):
     """Reads a csv and imports the data into a database."""
     # The indices in the csv of different data
     
     date_index = 0
     location_index = 1
-    description_index = 2
-    injuries_index = 3
-    pedestrian_num_index = 4
-    bicycle_num_index = 5
-    automobile_num_index = 6
-    other_num_index = 7
+    description_index = 6
+    injuries_index = 7
+    pedestrian_num_index = 2
+    bicycle_num_index = 4
+    automobile_num_index = 3
+    other_num_index = 5
     picture_index = 8
     contact_name_index = 9
     contact_phone_index = 10
     contact_email_index = 11
     
-    validator_form = IncidentForm()
+    validator_form = IncidentReportForm()
 
-    with open(filename, 'rb') as csv_file:
+    with open(filename, 'r') as csv_file:
         reader = csv.reader(csv_file)
-        columns = reader.next()
+        # columns = reader.next()
 
         for i, row in enumerate(reader, start=2):  # i is the row number
 
@@ -113,35 +147,3 @@ def parse_to_db(db, filename):
         return columns
 
 
-def parse_start_end_time(date_index, row):
-    for date_format in ['%m/%d/%Y %H:%M', '%m/%d/%y %H:%M']:
-        try:
-            time1 = datetime.strptime(row[date_index], date_format)
-        except ValueError:
-            pass
-
-        try:
-            time2 = datetime.strptime(row[date_index + 1],
-                                      date_format)
-        except ValueError:
-            pass
-
-    return time1, time2
-
-
-def validate_field_partial(field, data, form, row_number):
-    """TODO: docstring"""
-    field.data = data
-    field.raw_data = data
-    validated = field.validate(form)
-
-    if not validated:
-        for error in field.errors:
-            print_error(row_number, error)
-
-    return validated
-
-
-def print_error(row_number, error_message):
-    """TODO: docstring"""
-    print ('Row {:d}: {}'.format(row_number, error_message))
