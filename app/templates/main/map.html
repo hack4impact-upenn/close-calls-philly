@@ -3,6 +3,7 @@
 
 {% block content %}
 <div id="wrapper">
+  <div id="form_button">Report Incident</div>
     <div id="inputPanel"></div>
         <div id="form_container">
             <button id="close_form" class="ui icon button close">
@@ -17,17 +18,21 @@
             } %}
 
             {{ f.begin_form(form, flashes) }}
-            {{ f.render_form_field(form.vehicle_id) }}
-            {{ f.render_form_field(form.license_plate) }}
-            {{ f.render_form_field(form.picture_file)}}
-            {{ f.render_form_field(form.description) }}
-            {{ f.render_form_field(form.duration) }}
-            {{ f.render_form_field(form.location)}}
+            {{ f.render_form_field(form.address) }}
             <div class="ui button" id="current_location_button" onclick="geoFindMe()">Use Current location</div>
+            <h3>Type</h3>
+            {{ f.render_form_field(form.automobile_num) }}
+            {{ f.render_form_field(form.bicycle_num) }}
+            {{ f.render_form_field(form.pedestrian_num) }}
+            {{ f.render_form_field(form.other_num) }}
             {{ f.render_form_field(form.date)}}
             {{ f.render_form_field(form.time)}}
-            {{ f.render_form_field(form.bus_number, extra_classes='bus_number') }}
-            {{ f.render_form_field(form.led_screen_number, extra_classes='led_screen_number') }}
+            {{ f.render_form_field(form.picture_file) }}
+            {{ f.render_form_field(form.description) }}
+            {{ f.render_form_field(form.injuries)}}
+            {{ f.render_form_field(form.contact_name)}}
+            {{ f.render_form_field(form.contact_phone)}}
+            {{ f.render_form_field(form.contact_email)}}
             {{ f.form_message(flashes['error'], header='Something went wrong.', class='error') }}
             {{ f.form_message(flashes['warning'], header='Check your email.', class='warning') }}
             {{ f.form_message(flashes['info'], header='Information', class='info') }}
@@ -43,6 +48,15 @@
             <div id="replaceable"></div>
         </div>
 
+        <form name="addressForm" id="addressForm">
+            <div class="ui action input" id="addressSearch">
+                <input class="prompt" placeholder="Enter Address..." type="text" name="address" id="address">
+                <button id="submitButton" class="ui button">Center</button>
+            </div>
+        </form>
+
+        <button id="createBoundingBoxButton" class="ui button">Create Bounding Box</button>
+        <button id="deleteBoundingBoxButton" class="ui button">Delete Bounding Box</button>
         <div class="ui form" id="dateRange">
           <div class="field">
             <label>Start Date</label>
@@ -64,15 +78,35 @@
           </div>
         </div>
 
-        <div id="form_button">Report Incident</div>
-        <form name="addressForm" id="addressForm">
-            <div class="ui action input" id="addressSearch">
-                <input class="prompt" placeholder="Enter Address..." type="text" name="address" id="address">
-                <button id="submitButton" class="ui button">Center</button>
+        <div class="ui button" id="resetDatesButton">Reset Dates</div>
+        <button id="downloadCSVButton" class="ui button">Download CSV</button>
+
+
+        <div id="typeForm">
+        <b>Vehicle Type</b>
+        <form>
+            <div class="ui checkbox">
+              <input type="checkbox" id="automobile"></input>
+              <label>Automobile</label>
             </div>
+            <br />
+            <div class="ui checkbox">
+              <input type="checkbox" id="bicycle"></input>
+              <label>Bicycle</label>
+            </div>
+            <br />
+            <div class="ui checkbox">
+              <input type="checkbox" id="pedestrian"></input>
+              <label>Pedestrian</label>
+            </div>
+            <br />
+            <div class="ui checkbox">
+              <input type="checkbox" id="other"></input>
+              <label>Other</label>
+            </div>
+            <br />
         </form>
-        <button id="createBoundingBoxButton" class="ui button">Create Bounding Box</button>
-        <button id="deleteBoundingBoxButton" class="ui button">Delete Bounding Box</button>
+        </div>
     <div id="googleMap"></div>
 </div>
 
@@ -97,16 +131,16 @@
     var rectangle = null;
     var dragging = false;
 
-    $('#createBoundingBoxButton').click(function() {
-        drawRec();
-    })
+
+    $('#createBoundingBoxButton').click(drawRec);
 
     $('#deleteBoundingBoxButton').click(function() {
         deleteRec();
-        inboundsMarkers = filterMarkers();
+        filterMarkers();
         map.fitBounds(geographicBounds);
-    })
+    });
 
+    $('#resetDatesButton').click(resetDates);
 
     $('#form_button').click(function(){
         $('#form_container').toggle();
@@ -117,6 +151,14 @@
     $('#close_form').click(function(){
         $('#form_container').hide();
         $('#form_button').toggle();
+    });
+
+    $('#downloadCSVButton').click(function() {
+        {% if current_user.is_admin() %}
+            downloadCSV(true);
+        {% else %}
+            downloadCSV(false);
+        {% endif %}
     });
 
     function initializeMapAndMarkers() {
@@ -219,6 +261,23 @@
 
             // Dynamically add state to marker object.
             marker.incidentDate = incidentDate;
+            marker.locationName = '\"{{ report.location | replace("\n", ", ") }}\"';
+
+            marker.pedestrianNum = '{{ report.pedestrian_num }}';
+            marker.automobileNum = '{{ report.automobile_num }}';
+            marker.bicycleNum = '{{ report.bicycle_num }}';
+            marker.otherNum = '{{ report.other_num }}';
+            marker.description = '{{ report.description }}';
+
+            marker.injuries = '{{ report.injuries if report.injuries else '' }}';
+            marker.pictureUrl = '{{ report.picture_url if report.picture_url else '' }}';
+
+            {% if current_user.is_admin() %}
+            marker.contactName = '{{ report.contact_name if report.contact_name else '' }}';
+            marker.contactPhone = '{{ report.contact_phone if report.contact_phone else '' }}';
+            marker.contactEmail = '{{ report.contact_email if report.contact_email else '' }}';
+            {% endif %}
+
             marker.contentString = contentString;
             markers.push(marker);
             var infoWindow = new google.maps.InfoWindow({
@@ -283,7 +342,7 @@
         if (!dragging) {
             var bounds = rectangle.getBounds();
             map.fitBounds(bounds);
-            inboundsMarkers = filterMarkers();
+            filterMarkers();
             drawingManager.setMap(null);
         }
     }
@@ -307,7 +366,8 @@
             }
             // This is checking to see if the Geoeode Status is OK before proceeding
             if (status == google.maps.GeocoderStatus.OK) {
-                 $('#location').val(results[0].formatted_address);
+                console.log(results);
+                 $('#address').val(results[0].formatted_address);
             }
         });
     }
@@ -318,6 +378,7 @@
         }
         function success(position) {
             var geocoder = new google.maps.Geocoder;
+            console.log(position.coords);
             $('#latitude').val(position.coords.latitude);
             $('#longitude').val(position.coords.longitude);
             getReverseGeocodingData(position.coords.latitude,

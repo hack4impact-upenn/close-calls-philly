@@ -26,58 +26,44 @@ from .. import db
 
 
 class IncidentReportForm(Form):
-    vehicle_id = StringField('Vehicle ID', validators=[
-        InputRequired('Vehicle ID is required.'),
-        StrippedLength(
-            min_length=1,
-            max_length=15,
-            message='Vehicle ID must be between 1 to 15 characters after '
-                    'removing all non-alphanumeric characters.'
-        ),
-    ])
-
-    license_plate = StringField('License Plate Number', validators=[
-        Optional(),
-        StrippedLength(
-            min_length=1,
-            max_length=12,
-            message='License plate must be between 1 to 12 characters after '
-                    'removing all non-alphanumeric characters.'
-        )
-    ])
-
-    bus_number = IntegerField('Bus Number', validators=[
-        Optional()
-    ])
-
-    led_screen_number = IntegerField('LED Screen Number', validators=[
-        Optional()
-    ])
+    
+    address = StringField('Address', validators=[
+        InputRequired('Address is required.'),
+        ValidLocation()
+        ])
 
     latitude = HiddenField('Latitude')
-    longitude = HiddenField('Longitude')
-    location = StringField('Address', validators=[
-        InputRequired(),
-        ValidLocation(),
 
+    longitude = HiddenField('Longitude')
+
+    automobile_num = IntegerField('Automobile', validators=[
+        Optional()
+    ])
+
+    bicycle_num = IntegerField('Bicycle', validators=[
+        Optional()
+    ])
+
+    pedestrian_num = IntegerField('Pedestrian', validators=[
+        Optional()
+    ])
+
+    other_num = IntegerField('Other', validators=[
+        Optional()
     ])
 
     today = datetime.datetime.today()
+
     date = DateField('Date (year-month-day)',
                      default=today.strftime('%m-%d-%Y'),
                      validators=[InputRequired()])
+
     time = TimeField('Time (hours:minutes am/pm)',
                      default=today.strftime('%I:%M %p'),
                      validators=[InputRequired()])
 
-    duration = IntegerField('Idling Duration (in minutes)', validators=[
-        InputRequired('Idling duration is required.'),
-        NumberRange(min=0,
-                    message='Idling duration must be positive.')
-    ])
-
     picture_file = FileField(
-        'Upload a picture of the idling vehicle.',
+        'Upload a photo (optional)',
         validators=[
             Optional(),
             FileAllowed(['jpg', 'jpe', 'jpeg', 'png', 'gif', 'svg', 'bmp'],
@@ -85,26 +71,39 @@ class IncidentReportForm(Form):
         ]
     )
 
-    picture_url = StringField('Picture URL', validators=[
-        Optional(),
-        URL(message='Picture URL must be a valid URL. '
-                    'Please upload the image to an image hosting website '
-                    'and paste the link here.')
-        ])
+    description = TextAreaField('Description', validators=[
+        InputRequired(),
+        Length(max=5000)
+    ])
 
-    description = TextAreaField('Additional Notes', validators=[
+    injuries = TextAreaField('Injuries (optional)', validators=[
         Optional(),
         Length(max=5000)
+    ])
+
+    contact_name = StringField('Contact Name (optional)', validators=[
+        Optional(),
+        Length(max=1000)
+    ])
+
+    contact_phone = StringField('Contact Phone (optional)', validators=[
+        Optional(),
+        Length(max=1000)
+    ])
+
+    contact_email = StringField('Contact E-mail (optional)', validators=[
+        Optional(),
+        Length(max=100)
     ])
 
     submit = SubmitField('Create Report')
 
 
 class EditIncidentReportForm(IncidentReportForm):
-    duration = StringField('Idling Duration (h:m:s)', validators=[
-        InputRequired('Idling duration is required.'),
-        Regexp(r'^(\d{1,2}:)(\d{1,2}:)(\d{1,2})$',
-               message='Write duration as HH:MM:SS')
-    ])
+    # duration = StringField('Idling Duration (h:m:s)', validators=[
+    #     InputRequired('Idling duration is required.'),
+    #     Regexp(r'^(\d{1,2}:)(\d{1,2}:)(\d{1,2})$',
+    #            message='Write duration as HH:MM:SS')
+    # ])
 
     submit = SubmitField('Update Report')
