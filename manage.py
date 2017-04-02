@@ -17,7 +17,7 @@ from app.models import (
     Incident,
     Role,
     Permission,
-    IncidentReport,
+    Incident,
     EditableHTML
 )
 
@@ -79,7 +79,6 @@ def add_fake_data(number_users, number_reports):
     Adds fake data to the database.
     """
     User.generate_fake(count=number_users)
-    # IncidentReport.generate_fake(count=number_reports)
     Incident.generate_fake(count=number_reports)
 
 

@@ -1,8 +1,9 @@
+import csv
 import pytz
 
-from datetime import timedelta, datetime
+from datetime import date, timedelta, datetime
 
-from flask import render_template, current_app, flash
+from flask import render_template, current_app, flash, Response
 from werkzeug import secure_filename
 
 from . import main
@@ -34,9 +35,8 @@ def index():
             date=datetime.combine(form.date.data, form.time.data),
             pedestrian_num=form.pedestrian_num.data,
             bicycle_num=form.bicycle_num.data,
-            motorcycle_num=form.motorcycle_num.data,
-            other_num=form.other_num.data,
             automobile_num=form.automobile_num.data,
+            other_num=form.other_num.data,
             description=form.description.data,
             injuries=form.injuries.data,
             contact_name=form.contact_name.data,

@@ -8,8 +8,33 @@
     width: 20%;
 }
 
+#dateRange {
+  position: absolute;
+  left: 5%;
+  top: 225px;
+  z-index: 5;
+  width: 20%;
+}
+
+#resetDatesButton {
+  position: absolute;
+  left: 5%;
+  top: 375px;
+  z-index: 5;
+  width: 20%;
+}
+
+#typeForm {
+  position: absolute;
+  left: 5%;
+  top: 420px;
+  z-index: 5;
+  width: 20%;
+}
+
 #submitButton {
     position: absolute;
+    display: inline-block;
     left: 70%;
     width: 30%;
     background-color: $teal;
@@ -38,6 +63,13 @@
     left: 5%;
     width: 20%;
     top: 130px;
+}
+
+#downloadCSVButton {
+    position: absolute;
+    left: 5%;
+    width: 20%;
+    top: 175px;
 }
 
 #current_location_button, #submit{
@@ -156,12 +188,10 @@ form textarea#description {
 }
 
 @media all and (max-width: $mobile-breakpoint) {
-    #createBoundingBoxButton {
-        display: none;
-    }
-    #deleteBoundingBoxButton {
-        display: none;
-    }
+    #createBoundingBoxButton,
+    #deleteBoundingBoxButton,
+    #resetDatesButton,
+    #dateRange,
     #inputPanel {
         display: none;
     }

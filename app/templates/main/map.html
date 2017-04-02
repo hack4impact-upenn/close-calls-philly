@@ -3,6 +3,7 @@
 
 {% block content %}
 <div id="wrapper">
+  <div id="form_button">Report Incident</div>
     <div id="inputPanel"></div>
         <div id="form_container">
             <button id="close_form" class="ui icon button close">
@@ -18,21 +19,20 @@
 
             {{ f.begin_form(form, flashes) }}
             {{ f.render_form_field(form.address) }}
-            <div class="ui button" id="current_location_button" onclick="geoFindMe()">Use Current location</div>    
+            <div class="ui button" id="current_location_button" onclick="geoFindMe()">Use Current location</div>
             <h3>Type</h3>
             {{ f.render_form_field(form.automobile_num) }}
             {{ f.render_form_field(form.bicycle_num) }}
-            {{ f.render_form_field(form.motorcycle_num)}}
             {{ f.render_form_field(form.pedestrian_num) }}
             {{ f.render_form_field(form.other_num) }}
             {{ f.render_form_field(form.date)}}
-            {{ f.render_form_field(form.time)}}   
+            {{ f.render_form_field(form.time)}}
             {{ f.render_form_field(form.picture_file) }}
             {{ f.render_form_field(form.description) }}
             {{ f.render_form_field(form.injuries)}}
             {{ f.render_form_field(form.contact_name)}}
-            {{ f.render_form_field(form.contact_phone)}}  
-            {{ f.render_form_field(form.contact_email)}}               
+            {{ f.render_form_field(form.contact_phone)}}
+            {{ f.render_form_field(form.contact_email)}}
             {{ f.form_message(flashes['error'], header='Something went wrong.', class='error') }}
             {{ f.form_message(flashes['warning'], header='Check your email.', class='warning') }}
             {{ f.form_message(flashes['info'], header='Information', class='info') }}
@@ -47,15 +47,66 @@
         <div id="info_container">
             <div id="replaceable"></div>
         </div>
-        <div id="form_button">Report Incident</div>
+
         <form name="addressForm" id="addressForm">
             <div class="ui action input" id="addressSearch">
                 <input class="prompt" placeholder="Enter Address..." type="text" name="address" id="address">
                 <button id="submitButton" class="ui button">Center</button>
             </div>
         </form>
+
         <button id="createBoundingBoxButton" class="ui button">Create Bounding Box</button>
         <button id="deleteBoundingBoxButton" class="ui button">Delete Bounding Box</button>
+        <div class="ui form" id="dateRange">
+          <div class="field">
+            <label>Start Date</label>
+            <div class="ui calendar" id="start-date">
+              <div class="ui input left icon">
+                <i class="calendar icon"></i>
+                <input type="text" placeholder="Start" />
+              </div>
+            </div>
+          </div>
+          <div class="field">
+            <label>End Date</label>
+            <div class="ui calendar" id="end-date">
+              <div class="ui input left icon">
+                <i class="calendar icon"></i>
+                <input type="text" placeholder="End">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="ui button" id="resetDatesButton">Reset Dates</div>
+        <button id="downloadCSVButton" class="ui button">Download CSV</button>
+
+
+        <div id="typeForm">
+        <b>Vehicle Type</b>
+        <form>
+            <div class="ui checkbox">
+              <input type="checkbox" id="automobile"></input>
+              <label>Automobile</label>
+            </div>
+            <br />
+            <div class="ui checkbox">
+              <input type="checkbox" id="bicycle"></input>
+              <label>Bicycle</label>
+            </div>
+            <br />
+            <div class="ui checkbox">
+              <input type="checkbox" id="pedestrian"></input>
+              <label>Pedestrian</label>
+            </div>
+            <br />
+            <div class="ui checkbox">
+              <input type="checkbox" id="other"></input>
+              <label>Other</label>
+            </div>
+            <br />
+        </form>
+        </div>
     <div id="googleMap"></div>
 </div>
 
@@ -80,16 +131,16 @@
     var rectangle = null;
     var dragging = false;
 
-    $('#createBoundingBoxButton').click(function() {
-        drawRec();
-    })
+
+    $('#createBoundingBoxButton').click(drawRec);
 
     $('#deleteBoundingBoxButton').click(function() {
         deleteRec();
-        inboundsMarkers = filterMarkers(null);
+        filterMarkers();
         map.fitBounds(geographicBounds);
-    })
+    });
 
+    $('#resetDatesButton').click(resetDates);
 
     $('#form_button').click(function(){
         $('#form_container').toggle();
@@ -98,9 +149,16 @@
     });
 
     $('#close_form').click(function(){
-        console.log('form close');
         $('#form_container').hide();
         $('#form_button').toggle();
+    });
+
+    $('#downloadCSVButton').click(function() {
+        {% if current_user.is_admin() %}
+            downloadCSV(true);
+        {% else %}
+            downloadCSV(false);
+        {% endif %}
     });
 
     function initializeMapAndMarkers() {
@@ -132,15 +190,25 @@
 
         var oms = new OverlappingMarkerSpiderfier(map, {keepSpiderfied: true, nearbyDistance: 10});
 
+        var selectedMarker;
+        var selectedMarkerIcon;
         // Add click listener to marker for displaying infoWindow
         oms.addListener('click', function(marker, event) {
           $('#form_container').hide()
           $('#info_container').show();
+          $('#form_button').hide();
           $('#replaceable').replaceWith(marker.contentString);
+          if (selectedMarker != null) {
+              selectedMarker.setIcon(selectedMarkerIcon);
+          }
+          selectedMarker = marker;
+          selectedMarkerIcon = marker.icon;
           marker.setIcon("../static/images/marker_selected.png");
           $('#close_info').on('click', function() {
               $('#info_container').hide();
               $('#form_button').show();
+              marker.setIcon(selectedMarkerIcon);
+              selectedMarker = null;
           });
         });
 
@@ -148,12 +216,18 @@
         var minDate = new Date(2015, 0, 1);
         var bounds = new google.maps.LatLngBounds();
         {% for report in incident_reports %}
-        $(function() {
+            var iconFile = "";
+            {% if report.injuries and report.injuries|length > 0 %}
+                iconFile = "../static/images/marker_injury.png";
+            {% else %}
+                iconFile = "../static/images/marker.png";
+            {% endif %}
+            $(function() {
             var marker = new google.maps.Marker({
                 // Use latitude and longitude values from incident report
                 // to set position of marker
                 position:{lat: parseFloat('{{ report.location.latitude }}'), lng: parseFloat('{{ report.location.longitude }}')},
-                icon: "../static/images/marker.png"
+                icon: iconFile
             });
             var dateString = '{{ report.date }}';
             year = parseInt((dateString.split(' '))[0].split('-')[0]);
@@ -167,20 +241,43 @@
                                 '<i class="remove icon"></i>' +
                                 '</button>' +
                                 '<h3>Date: ' + '{{ report.date.strftime('%m-%d-%Y at %I:%M %p') }}' + '</h3>' +
-                                '<p>Duration (h:m:s): ' + '{{ report.duration }}' + '</p>' +
-                                {% if current_user.is_admin() %}
-                                '<p>Vehicle ID: ' + '{{ report.vehicle_id }}' +'</p>' +
-                                '<p>License Plate: ' + '{{ report.license_plate if report.license_plate else '' }}' + '</p>' +
+                                '<p><b>Description:</b> ' + '{{ report.description }}' + '</p>' +
+                                '<p><b>Injuries:</b> ' + '{{ report.injuries if report.injuries else '' }} ' +
+                                '<p><b>Number of Pedestrians:</b> ' + '{{ report.pedestrian_num }}' + '</p>' +
+                                '<p><b>Number of automobiles:</b> ' + '{{ report.automobile_num }}' + '</p>' +
+                                '<p><b>Number of bicycles:</b> ' + '{{ report.bicycle_num }}' + '</p>' +
+                                '<p><b>Number of other vehicles:</b> ' + '{{ report.other_num }}' + '</p>' +
                                   {% if report.picture_url %}
                                   '<p><a href="{{ report.picture_url }}" target="_blank" rel="noopener noreferrer">' + 'Link to Picture' + '</a></p>' +
                                   {% endif %}
-                                {% endif %}
-                                '<p>Description: ' + '{{ report.description }}' + '</p>' +
+                                {% if current_user.is_admin() %}
+                                '<p><b>Contact Name:</b> ' + '{{ report.contact_name if report.contact_name else '' }}' +'</p>' +
+                                '<p><b>Contact Phone:</b> ' + '{{ report.contact_phone if report.contact_phone else '' }}' + '</p>' +
+                                '<p><b>Contact Email:</b> ' + '{{ report.contact_email if report.contact_email else '' }}</div>';
+                                {% else %}
                                 '</div>';
+                                {% endif %}
             bounds.extend(marker.getPosition());
 
             // Dynamically add state to marker object.
             marker.incidentDate = incidentDate;
+            marker.locationName = '\"{{ report.location | replace("\n", ", ") }}\"';
+
+            marker.pedestrianNum = '{{ report.pedestrian_num }}';
+            marker.automobileNum = '{{ report.automobile_num }}';
+            marker.bicycleNum = '{{ report.bicycle_num }}';
+            marker.otherNum = '{{ report.other_num }}';
+            marker.description = '{{ report.description }}';
+
+            marker.injuries = '{{ report.injuries if report.injuries else '' }}';
+            marker.pictureUrl = '{{ report.picture_url if report.picture_url else '' }}';
+
+            {% if current_user.is_admin() %}
+            marker.contactName = '{{ report.contact_name if report.contact_name else '' }}';
+            marker.contactPhone = '{{ report.contact_phone if report.contact_phone else '' }}';
+            marker.contactEmail = '{{ report.contact_email if report.contact_email else '' }}';
+            {% endif %}
+
             marker.contentString = contentString;
             markers.push(marker);
             var infoWindow = new google.maps.InfoWindow({
@@ -189,6 +286,7 @@
         });
         {% endfor %}
         storeMarkerState(markers, map, minDate, bounds, oms);
+        initializeDateRange();
         addLocationButton(map);
         addCenterButton(map);
     }
@@ -225,7 +323,7 @@
                     fillOpacity : 0.6,
                     editable: true,
                     draggable: true
-                }   
+                }
             });
             // Loading the drawing Tool in the Map.
             drawingManager.setMap(map);
@@ -244,7 +342,7 @@
         if (!dragging) {
             var bounds = rectangle.getBounds();
             map.fitBounds(bounds);
-            inboundsMarkers = filterMarkers(bounds);
+            filterMarkers();
             drawingManager.setMap(null);
         }
     }

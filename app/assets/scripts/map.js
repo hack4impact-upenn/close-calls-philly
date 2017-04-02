@@ -1,5 +1,6 @@
 // Global Marker Wrappers and Map
 var globalMarkers = null;
+var markersDisplayedOnMap = null;
 var globalMap = null;
 var markerCluster = null;
 
@@ -13,13 +14,15 @@ INITIAL_CENTER_LONG = -75.195;
 initial_coords = new google.maps.LatLng(INITIAL_CENTER_LAT, INITIAL_CENTER_LONG);
 
 // Bounds for the Date Slider. End date is current date.
-var BOUNDS_MIN;
-var BOUNDS_MAX = new Date();
+var MIN_DATE;
+var startDate;
+var endDate = new Date();
 
 // Take a list of markers and a map, put them on the map, set the
 // minimum date, and set the location bounds
 function storeMarkerState(markers, map, minDate, bounds, oms) {
     globalMarkers = markers;
+    markersDisplayedOnMap = markers;
     globalMap = map;
     markerCluster = new MarkerClusterer(map, markers, {gridSize: 50, maxZoom: 15, minimumClusterSize: 15, imagePath: 'static/images/clusterer/m'});
     for (mw = 0; mw < globalMarkers.length; mw++)
@@ -28,7 +31,8 @@ function storeMarkerState(markers, map, minDate, bounds, oms) {
         oms.addMarker(globalMarkers[mw]);
 
     }
-    BOUNDS_MIN = minDate;
+    MIN_DATE = minDate;
+    startDate = minDate;
     geographicBounds = bounds;
     map.fitBounds(bounds);
 }
@@ -145,24 +149,108 @@ function addCenterButton(map) {
     map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push(centerDiv);
 }
 
-// Get address submit event
+// Get address submit event and checkbox change events
 $(document).ready(function() {
     $('#addressForm').on('submit', function (event) {
         update_center();
         return false;
     });
+    $('#automobile').prop('checked', true);
+    $('#pedestrian').prop('checked', true);
+    $('#bicycle').prop('checked', true);
+    $('#other').prop('checked', true);
+    $('#automobile').on('change', function(event) {
+        filterMarkers();
+    });
+    $('#bicycle').on('change', function(event) {
+        filterMarkers();
+    });
+    $('#pedestrian').on('change', function(event) {
+        filterMarkers();
+    });
+    $('#other').on('change', function(event) {
+        filterMarkers();
+    });
 });
 
-function filterMarkers(bounds) {
-    var markersDisplayedOnMap = [];
+function getNextDate(startDate) {
+    startDate.setDate(startDate.getDate()+1);
+    return startDate;
+}
+
+function initializeDateRange() {
+  $('#start-date').calendar({
+    type: 'date',
+    endCalendar: $('#end-date'),
+    popupOptions: {
+      position: 'right center',
+      lastResort: 'right center',
+      prefer: 'right',
+      hideOnScroll: false
+    },
+    onChange: function (date, text, mode) {
+      startDate = date;
+      filterMarkers();
+    }
+  });
+
+  $('#end-date').calendar({
+    type: 'date',
+    startCalendar: $('#start-date'),
+    popupOptions: {
+      position: 'right center',
+      lastResort: 'right center',
+      prefer: 'right',
+      hideOnScroll: false
+    },
+    onChange: function (date, text, mode) {
+      endDate = date;
+      filterMarkers();
+    }
+  });
+
+  // initializes the dates for the calendar
+  $('#start-date').calendar('set date', startDate);
+  $('#end-date').calendar('set date', endDate);
+}
+
+function withinBounds(marker, bounds) {
+    return bounds === null || bounds.contains(marker.getPosition());
+}
+
+function withinDateRange(marker) {
+    time = marker.incidentDate.getTime();
+    return time >= startDate.getTime() && time < endDate.getTime();
+}
+
+function fitsVehicleType(marker) {
+    return (marker.automobileNum > 0 && $('#automobile').is(':checked')) ||
+           (marker.pedestrianNum > 0 && $('#pedestrian').is(':checked')) ||
+           (marker.bicycleNum > 0 && $('#bicycle').is(':checked')) ||
+           (marker.otherNum > 0 && $('#other').is(':checked'));
+}
+
+function filterMarkers() {
+    markersDisplayedOnMap = [];
+    var bounds = (rectangle === null) ? null : rectangle.getBounds();
     for (mw = 0; mw < globalMarkers.length; mw++) {
-        if (bounds === null || bounds.contains(globalMarkers[mw].getPosition())) {
-            globalMarkers[mw].setMap(globalMap);
-            markersDisplayedOnMap.push(globalMarkers[mw]);
+        var marker = globalMarkers[mw];
+        if (withinBounds(marker, bounds) && withinDateRange(marker) && fitsVehicleType(marker)) {
+            marker.setMap(globalMap);
+            markersDisplayedOnMap.push(marker);
         } else {
-            globalMarkers[mw].setMap(null);
+            marker.setMap(null);
         }
     }
     markerCluster.clearMarkers();
     markerCluster.addMarkers(markersDisplayedOnMap);
+    //   markerCluster = new MarkerClusterer(map, markersDisplayedOnMap, {gridSize: 50, maxZoom: 15, minimumClusterSize: 15, imagePath: 'static/images/clusterer/m'});
+}
+
+function resetDates() {
+    startDate = MIN_DATE;
+    endDate = new Date();
+    $('#start-date').calendar('set date', startDate);
+    $('#end-date').calendar('set date', endDate);
+    filterMarkers();
 }

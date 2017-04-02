@@ -1,5 +1,7 @@
-import datetime
+import datetime as datetime
+
 from flask_wtf import Form
+from flask_wtf.file import FileField, FileAllowed
 from wtforms.fields import (
     StringField,
     SubmitField,
@@ -7,78 +9,99 @@ from wtforms.fields import (
     TextAreaField,
     HiddenField,
     DateField,
-    FileField
 )
+from wtforms_components import TimeField
 from wtforms.ext.sqlalchemy.fields import QuerySelectField
 from wtforms.validators import (
     InputRequired,
     Length,
     Optional,
     NumberRange,
-    URL
+    URL,
+    Regexp,
 )
-from app.custom_validators import StrippedLength
+
+from app.custom_validators import StrippedLength, ValidLocation, RequiredIf
 from .. import db
 
 
 class IncidentReportForm(Form):
-    vehicle_id = StringField('Vehicle ID', validators=[
-        InputRequired('Vehicle ID is required.'),
-        StrippedLength(
-            min_length=2,
-            max_length=15,
-            message='Vehicle ID must be between 2 to 15 characters after '
-                    'removing all non-alphanumeric characters.'
-        ),
-    ])
-
-    license_plate = StringField('License Plate Number', validators=[
-        Optional(),
-        StrippedLength(
-            min_length=4,
-            max_length=8,
-            message='License plate must be between 4 to 8 characters after '
-                    'removing all non-alphanumeric characters.'
-        )
-    ])
-
-    bus_number = IntegerField('Bus Number', validators=[
-        Optional()
-    ])
-
-    led_screen_number = IntegerField('LED Screen Number', validators=[
-        Optional()
-    ])
+    location = StringField('Address', validators=[
+        InputRequired('Address is required.'),
+        ValidLocation()
+        ])
 
     latitude = HiddenField('Latitude')
     longitude = HiddenField('Longitude')
-    location = StringField('Address')
-    today = datetime.date.today()
-    date = DateField('Date', default=today,
-                     validators=[Optional()])
 
-    # TODO - add support for h:m:s format
-    duration = IntegerField('Idling Duration (minutes)', validators=[
-        InputRequired('Idling duration (minutes) is required.'),
-        NumberRange(min=0,
-                    max=10000,
-                    message='Idling duration must be between '
-                            '0 and 10000 minutes.')
+    automobile_num = IntegerField('Automobile', validators=[
+        Optional()
     ])
 
-    picture_file = FileField('Upload a picture of the idling vehicle.',
-                             validators=[Optional()])
+    bicycle_num = IntegerField('Bicycle', validators=[
+        Optional()
+    ])
 
-    picture_url = StringField('Picture URL', validators=[
-        Optional(),
-        URL(message='Picture URL must be a valid URL. '
-                    'Please upload the image to an image hosting website '
-                    'and paste the link here.')
-        ])
+    pedestrian_num = IntegerField('Pedestrian', validators=[
+        Optional()
+    ])
 
-    description = TextAreaField('Additional Notes', validators=[
+    other_num = IntegerField('Other', validators=[
+        Optional()
+    ])
+
+    today = datetime.datetime.today()
+
+    date = DateField('Date (year-month-day)',
+                     default=today.strftime('%m-%d-%Y'),
+                     validators=[InputRequired()])
+
+    time = TimeField('Time (hours:minutes am/pm)',
+                     default=today.strftime('%I:%M %p'),
+                     validators=[InputRequired()])
+
+    picture_file = FileField(
+        'Upload a photo (optional)',
+        validators=[
+            Optional(),
+            FileAllowed(['jpg', 'jpe', 'jpeg', 'png', 'gif', 'svg', 'bmp'],
+                        'Only images are allowed.')
+        ]
+    )
+
+    description = TextAreaField('Description', validators=[
+        InputRequired(),
+        Length(max=5000)
+    ])
+
+    injuries = TextAreaField('Injuries (optional)', validators=[
         Optional(),
         Length(max=5000)
     ])
 
+    contact_name = StringField('Contact Name (optional)', validators=[
+        Optional(),
+        Length(max=1000)
+    ])
+
+    contact_phone = StringField('Contact Phone (optional)', validators=[
+        Optional(),
+        Length(max=1000)
+    ])
+
+    contact_email = StringField('Contact E-mail (optional)', validators=[
+        Optional(),
+        Length(max=100)
+    ])
+
     submit = SubmitField('Create Report')
+
+
+class EditIncidentReportForm(IncidentReportForm):
+    duration = StringField('Idling Duration (h:m:s)', validators=[
+        InputRequired('Idling duration is required.'),
+        Regexp(r'^(\d{1,2}:)(\d{1,2}:)(\d{1,2})$',
+               message='Write duration as HH:MM:SS')
+    ])
+
+    submit = SubmitField('Update Report')
