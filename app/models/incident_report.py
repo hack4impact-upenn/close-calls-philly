@@ -152,7 +152,7 @@ class Incident(db.Model):
     contact_name = db.Column(db.Text, default=None) # optional
     contact_phone = db.Column(db.Integer, default=None) #optional
     contact_email = db.Column(db.Text, default=None) #optional
-    # picture_deletehash = db.Column(db.Text)
+    picture_deletehash = db.Column(db.Text, default=None)
 
     def __init__(self, **kwargs):
         super(Incident, self).__init__(**kwargs)
