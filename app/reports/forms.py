@@ -26,10 +26,14 @@ from .. import db
 
 
 class IncidentReportForm(Form):
-    address = StringField('Address', validators=[
+    location = StringField('Address', validators=[
         InputRequired('Address is required.'),
         ValidLocation()
         ])
+
+    latitude = HiddenField('Latitude')
+
+    longitude = HiddenField('Longitude')
 
     automobile_num = IntegerField('Automobile', validators=[
         Optional()

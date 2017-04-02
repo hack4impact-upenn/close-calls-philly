@@ -17,7 +17,7 @@
             } %}
 
             {{ f.begin_form(form, flashes) }}
-            {{ f.render_form_field(form.address) }}
+            {{ f.render_form_field(form.location) }}
             <div class="ui button" id="current_location_button" onclick="geoFindMe()">Use Current location</div>    
             <h3>Type</h3>
             {{ f.render_form_field(form.automobile_num) }}
