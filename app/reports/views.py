@@ -77,10 +77,10 @@ def edit_report_info(report_id):
 
     if form.validate_on_submit():
 
-        reeport.automobile_num = form.automobile_num.data
-        reeport.pedestrian_num = form.pedestrian_num.data
-        reeport.bicycle_num = form.bicycle_num.data
-        reeport.other_num = form.other_num.data
+        report.automobile_num = form.automobile_num.data
+        report.pedestrian_num = form.pedestrian_num.data
+        report.bicycle_num = form.bicycle_num.data
+        report.other_num = form.other_num.data
 
         lat, lng = geocode(form.location.data)
         report.location.latitude, report.location.longitude = lat, lng
@@ -93,21 +93,21 @@ def edit_report_info(report_id):
         report.picture_url = form.picture_url.data
         report.description = form.description.data
 
-        # if form.picture_file.data.filename:
-        #     filepath = secure_filename(form.picture_file.data.filename)
-        #     form.picture_file.data.save(filepath)
-        #
-        #     # synchronously upload image so that the user will be able to see
-        #     # the changes immediately.
-        #     link, deletehash = upload_image(
-        #         imgur_client_id=current_app.config['IMGUR_CLIENT_ID'],
-        #         imgur_client_secret=current_app.config['IMGUR_CLIENT_SECRET'],
-        #         app_name=current_app.config['APP_NAME'],
-        #         image_file_path=filepath
-        #     )
-        #
-        #     report.picture_url = link
-        #     report.picture_deletehash = deletehash
+        if form.picture_file.data.filename:
+            filepath = secure_filename(form.picture_file.data.filename)
+            form.picture_file.data.save(filepath)
+
+            # synchronously upload image so that the user will be able to see
+            # the changes immediately.
+            link, deletehash = upload_image(
+                imgur_client_id=current_app.config['IMGUR_CLIENT_ID'],
+                imgur_client_secret=current_app.config['IMGUR_CLIENT_SECRET'],
+                app_name=current_app.config['APP_NAME'],
+                image_file_path=filepath
+            )
+
+            report.picture_url = link
+            report.picture_deletehash = deletehash
 
         report.contact_name = form.contact_name.data
         report.contact_phone = form.contact_phone.data
