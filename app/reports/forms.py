@@ -34,19 +34,19 @@ class IncidentReportForm(Form):
     latitude = HiddenField('Latitude')
     longitude = HiddenField('Longitude')
 
-    automobile_num = IntegerField('Automobile', validators=[
+    automobile_num = IntegerField('Number of Automobiles', validators=[
         Optional()
     ])
 
-    bicycle_num = IntegerField('Bicycle', validators=[
+    bicycle_num = IntegerField('Number of Bicycles', validators=[
         Optional()
     ])
 
-    pedestrian_num = IntegerField('Pedestrian', validators=[
+    pedestrian_num = IntegerField('Number of Pedestrians', validators=[
         Optional()
     ])
 
-    other_num = IntegerField('Other', validators=[
+    other_num = IntegerField('Number of Others', validators=[
         Optional()
     ])
 
@@ -77,12 +77,17 @@ class IncidentReportForm(Form):
         ])
 
 
-    description = TextAreaField('Additional Notes', validators=[
+    description = TextAreaField('Description', validators=[
         InputRequired(),
         Length(max=5000)
     ])
 
     injuries = TextAreaField('Injuries (optional)', validators=[
+        Optional(),
+        Length(max=5000)
+    ])
+
+    license_plates = TextAreaField('License Plates (optional)', validators=[
         Optional(),
         Length(max=5000)
     ])
