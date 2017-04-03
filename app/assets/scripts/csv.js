@@ -1,8 +1,8 @@
 function downloadCSV(isAdmin) {
     // Init CSV array.
     var csv = [
-            ['data:text/csv;charset=utf-8,DATE,LOCATION,PEDESTRIAN NUMBER,AUTOMOBILE NUMBER,' + 
-            'BICYCLE NUMBER,OTHER NUMBER,DESCRIPTION,INJURIES,LICENSE PLATES,PICTURE URL']
+            ['data:text/csv;charset=utf-8,DATE,LOCATION,NUMBER OF PEDESTRIANS,NUMBER OF AUTOMOBILES,' +
+            'NUMBER OF BICYCLES,OTHER NUMBER,DESCRIPTION,INJURIES,LICENSE PLATES,PICTURE URL']
     ];
     if (isAdmin) {
         csv[0] = csv[0] + ',CONTACT NAME';

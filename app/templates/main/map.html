@@ -245,9 +245,8 @@
                                 '<p><b>Description:</b> ' + '{{ report.description }}' + '</p>' +
                                 '<p><b>Injuries:</b> ' + '{{ report.injuries if report.injuries else '' }} ' +
                                 '<p><b>Number of Pedestrians:</b> ' + '{{ report.pedestrian_num }}' + '</p>' +
-                                '<p><b>Number of automobiles:</b> ' + '{{ report.automobile_num }}' + '</p>' +
-                                '<p><b>Number of bicycles:</b> ' + '{{ report.bicycle_num }}' + '</p>' +
-                                '<p><b>Number of other vehicles:</b> ' + '{{ report.other_num }}' + '</p>' +
+                                '<p><b>Number of Automobiles:</b> ' + '{{ report.automobile_num }}' + '</p>' +
+                                '<p><b>Number of Bicycles:</b> ' + '{{ report.bicycle_num }}' + '</p>' +
                                 '<p><b>License Plates:</b> ' + "{{ report.license_plates if report.license_plates else '' }}" + '</p>' +
                                   {% if report.picture_url %}
                                   '<p><a href="{{ report.picture_url }}" target="_blank" rel="noopener noreferrer">' + 'Link to Picture' + '</a></p>' +

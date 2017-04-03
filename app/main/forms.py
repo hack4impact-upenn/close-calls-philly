@@ -34,15 +34,15 @@ class IncidentReportForm(Form):
     latitude = HiddenField('Latitude')
     longitude = HiddenField('Longitude')
 
-    automobile_num = IntegerField('Automobile', validators=[
+    automobile_num = IntegerField('Number of Automobiles', validators=[
         Optional()
     ])
 
-    bicycle_num = IntegerField('Bicycle', validators=[
+    bicycle_num = IntegerField('Number of Bicycles', validators=[
         Optional()
     ])
 
-    pedestrian_num = IntegerField('Pedestrian', validators=[
+    pedestrian_num = IntegerField('Number of Pedestrians', validators=[
         Optional()
     ])
 
