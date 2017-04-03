@@ -29,10 +29,11 @@
             {{ f.render_form_field(form.time)}}
             {{ f.render_form_field(form.picture_file) }}
             {{ f.render_form_field(form.description) }}
-            {{ f.render_form_field(form.injuries)}}
-            {{ f.render_form_field(form.contact_name)}}
-            {{ f.render_form_field(form.contact_phone)}}
-            {{ f.render_form_field(form.contact_email)}}
+            {{ f.render_form_field(form.injuries) }}
+            {{ f.render_form_field(form.license_plates) }}
+            {{ f.render_form_field(form.contact_name) }}
+            {{ f.render_form_field(form.contact_phone) }}
+            {{ f.render_form_field(form.contact_email) }}
             {{ f.form_message(flashes['error'], header='Something went wrong.', class='error') }}
             {{ f.form_message(flashes['warning'], header='Check your email.', class='warning') }}
             {{ f.form_message(flashes['info'], header='Information', class='info') }}
@@ -226,7 +227,7 @@
             var marker = new google.maps.Marker({
                 // Use latitude and longitude values from incident report
                 // to set position of marker
-                position:{lat: parseFloat('{{ report.location.latitude }}'), lng: parseFloat('{{ report.location.longitude }}')},
+                position:{lat: parseFloat('{{ report.address.latitude }}'), lng: parseFloat('{{ report.address.longitude }}')},
                 icon: iconFile
             });
             var dateString = '{{ report.date }}';
@@ -247,6 +248,7 @@
                                 '<p><b>Number of automobiles:</b> ' + '{{ report.automobile_num }}' + '</p>' +
                                 '<p><b>Number of bicycles:</b> ' + '{{ report.bicycle_num }}' + '</p>' +
                                 '<p><b>Number of other vehicles:</b> ' + '{{ report.other_num }}' + '</p>' +
+                                '<p><b>License Plates:</b> ' + "{{ report.license_plates if report.license_plates else '' }}" + '</p>' +
                                   {% if report.picture_url %}
                                   '<p><a href="{{ report.picture_url }}" target="_blank" rel="noopener noreferrer">' + 'Link to Picture' + '</a></p>' +
                                   {% endif %}
@@ -261,7 +263,7 @@
 
             // Dynamically add state to marker object.
             marker.incidentDate = incidentDate;
-            marker.locationName = '\"{{ report.location | replace("\n", ", ") }}\"';
+            marker.locationName = '\"{{ report.address | replace("\n", ", ") }}\"';
 
             marker.pedestrianNum = '{{ report.pedestrian_num }}';
             marker.automobileNum = '{{ report.automobile_num }}';
@@ -270,6 +272,7 @@
             marker.description = '{{ report.description }}';
 
             marker.injuries = '{{ report.injuries if report.injuries else '' }}';
+            marker.license_plates = "{{ report.license_plates if report.license_plates else ''}}";
             marker.pictureUrl = '{{ report.picture_url if report.picture_url else '' }}';
 
             {% if current_user.is_admin() %}

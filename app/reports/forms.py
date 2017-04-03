@@ -26,7 +26,7 @@ from .. import db
 
 
 class IncidentReportForm(Form):
-    
+
     address = StringField('Address', validators=[
         InputRequired('Address is required.'),
         ValidLocation()
@@ -36,19 +36,19 @@ class IncidentReportForm(Form):
 
     longitude = HiddenField('Longitude')
 
-    automobile_num = IntegerField('Automobile', validators=[
+    automobile_num = IntegerField('Number of Automobiles', validators=[
         Optional()
     ])
 
-    bicycle_num = IntegerField('Bicycle', validators=[
+    bicycle_num = IntegerField('Number of Bicycles', validators=[
         Optional()
     ])
 
-    pedestrian_num = IntegerField('Pedestrian', validators=[
+    pedestrian_num = IntegerField('Number of Pedestrians', validators=[
         Optional()
     ])
 
-    other_num = IntegerField('Other', validators=[
+    other_num = IntegerField('Number of Others', validators=[
         Optional()
     ])
 
@@ -71,12 +71,24 @@ class IncidentReportForm(Form):
         ]
     )
 
+    picture_url = StringField('Picture URL', validators=[
+                Optional(),
+                URL(message='Picture URL must be a valid URL. '
+                    'Please upload the image to an image hosting website '
+                    'and paste the link here.')
+        ])
+
     description = TextAreaField('Description', validators=[
         InputRequired(),
         Length(max=5000)
     ])
 
     injuries = TextAreaField('Injuries (optional)', validators=[
+        Optional(),
+        Length(max=5000)
+    ])
+
+    license_plates = TextAreaField('License Plates (optional)', validators=[
         Optional(),
         Length(max=5000)
     ])
