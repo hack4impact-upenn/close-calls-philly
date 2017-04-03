@@ -57,7 +57,7 @@
                     {% for r in reports | sort(reverse=True, attribute='date') %}
                         <tr onclick="window.location.href = '{{ url_for('reports.report_info', report_id=r.id) }}';">
                             <td class="single line">{{ r.date.strftime('%Y-%m-%d at %I:%M %p') }}</td>
-                            <td>{{ r.location }}</td>
+                            <td>{{ r.address }}</td>
                             <td>{{ r.pedestrian_num }}</td>
                             <td>{{ r.automobile_num }}</td>
                             <td>{{ r.bicycle_num }}</td>

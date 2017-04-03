@@ -31,7 +31,7 @@ def index():
                             longitude=lng)
 
         new_incident = Incident(
-            location=l,
+            address=l,
             date=datetime.combine(form.date.data, form.time.data),
             pedestrian_num=form.pedestrian_num.data,
             bicycle_num=form.bicycle_num.data,

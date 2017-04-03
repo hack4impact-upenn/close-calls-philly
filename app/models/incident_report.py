@@ -137,7 +137,7 @@ class Incident(db.Model):
     __tablename__ = 'incidents'
 
     id = db.Column(db.Integer, primary_key=True)
-    location = db.relationship('IncidentLocation',
+    address = db.relationship('IncidentLocation',
                                 uselist=False,
                                 lazy='joined',
                                 backref='incident')
@@ -207,7 +207,7 @@ class Incident(db.Model):
             if len(license_plates_str) > 0:
                 license_plates_str = license_plates_str[:-2]
             r = Incident(
-                location=l,
+                address=l,
                 date=fake.date_time_between(start_date="-1y", end_date="now"),
                 pedestrian_num=random.randint(0, 2),
                 bicycle_num=random.randint(0, 2),

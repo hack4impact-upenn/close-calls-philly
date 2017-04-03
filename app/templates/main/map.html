@@ -227,7 +227,7 @@
             var marker = new google.maps.Marker({
                 // Use latitude and longitude values from incident report
                 // to set position of marker
-                position:{lat: parseFloat('{{ report.location.latitude }}'), lng: parseFloat('{{ report.location.longitude }}')},
+                position:{lat: parseFloat('{{ report.address.latitude }}'), lng: parseFloat('{{ report.address.longitude }}')},
                 icon: iconFile
             });
             var dateString = '{{ report.date }}';
@@ -263,7 +263,7 @@
 
             // Dynamically add state to marker object.
             marker.incidentDate = incidentDate;
-            marker.locationName = '\"{{ report.location | replace("\n", ", ") }}\"';
+            marker.locationName = '\"{{ report.address | replace("\n", ", ") }}\"';
 
             marker.pedestrianNum = '{{ report.pedestrian_num }}';
             marker.automobileNum = '{{ report.automobile_num }}';
