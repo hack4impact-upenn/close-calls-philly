@@ -34,7 +34,6 @@
         <tr><td>Number of Pedestrians</td><td>{{ report.pedestrian_num }}</td></tr>
         <tr><td>Number of Automobiles</td><td>{{ report.autombile_num }}</td></tr>
         <tr><td>Number of Bicycles</td><td>{{ report.bicycle_num }}</td></tr>
-        <tr><td>Other</td><td>{{ report.other_num }}</td></tr>
         <tr><td>Description</td><td>{{ report.description }}</td></tr>
         <tr><td>Injuries</td><td>{{ report.injuries }}</td></tr>
         <tr><td>License Plates</td><td>{{ report.license_plates }}</td></tr>
@@ -113,7 +112,6 @@
                     {{ f.render_form_field(form.automobile_num) }}
                     {{ f.render_form_field(form.bicycle_num) }}
                     {{ f.render_form_field(form.pedestrian_num) }}
-                    {{ f.render_form_field(form.other_num) }}
                     {{ f.render_form_field(form.date)}}
                     {{ f.render_form_field(form.time)}}
                     {{ f.render_form_field(form.picture_file) }}

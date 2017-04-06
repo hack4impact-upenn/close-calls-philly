@@ -145,7 +145,6 @@ class Incident(db.Model):
     pedestrian_num = db.Column(db.Integer, default=0)
     bicycle_num = db.Column(db.Integer, default=0)
     automobile_num = db.Column(db.Integer, default=0)
-    other_num = db.Column(db.Integer, default=0)
     description = db.Column(db.Text)
     license_plates = db.Column(db.String, default=None) # optional
     injuries = db.Column(db.Text, default=None) # optional
@@ -212,7 +211,6 @@ class Incident(db.Model):
                 pedestrian_num=random.randint(0, 2),
                 bicycle_num=random.randint(0, 2),
                 automobile_num=num_automobiles,
-                other_num=random.randint(0, 2),
                 description=fake.paragraph(),
                 injuries=injuries_entry,
                 license_plates=license_plates_str,

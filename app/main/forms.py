@@ -46,10 +46,6 @@ class IncidentReportForm(Form):
         Optional()
     ])
 
-    other_num = IntegerField('Other', validators=[
-        Optional()
-    ])
-
     today = datetime.datetime.today()
 
     date = DateField('Date (year-month-day)',

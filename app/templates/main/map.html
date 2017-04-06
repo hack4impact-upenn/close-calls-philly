@@ -24,7 +24,6 @@
             {{ f.render_form_field(form.automobile_num) }}
             {{ f.render_form_field(form.bicycle_num) }}
             {{ f.render_form_field(form.pedestrian_num) }}
-            {{ f.render_form_field(form.other_num) }}
             {{ f.render_form_field(form.date)}}
             {{ f.render_form_field(form.time)}}
             {{ f.render_form_field(form.picture_file) }}
@@ -100,12 +99,6 @@
               <input type="checkbox" id="pedestrian"></input>
               <label>Pedestrian</label>
             </div>
-            <br />
-            <div class="ui checkbox">
-              <input type="checkbox" id="other"></input>
-              <label>Other</label>
-            </div>
-            <br />
         </form>
         </div>
     <div id="googleMap"></div>
@@ -267,7 +260,6 @@
             marker.pedestrianNum = '{{ report.pedestrian_num }}';
             marker.automobileNum = '{{ report.automobile_num }}';
             marker.bicycleNum = '{{ report.bicycle_num }}';
-            marker.otherNum = '{{ report.other_num }}';
             marker.description = '{{ report.description }}';
 
             marker.injuries = '{{ report.injuries if report.injuries else '' }}';
