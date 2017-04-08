@@ -209,7 +209,7 @@ def download_reports():
         return s.encode('utf-8') if s else ''
 
     current_date = str(datetime.date.today())
-    csv_name = 'IncidentReports-' + current_date + '.csv'
+    csv_name = 'Incidents-' + current_date + '.csv'
     outfile = open(csv_name, 'w+')
     print('initial file contents:', outfile.read())
 

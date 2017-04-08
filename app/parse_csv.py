@@ -2,7 +2,7 @@ import csv
 import functools
 from datetime import datetime
 from app.utils import geocode, strip_non_alphanumeric_chars
-from app.models import Location, IncidentReport
+from app.models import IncidentLocation, Incident
 from app.reports.forms import IncidentReportForm
 
 
@@ -33,7 +33,7 @@ def parse_to_db(db, filename):
 
             # Insert correctly geocoded row to database
             else:
-                loc = Location(
+                loc = IncidentLocation(
                     latitude=coords[0],
                     longitude=coords[1],
                     original_user_text=address_text)
@@ -80,20 +80,7 @@ def parse_to_db(db, filename):
                         vehicle_id_text)
                     license_plate_text = strip_non_alphanumeric_chars(
                         license_plate_text)
-
-                    incident = IncidentReport(
-                        vehicle_id=vehicle_id_text if len(vehicle_id_text) > 0
-                        else None,
-                        license_plate=license_plate_text if
-                        len(license_plate_text) > 0 else None,
-                        location=loc,
-                        date=time1,
-                        duration=time2 - time1,
-                        picture_url=row[picture_index],
-                        description=row[description_index],
-                        send_email_upon_creation=False,
-                    )
-                    db.session.add(incident)
+                    #insert incident here
 
         db.session.commit()
         return columns
