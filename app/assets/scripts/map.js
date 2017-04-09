@@ -240,7 +240,7 @@ function filterMarkers() {
     var vertices = (polygon === null) ? null : polygon.getPath();
     for (mw = 0; mw < globalMarkers.length; mw++) {
         var marker = globalMarkers[mw];
-        if (withinRectangleBounds(marker, bounds) && withinPolygonBounds(marker, vertices) && withinDateRange(marker)) {
+        if (withinRectangleBounds(marker, bounds) && withinPolygonBounds(marker, vertices) && withinDateRange(marker) && fitsVehicleType(marker)) {
             marker.setMap(globalMap);
             markersDisplayedOnMap.push(marker);
         } else {
