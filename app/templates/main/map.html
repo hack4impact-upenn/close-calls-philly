@@ -212,7 +212,7 @@
         var bounds = new google.maps.LatLngBounds();
         {% for report in incident_reports %}
             var iconFile = "";
-            {% if report.injuries %}
+            {% if report.injuries == 'Yes' %}
                 iconFile = "../static/images/marker_injury.png";
             {% else %}
                 iconFile = "../static/images/marker.png";

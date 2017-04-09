@@ -197,10 +197,10 @@ class Incident(db.Model):
                 longitude=str(fake.geo_coordinate(center=-75.197243,
                                                   radius=0.01))
             )
-            has_injury = 'no'
+            has_injury = 'No'
             injuries_description_entry = ""
             if random.random() >= 0.5:
-                has_injury = 'yes'
+                has_injury = 'Yes'
                 injuries_description_entry = "An injury occurred."
             num_automobiles = random.randint(0, 2)
             license_plates_str = ""

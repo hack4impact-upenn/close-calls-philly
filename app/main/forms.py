@@ -88,11 +88,7 @@ class IncidentReportForm(Form):
         Length(max=5000)
     ])
 
-    injuries = RadioField(
-        'Did an injury occur?',
-        coerce=bool,
-        choices=[(True, 'Yes'), (False, 'No')]
-    )
+    
 
     injuries_description = TextAreaField('Injuries Description', validators=[
         RequiredIf('injuries'),
