@@ -131,27 +131,29 @@ class IncidentLocation(db.Model):
                                    db.ForeignKey('incidents.id'))
 
     def __repr__(self):
-        return str(self.original_user_text)        
+        return str(self.original_user_text)
 
 class Incident(db.Model):
     __tablename__ = 'incidents'
 
     id = db.Column(db.Integer, primary_key=True)
-    location = db.relationship('IncidentLocation',
+    address = db.relationship('IncidentLocation',
                                 uselist=False,
                                 lazy='joined',
                                 backref='incident')
     date = db.Column(db.DateTime)
-    pedestrian_num = db.Column(db.Integer) 
-    bicycle_num = db.Column(db.Integer)
-    automobile_num = db.Column(db.Integer)
-    other_num = db.Column(db.Integer)
+    pedestrian_num = db.Column(db.Integer, default=0)
+    bicycle_num = db.Column(db.Integer, default=0)
+    automobile_num = db.Column(db.Integer, default=0)
+    other_num = db.Column(db.Integer, default=0)
     description = db.Column(db.Text)
+    license_plates = db.Column(db.String, default=None) # optional
     injuries = db.Column(db.Text, default=None) # optional
     picture_url = db.Column(db.Text, default=None) # optional
     contact_name = db.Column(db.Text, default=None) # optional
     contact_phone = db.Column(db.Integer, default=None) #optional
     contact_email = db.Column(db.Text, default=None) #optional
+    picture_deletehash = db.Column(db.Text, default=None)
 
     def __init__(self, **kwargs):
         super(Incident, self).__init__(**kwargs)
@@ -198,15 +200,22 @@ class Incident(db.Model):
             injuries_entry = ""
             if random.random() >= 0.5:
                 injuries_entry = "An injury occurred."
+            num_automobiles = random.randint(0, 2)
+            license_plates_str = ""
+            for _ in range(num_automobiles):
+                license_plates_str += rand_alphanumeric(6) + ', '
+            if len(license_plates_str) > 0:
+                license_plates_str = license_plates_str[:-2]
             r = Incident(
-                location=l,
+                address=l,
                 date=fake.date_time_between(start_date="-1y", end_date="now"),
                 pedestrian_num=random.randint(0, 2),
                 bicycle_num=random.randint(0, 2),
-                automobile_num=random.randint(0, 2),
+                automobile_num=num_automobiles,
                 other_num=random.randint(0, 2),
                 description=fake.paragraph(),
                 injuries=injuries_entry,
+                license_plates=license_plates_str,
                 picture_url=fake.image_url(),
                 contact_name = "Test Contact",
                 contact_phone=1234567890,
@@ -217,7 +226,4 @@ class Incident(db.Model):
             try:
                 db.session.commit()
             except IntegrityError:
-                db.session.rollback()    
-
-
-
+                db.session.rollback()

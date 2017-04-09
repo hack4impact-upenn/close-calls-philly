@@ -9,7 +9,7 @@ from .forms import EditIncidentReportForm
 
 from . import reports
 from .. import db
-from ..models import IncidentReport
+from ..models import Incident
 from ..decorators import admin_required
 from ..utils import (
     flash_errors,
@@ -29,7 +29,7 @@ def view_reports():
     General users do not have access to this page."""
 
     if current_user.is_admin():
-        incident_reports = IncidentReport.query.all()
+        incident_reports = Incident.query.all()
 
     # TODO test using real data
     return render_template('reports/reports.html', reports=incident_reports)
@@ -49,13 +49,13 @@ def view_my_reports():
 @login_required
 def report_info(report_id):
     """View a report"""
-    report = IncidentReport.query.filter_by(id=report_id).first()
+    report = Incident.query.filter_by(id=report_id).first()
 
     if report is None:
         abort(404)
 
     # Either the user is looking at their own report, or the user is an admin.
-    if (not current_user.is_admin()) and report.user_id != current_user.id:
+    if not current_user.is_admin():
         abort(403)
 
     return render_template('reports/manage_report.html', report=report)
@@ -65,35 +65,34 @@ def report_info(report_id):
 @login_required
 def edit_report_info(report_id):
     """Change the fields for a report"""
-    report = IncidentReport.query.filter_by(id=report_id).first()
+    report = Incident.query.filter_by(id=report_id).first()
 
     if report is None:
         abort(404)
     # Either the user is editing their own report, or the user is an admin.
-    if (report.user_id != current_user.id) and (not current_user.is_admin()):
+    if not current_user.is_admin():
         abort(403)
 
     form = EditIncidentReportForm()
 
     if form.validate_on_submit():
-        report.vehicle_id = form.vehicle_id.data
-        report.license_plate = form.license_plate.data
 
-        lat, lng = geocode(form.location.data)
-        report.location.latitude, report.location.longitude = lat, lng
-        report.location.original_user_text = form.location.data
+        report.automobile_num = form.automobile_num.data
+        report.pedestrian_num = form.pedestrian_num.data
+        report.bicycle_num = form.bicycle_num.data
+        report.other_num = form.other_num.data
+
+        lat, lng = geocode(form.address.data)
+        report.address.latitude, report.address.longitude = lat, lng
+        report.address.original_user_text = form.address.data
 
         d, t = form.date.data, form.time.data
         report.date = datetime(year=d.year, month=d.month, day=d.day,
                                hour=t.hour, minute=t.minute, second=t.second)
 
-        report.duration = parse_timedelta(form.duration.data)
-
         report.picture_url = form.picture_url.data
         report.description = form.description.data
-
-        report.bus_number = form.bus_number.data
-        report.led_screen_number = form.led_screen_number.data
+        report.license_plates = form.license_plates.data
 
         if form.picture_file.data.filename:
             filepath = secure_filename(form.picture_file.data.filename)
@@ -111,6 +110,10 @@ def edit_report_info(report_id):
             report.picture_url = link
             report.picture_deletehash = deletehash
 
+        report.contact_name = form.contact_name.data
+        report.contact_phone = form.contact_phone.data
+        report.contact_email = form.contact_email.data
+
         db.session.add(report)
         db.session.commit()
         flash('Report information updated.', 'form-success')
@@ -118,18 +121,24 @@ def edit_report_info(report_id):
         flash_errors(form)
 
     # pre-populate form
-    form.vehicle_id.default = report.vehicle_id
-    form.license_plate.default = report.license_plate
-    form.bus_number.default = report.bus_number
-    form.led_screen_number.default = report.led_screen_number
-    form.location.default = report.location.original_user_text
+
+    form.automobile_num.default = report.automobile_num
+    form.pedestrian_num.default = report.pedestrian_num
+    form.bicycle_num.default = report.bicycle_num
+    form.other_num.default = report.other_num
+
+    form.address.default = report.address.original_user_text
 
     form.date.default = report.date
     form.time.default = report.date
 
-    form.duration.default = report.duration
     form.picture_url.default = report.picture_url
     form.description.default = report.description
+    form.license_plates.default = report.license_plates
+    form.contact_name.default = report.contact_name
+    form.contact_phone.default = report.contact_phone
+    form.contact_email.default = report.contact_email
+
     form.process()
 
     return render_template('reports/manage_report.html', report=report,
@@ -140,13 +149,12 @@ def edit_report_info(report_id):
 @login_required
 def delete_report_request(report_id):
     """Request deletion of a report."""
-    report = IncidentReport.query.filter_by(id=report_id).first()
+    report = Incident.query.filter_by(id=report_id).first()
 
     if report is None:
         abort(404)
 
-    # Either the user is deleting their own report, or the user is an admin.
-    if (report.user_id != current_user.id) and (not current_user.is_admin()):
+    if not current_user.is_admin():
         abort(403)
 
     return render_template('reports/manage_report.html', report=report)
@@ -157,7 +165,7 @@ def delete_report_request(report_id):
 def delete_report(report_id):
     """Delete a report"""
 
-    report = IncidentReport.query.filter_by(id=report_id).first()
+    report = Incident.query.filter_by(id=report_id).first()
 
     if report.picture_deletehash:
         # Asynchronously delete the report's image
@@ -167,7 +175,7 @@ def delete_report(report_id):
             imgur_client_id=current_app.config['IMGUR_CLIENT_ID'],
             imgur_client_secret=current_app.config['IMGUR_CLIENT_SECRET'],
         )
-    report_user_id = report.user_id
+    # report_user_id = report.user_id
 
     db.session.delete(report)
     db.session.commit()
@@ -175,7 +183,7 @@ def delete_report(report_id):
 
     # TODO - address edge case where an admin clicks on their own report from
     # reports/all endpoint, should redirect back to /all. use cookies
-    if report_user_id == current_user.id:
-        return redirect(url_for('reports.view_my_reports'))
-    else:
-        return redirect(url_for('reports.view_reports'))
+    # if report_user_id == current_user.id:
+    #     return redirect(url_for('reports.view_my_reports'))
+    # else:
+    return redirect(url_for('reports.view_reports'))
