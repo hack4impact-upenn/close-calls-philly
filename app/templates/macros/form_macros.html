@@ -97,11 +97,12 @@
             {{ field.label }}
         </div>
     {% elif field.type == 'RadioField' %}
+      {{ field.label }}
         {% for item in field %}
             <div class="ui radio checkbox">
-                {{ field }}
-                {{ field.label }}
-            </div>
+                {{ item }}
+                {{ item.label }}
+            </div><br />
         {% endfor %}
     {% elif field.type == 'SubmitField' %}
         {{ field(class='ui button') }}

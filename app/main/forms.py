@@ -9,6 +9,7 @@ from wtforms.fields import (
     TextAreaField,
     HiddenField,
     DateField,
+    RadioField
 )
 from wtforms_components import TimeField
 from wtforms.ext.sqlalchemy.fields import QuerySelectField
@@ -19,10 +20,27 @@ from wtforms.validators import (
     NumberRange,
     URL,
     Regexp,
+    Required
 )
 
 from app.custom_validators import StrippedLength, ValidLocation, RequiredIf
 from .. import db
+
+
+class RequiredIf(Required):
+    # a validator which makes a field required if
+    # another field is set and has a truthy value
+
+    def __init__(self, other_field_name, *args, **kwargs):
+        self.other_field_name = other_field_name
+        super(RequiredIf, self).__init__(*args, **kwargs)
+
+    def __call__(self, form, field):
+        other_field = form._fields.get(self.other_field_name)
+        if other_field is None:
+            raise Exception('no field named "%s" in form' % self.other_field_name)
+        if (other_field.data):
+            super(RequiredIf, self).__call__(form, field)
 
 
 class IncidentReportForm(Form):
@@ -70,8 +88,14 @@ class IncidentReportForm(Form):
         Length(max=5000)
     ])
 
-    injuries = TextAreaField('Injuries (optional)', validators=[
-        Optional(),
+    injuries = RadioField(
+        'Did an injury occur?',
+        coerce=bool,
+        choices=[(True, 'Yes'), (False, 'No')]
+    )
+
+    injuries_description = TextAreaField('Injuries Description', validators=[
+        RequiredIf('injuries'),
         Length(max=5000)
     ])
 

@@ -38,6 +38,7 @@ def index():
             automobile_num=form.automobile_num.data,
             description=form.description.data,
             injuries=form.injuries.data,
+            injuries_description=form.injuries_description.data,
             license_plates=form.license_plates.data,
             contact_name=form.contact_name.data,
             contact_phone=form.contact_phone.data,

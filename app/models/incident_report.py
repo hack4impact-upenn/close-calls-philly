@@ -142,12 +142,13 @@ class Incident(db.Model):
                                 lazy='joined',
                                 backref='incident')
     date = db.Column(db.DateTime)
-    pedestrian_num = db.Column(db.Integer, default=0)
-    bicycle_num = db.Column(db.Integer, default=0)
-    automobile_num = db.Column(db.Integer, default=0)
+    pedestrian_num = db.Column(db.Integer)
+    bicycle_num = db.Column(db.Integer)
+    automobile_num = db.Column(db.Integer)
     description = db.Column(db.Text)
     license_plates = db.Column(db.String, default=None) # optional
-    injuries = db.Column(db.Text, default=None) # optional
+    injuries = db.Column(db.Text)
+    injuries_description = db.Column(db.Text, default=None) # optional
     picture_url = db.Column(db.Text, default=None) # optional
     contact_name = db.Column(db.Text, default=None) # optional
     contact_phone = db.Column(db.Integer, default=None) #optional
@@ -196,9 +197,11 @@ class Incident(db.Model):
                 longitude=str(fake.geo_coordinate(center=-75.197243,
                                                   radius=0.01))
             )
-            injuries_entry = ""
+            has_injury = 'no'
+            injuries_description_entry = ""
             if random.random() >= 0.5:
-                injuries_entry = "An injury occurred."
+                has_injury = 'yes'
+                injuries_description_entry = "An injury occurred."
             num_automobiles = random.randint(0, 2)
             license_plates_str = ""
             for _ in range(num_automobiles):
@@ -212,7 +215,8 @@ class Incident(db.Model):
                 bicycle_num=random.randint(0, 2),
                 automobile_num=num_automobiles,
                 description=fake.paragraph(),
-                injuries=injuries_entry,
+                injuries=has_injury,
+                injuries_description=injuries_description_entry,
                 license_plates=license_plates_str,
                 picture_url=fake.image_url(),
                 contact_name = "Test Contact",

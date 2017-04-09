@@ -29,6 +29,7 @@
             {{ f.render_form_field(form.picture_file) }}
             {{ f.render_form_field(form.description) }}
             {{ f.render_form_field(form.injuries) }}
+            {{ f.render_form_field(form.injuries_description) }}
             {{ f.render_form_field(form.license_plates) }}
             {{ f.render_form_field(form.contact_name) }}
             {{ f.render_form_field(form.contact_phone) }}
@@ -211,7 +212,7 @@
         var bounds = new google.maps.LatLngBounds();
         {% for report in incident_reports %}
             var iconFile = "";
-            {% if report.injuries and report.injuries|length > 0 %}
+            {% if report.injuries %}
                 iconFile = "../static/images/marker_injury.png";
             {% else %}
                 iconFile = "../static/images/marker.png";
@@ -236,7 +237,7 @@
                                 '</button>' +
                                 '<h3>Date: ' + '{{ report.date.strftime('%m-%d-%Y at %I:%M %p') }}' + '</h3>' +
                                 '<p><b>Description:</b> ' + '{{ report.description }}' + '</p>' +
-                                '<p><b>Injuries:</b> ' + '{{ report.injuries if report.injuries else '' }} ' +
+                                '<p><b>Injuries:</b> ' + '{{ report.injuries_description if report.injuries_description else '' }} ' +
                                 '<p><b>Number of Pedestrians:</b> ' + '{{ report.pedestrian_num }}' + '</p>' +
                                 '<p><b>Number of Automobiles:</b> ' + '{{ report.automobile_num }}' + '</p>' +
                                 '<p><b>Number of Bicycles:</b> ' + '{{ report.bicycle_num }}' + '</p>' +
@@ -261,8 +262,8 @@
             marker.automobileNum = '{{ report.automobile_num }}';
             marker.bicycleNum = '{{ report.bicycle_num }}';
             marker.description = '{{ report.description }}';
-
-            marker.injuries = '{{ report.injuries if report.injuries else '' }}';
+            marker.injuries = '{{ report.injuries }}';
+            marker.injuries_description = '{{ report.injuries_description if report.injuries == "Yes" else "No injuries." }}';
             marker.license_plates = "{{ report.license_plates if report.license_plates else ''}}";
             marker.pictureUrl = '{{ report.picture_url if report.picture_url else '' }}';
 
