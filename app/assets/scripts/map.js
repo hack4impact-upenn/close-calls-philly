@@ -214,8 +214,12 @@ function initializeDateRange() {
   $('#end-date').calendar('set date', endDate);
 }
 
-function withinBounds(marker, bounds) {
+function withinRectangleBounds(marker, bounds) {
     return bounds === null || bounds.contains(marker.getPosition());
+}
+
+function withinPolygonBounds(marker, vertices) {
+    return vertices === null || google.maps.geometry.poly.containsLocation(marker.getPosition(), polygon);
 }
 
 function withinDateRange(marker) {
@@ -233,9 +237,10 @@ function fitsVehicleType(marker) {
 function filterMarkers() {
     markersDisplayedOnMap = [];
     var bounds = (rectangle === null) ? null : rectangle.getBounds();
+    var vertices = (polygon === null) ? null : polygon.getPath();
     for (mw = 0; mw < globalMarkers.length; mw++) {
         var marker = globalMarkers[mw];
-        if (withinBounds(marker, bounds) && withinDateRange(marker) && fitsVehicleType(marker)) {
+        if (withinRectangleBounds(marker, bounds) && withinPolygonBounds(marker, vertices) && withinDateRange(marker) && fitsVehicleType(marker)) {
             marker.setMap(globalMap);
             markersDisplayedOnMap.push(marker);
         } else {
@@ -244,7 +249,6 @@ function filterMarkers() {
     }
     markerCluster.clearMarkers();
     markerCluster.addMarkers(markersDisplayedOnMap);
-    //   markerCluster = new MarkerClusterer(map, markersDisplayedOnMap, {gridSize: 50, maxZoom: 15, minimumClusterSize: 15, imagePath: 'static/images/clusterer/m'});
 }
 
 function resetDates() {
