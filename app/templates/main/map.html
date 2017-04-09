@@ -111,6 +111,7 @@
     <div id="googleMap"></div>
 </div>
 
+<!-- Modal stuff -->
 <div class="ui centered modal" id="geocode_error">
     <i class="close icon"></i>
     <div class="header">Geocode not successful</div>
@@ -125,6 +126,62 @@
         <div class="ui approve button">Okay</div>
     </div>
 </div>
+
+<div class="ui centered modal" id="bounding-box-instructions">
+    <i class="close icon"></i>
+    <div class="modal-content">
+        <div class="modal-header">Bounding Box Instructions</div>
+    <div class="modal-body">
+        <p> Filter the map markers to include only incidents in a specified region. Click the <img src="static/images/google_maps_rectangle_button.png"/> button and drag across the map for a rectangular region OR
+        <br>
+            Click the </p>
+    </div>
+</div>
+<form class="modal multi-step" id="instructions-modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title step-1" data-step="1">Step 1</h4>
+                <h4 class="modal-title step-2" data-step="2">Step 2</h4>
+                <h4 class="modal-title step-3" data-step="3">Step 3</h4>
+                <h4 class="modal-title step-4" data-step="4">Step 4</h4>
+                <h4 class="modal-title step-5" data-step="5">Step 5</h4>
+            </div>
+            <div class="modal-body step step-1">
+                <p>Sign into the Google account linked to your Android device. Go to <a href="https://takeout.google.com/settings/takeout" target="_blank">takeout.google.com/settings/takeout.</a></p>
+            </div>
+            <div class="modal-body step step-2">
+                <p>Click "Select none."
+                <br>
+                <img class="tutorial-img" src="static/images/takeout-screenshots/select-none.png" /></p>
+            </div>
+            <div class="modal-body step step-3">
+                <p>Select Location History. Make sure it is set to JSON format.
+                <br>
+                <img class="tutorial-img" src="static/images/takeout-screenshots/select-location.png" />
+                <br>
+                Click next.</p>
+            </div>
+            <div class="modal-body step step-4">
+                <p>Choose the format as follows.
+                <br>
+                <img class="tutorial-img" src="static/images/takeout-screenshots/choose-format.png" />
+                Create archive.</p>
+            </div>
+            <div class="modal-body step step-5">
+                <p>Unzip/Unarchive and extract the resulting downloaded .zip file. Open the "Location History" folder and move the "LocationHistory.json" file to a known place. <b> You'll be using this file for the upload process</b>
+                <br>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-info step step-1" data-step="1" onclick="sendEvent(2)">Continue</button>
+                <button type="button" class="btn btn-info step step-2" data-step="2" onclick="sendEvent(3)">Continue</button>
+                <button type="button" class="btn btn-info step step-3" data-step="3" onclick="sendEvent(4)">Continue</button>
+                <button type="button" class="btn btn-info step step-4" data-step="4" onclick="sendEvent(5)">Continue</button>
+            </div>
+        </div>
+    </div>
+</form>
 
 <script type="text/javascript">
     var map;
