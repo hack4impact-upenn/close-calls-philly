@@ -8,10 +8,39 @@
     width: 20%;
 }
 
+#licenseSearch {
+    position: absolute;
+    left: 5%;
+    top: 85px;
+    z-index: 5;
+    width: 20%;
+}
+
+#createBoundingBoxButton {
+    position: absolute;
+    left: 5%;
+    width: 20%;
+    top: 140px;
+}
+
+#deleteBoundingBoxButton {
+    position: absolute;
+    left: 5%;
+    width: 20%;
+    top: 185px;
+}
+
+#downloadCSVButton {
+    position: absolute;
+    left: 5%;
+    width: 20%;
+    top: 230px;
+}
+
 #dateRange {
   position: absolute;
   left: 5%;
-  top: 225px;
+  top: 280px;
   z-index: 5;
   width: 20%;
 }
@@ -19,7 +48,7 @@
 #resetDatesButton {
   position: absolute;
   left: 5%;
-  top: 375px;
+  top: 430px;
   z-index: 5;
   width: 20%;
 }
@@ -27,9 +56,18 @@
 #typeForm {
   position: absolute;
   left: 5%;
-  top: 420px;
+  top: 475px;
   z-index: 5;
   width: 20%;
+}
+
+#licenseSubmitButton {
+    position: absolute;
+    display: inline-block;
+    left: 70%;
+    width: 30%;
+    height: 100%;
+    padding: 0px;
 }
 
 #submitButton {
@@ -49,27 +87,6 @@
 
 #submitButton:hover, #submit:hover{
     background-color: $light-teal;
-}
-
-#createBoundingBoxButton {
-    position: absolute;
-    left: 5%;
-    width: 20%;
-    top: 85px;
-}
-
-#deleteBoundingBoxButton {
-    position: absolute;
-    left: 5%;
-    width: 20%;
-    top: 130px;
-}
-
-#downloadCSVButton {
-    position: absolute;
-    left: 5%;
-    width: 20%;
-    top: 175px;
 }
 
 #current_location_button, #submit{
@@ -198,7 +215,8 @@ form textarea#description {
     #googleMap {
         width: 100%;
     }
-    #addressSearch {
+    #addressSearch,
+    #licenseSearch {
         width: 80%;
         left: 5%;
     }
