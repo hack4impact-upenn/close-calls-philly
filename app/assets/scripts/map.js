@@ -151,14 +151,20 @@ function addCenterButton(map) {
 
 // Get address submit event and checkbox change events
 $(document).ready(function() {
-    $('#addressForm').on('submit', function (event) {
+    $('#addressForm').on('submit', function(event) {
         update_center();
         return false;
     });
-    $('#licenseForm').on('submit', function (event) {
+    $('#licenseForm').on('submit', function(event) {
         filterMarkers();
         return false;
     });
+    // Capture all possible changes to the text input.
+    $('#license').on('change textInput input', function(event) {
+        if (!$('#license').val()) {
+            filterMarkers();
+        }
+    })
     $('#automobile').prop('checked', true);
     $('#pedestrian').prop('checked', true);
     $('#bicycle').prop('checked', true);
@@ -239,7 +245,7 @@ function fitsVehicleType(marker) {
 }
 
 function fitsLicenseSearch(marker) {
-    var licenseSearch = $('#license').val();
+    var licenseSearch = $('#license').val().toUpperCase();
     return marker.licensePlates.includes(licenseSearch);
 }
 

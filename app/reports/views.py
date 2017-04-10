@@ -92,7 +92,7 @@ def edit_report_info(report_id):
 
         report.picture_url = form.picture_url.data
         report.description = form.description.data
-        report.license_plates = form.license_plates.data
+        report.license_plates = form.license_plates.data.upper()
 
         if form.picture_file.data.filename:
             filepath = secure_filename(form.picture_file.data.filename)
