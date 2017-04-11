@@ -56,6 +56,13 @@
             </div>
         </form>
 
+        <form name="licenseForm" id="licenseForm">
+            <div class="ui action input" id="licenseSearch">
+                <input class="prompt" placeholder="Enter License Plate..." type="text" name="license" id="license">
+                <button id="licenseSubmitButton" class="ui button">Search</button>
+            </div>
+        </form>
+
         <button id="createBoundingBoxButton" class="ui button">Create Bounding Box</button>
         <button id="deleteBoundingBoxButton" class="ui button">Delete Bounding Box</button>
         <div class="ui form" id="dateRange">
@@ -291,7 +298,7 @@
             marker.description = '{{ report.description }}';
 
             marker.injuries = '{{ report.injuries if report.injuries else '' }}';
-            marker.license_plates = "{{ report.license_plates if report.license_plates else ''}}";
+            marker.licensePlates = "{{ report.license_plates if report.license_plates else ''}}";
             marker.pictureUrl = '{{ report.picture_url if report.picture_url else '' }}';
 
             {% if current_user.is_admin() %}

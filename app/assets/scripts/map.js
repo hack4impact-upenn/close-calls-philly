@@ -151,10 +151,20 @@ function addCenterButton(map) {
 
 // Get address submit event and checkbox change events
 $(document).ready(function() {
-    $('#addressForm').on('submit', function (event) {
+    $('#addressForm').on('submit', function(event) {
         update_center();
         return false;
     });
+    $('#licenseForm').on('submit', function(event) {
+        filterMarkers();
+        return false;
+    });
+    // Capture all possible changes to the text input.
+    $('#license').on('change textInput input', function(event) {
+        if (!$('#license').val()) {
+            filterMarkers();
+        }
+    })
     $('#automobile').prop('checked', true);
     $('#pedestrian').prop('checked', true);
     $('#bicycle').prop('checked', true);
@@ -234,13 +244,19 @@ function fitsVehicleType(marker) {
            (marker.otherNum > 0 && $('#other').is(':checked'));
 }
 
+function fitsLicenseSearch(marker) {
+    var licenseSearch = $('#license').val().toUpperCase();
+    return marker.licensePlates.includes(licenseSearch);
+}
+
 function filterMarkers() {
     markersDisplayedOnMap = [];
     var bounds = (rectangle === null) ? null : rectangle.getBounds();
     var vertices = (polygon === null) ? null : polygon.getPath();
     for (mw = 0; mw < globalMarkers.length; mw++) {
         var marker = globalMarkers[mw];
-        if (withinRectangleBounds(marker, bounds) && withinPolygonBounds(marker, vertices) && withinDateRange(marker) && fitsVehicleType(marker)) {
+        if (withinRectangleBounds(marker, bounds) && withinPolygonBounds(marker, vertices) &&
+                withinDateRange(marker) && fitsVehicleType(marker) && fitsLicenseSearch(marker)) {
             marker.setMap(globalMap);
             markersDisplayedOnMap.push(marker);
         } else {
