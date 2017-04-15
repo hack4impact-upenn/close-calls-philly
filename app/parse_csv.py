@@ -2,7 +2,7 @@ import csv
 import functools
 from datetime import datetime
 from app.utils import geocode, strip_non_alphanumeric_chars
-from app.models import Location, IncidentReport
+from app.models import IncidentLocation, Incident
 from app.reports.forms import IncidentReportForm
 
 def parse_start_end_time(date_index, row):
@@ -73,7 +73,7 @@ def parse_to_db(db, filename):
 
             # Insert correctly geocoded row to database
             else:
-                loc = Location(
+                loc = IncidentLocation(
                     latitude=coords[0],
                     longitude=coords[1],
                     original_user_text=address_text)
