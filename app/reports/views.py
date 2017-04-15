@@ -82,9 +82,9 @@ def edit_report_info(report_id):
         report.bicycle_num = form.bicycle_num.data
         report.other_num = form.other_num.data
 
-        lat, lng = geocode(form.location.data)
-        report.location.latitude, report.location.longitude = lat, lng
-        report.location.original_user_text = form.location.data
+        lat, lng = geocode(form.address.data)
+        report.address.latitude, report.address.longitude = lat, lng
+        report.address.original_user_text = form.address.data
 
         d, t = form.date.data, form.time.data
         report.date = datetime(year=d.year, month=d.month, day=d.day,
@@ -92,6 +92,7 @@ def edit_report_info(report_id):
 
         report.picture_url = form.picture_url.data
         report.description = form.description.data
+        report.license_plates = form.license_plates.data.upper()
 
         if form.picture_file.data.filename:
             filepath = secure_filename(form.picture_file.data.filename)
@@ -126,16 +127,17 @@ def edit_report_info(report_id):
     form.bicycle_num.default = report.bicycle_num
     form.other_num.default = report.other_num
 
-    form.location.default = report.location.original_user_text
+    form.address.default = report.address.original_user_text
 
     form.date.default = report.date
     form.time.default = report.date
 
     form.picture_url.default = report.picture_url
     form.description.default = report.description
-    # report.contact_name.default = report.contact_name
-    # report.contact_phone.default = form.contact_phone
-    # report.contact_email.default = form.contact_email
+    form.license_plates.default = report.license_plates
+    form.contact_name.default = report.contact_name
+    form.contact_phone.default = report.contact_phone
+    form.contact_email.default = report.contact_email
 
     form.process()
 

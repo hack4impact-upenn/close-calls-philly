@@ -46,6 +46,7 @@
                             <th>Other</th>
                             <th>Description</th>
                             <th>Injuries</th>
+                            <th>License Plates</th>
                             <th>Picture URL</th>
                             <th>Contact Name</th>
                             <th>Contact Phone</th>
@@ -56,13 +57,14 @@
                     {% for r in reports | sort(reverse=True, attribute='date') %}
                         <tr onclick="window.location.href = '{{ url_for('reports.report_info', report_id=r.id) }}';">
                             <td class="single line">{{ r.date.strftime('%Y-%m-%d at %I:%M %p') }}</td>
-                            <td>{{ r.location }}</td>
+                            <td>{{ r.address }}</td>
                             <td>{{ r.pedestrian_num }}</td>
                             <td>{{ r.automobile_num }}</td>
                             <td>{{ r.bicycle_num }}</td>
                             <td>{{ r.other_num }}</td>
                             <td>{{ r.description }}</td>
                             <td>{{ r.injuries }}</td>
+                            <td>{{ r.license_plates }}</td>
                             <td>{{ r.picture_url }}</td>
                             <td>{{ r.contact_name }}</td>
                             <td>{{ r.contact_phone }}</td>
