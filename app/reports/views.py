@@ -39,7 +39,7 @@ def view_reports():
 @login_required
 def view_my_reports():
     """View all idling incident reports for this user."""
-    incident_reports = current_user.incident_reports
+    incident_reports = current_user.incidents
 
     return render_template('reports/reports.html', reports=incident_reports)
 

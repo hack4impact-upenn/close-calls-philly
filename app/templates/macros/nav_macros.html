@@ -23,7 +23,6 @@
                 {% if current_user.is_admin() %}
                 <a href="{{ url_for('reports.view_reports') }}" class="item">All Reports</a>
                 {% endif %}
-                <a href="{{ url_for('reports.view_my_reports') }}" class="item">My Reports</a>
                 {% if current_user.is_admin() %}
                 <div class="header">Admin</div>
                 <a class="item" href="{{ url_for(current_user.role.index + '.registered_users') }}">
