@@ -39,15 +39,15 @@ class IncidentReportForm(Form):
     longitude = HiddenField('Longitude')
 
     automobile_num = IntegerField('Number of Automobiles', validators=[
-        Optional()
+        InputRequired()
     ])
 
     bicycle_num = IntegerField('Number of Bicycles', validators=[
-        Optional()
+        InputRequired()
     ])
 
     pedestrian_num = IntegerField('Number of Pedestrians', validators=[
-        Optional()
+        InputRequired()
     ])
 
     today = datetime.datetime.today()
