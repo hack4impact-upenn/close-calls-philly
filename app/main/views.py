@@ -3,7 +3,7 @@ import pytz
 
 from datetime import date, timedelta, datetime
 
-from flask import render_template, current_app, flash, Response
+from flask import render_template, current_app, flash, Response, redirect, url_for
 from werkzeug import secure_filename
 
 from . import main
@@ -64,6 +64,7 @@ def index():
         db.session.add(new_incident)
         db.session.commit()
         flash('Report successfully submitted.', 'success')
+        return redirect(url_for('main.index'))
 
     # pre-populate form
     form.date.default = datetime.now(pytz.timezone(
@@ -73,7 +74,6 @@ def index():
     form.process()
 
     return render_template('main/map.html',
-                           agencies=[],
                            form=form,
                            incident_reports=Incident.query.all())
 
