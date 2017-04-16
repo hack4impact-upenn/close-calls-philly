@@ -42,6 +42,7 @@ class Incident(db.Model):
     license_plates = db.Column(db.String, default=None) # optional
     injuries = db.Column(db.Text)
     injuries_description = db.Column(db.Text, default=None) # optional
+    deaths = db.Column(db.Integer, default=0) # optional
     picture_url = db.Column(db.Text, default=None) # optional
     contact_name = db.Column(db.Text, default=None) # optional
     contact_phone = db.Column(db.Integer, default=None) #optional
@@ -110,6 +111,7 @@ class Incident(db.Model):
                 description=fake.paragraph(),
                 injuries=has_injury,
                 injuries_description=injuries_description_entry,
+                death=choice([0]*98+[0, 1]),
                 license_plates=license_plates_str,
                 picture_url=fake.image_url(),
                 contact_name = "Test Contact",
