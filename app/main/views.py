@@ -3,7 +3,7 @@ import pytz
 
 from datetime import date, timedelta, datetime
 
-from flask import render_template, current_app, flash, Response
+from flask import render_template, current_app, flash, Response, redirect, url_for
 from werkzeug import secure_filename
 
 from . import main
@@ -11,7 +11,7 @@ from app import models, db
 from app.reports.forms import IncidentReportForm
 from app.models import Incident, IncidentLocation, EditableHTML
 from app.utils import upload_image, geocode
-
+from ..utils import flash_errors
 
 @main.route('/', methods=['GET', 'POST'])
 
@@ -36,9 +36,9 @@ def index():
             pedestrian_num=form.pedestrian_num.data,
             bicycle_num=form.bicycle_num.data,
             automobile_num=form.automobile_num.data,
-            other_num=form.other_num.data,
             description=form.description.data,
             injuries=form.injuries.data,
+            injuries_description=form.injuries_description.data,
             license_plates=form.license_plates.data.upper(),
             contact_name=form.contact_name.data,
             contact_phone=form.contact_phone.data,
@@ -64,6 +64,9 @@ def index():
         db.session.add(new_incident)
         db.session.commit()
         flash('Report successfully submitted.', 'success')
+        return redirect(url_for('main.index'))
+    elif form.errors.items():
+        flash('Report failed to submit. Please make sure all required fields are filled out.', 'error')
 
     # pre-populate form
     form.date.default = datetime.now(pytz.timezone(
@@ -73,7 +76,6 @@ def index():
     form.process()
 
     return render_template('main/map.html',
-                           agencies=[],
                            form=form,
                            incident_reports=Incident.query.all())
 
