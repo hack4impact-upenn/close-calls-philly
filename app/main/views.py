@@ -11,7 +11,7 @@ from app import models, db
 from app.reports.forms import IncidentReportForm
 from app.models import Incident, IncidentLocation, EditableHTML
 from app.utils import upload_image, geocode
-
+from ..utils import flash_errors
 
 @main.route('/', methods=['GET', 'POST'])
 
@@ -65,6 +65,8 @@ def index():
         db.session.commit()
         flash('Report successfully submitted.', 'success')
         return redirect(url_for('main.index'))
+    elif form.errors.items():
+        flash('Report failed to submit. Please make sure all required fields are filled out.', 'error')
 
     # pre-populate form
     form.date.default = datetime.now(pytz.timezone(
