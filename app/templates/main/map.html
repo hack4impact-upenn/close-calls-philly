@@ -55,8 +55,7 @@
                 <button id="submitButton" class="ui button">Center</button>
             </div>
         </form>
-
-        <button id="createBoundingBoxButton" class="ui button">Create Bounding Box</button>
+        <button id="createBoundingBoxButton" class="ui button">Create Bounding Box</button><a><i onclick="sendBoundingInstructionsModal()" class="info circle icon" aria-hidden="true" id="boundingInstructionsIcon"></i></a>
         <button id="deleteBoundingBoxButton" class="ui button">Delete Bounding Box</button>
         <div class="ui form" id="dateRange">
           <div class="field">
@@ -80,7 +79,7 @@
         </div>
 
         <div class="ui button" id="resetDatesButton">Reset Dates</div>
-        <button id="downloadCSVButton" class="ui button">Download CSV</button>
+        <button id="downloadCSVButton" class="ui button">Download CSV</button><a><i class="info circle icon" id="downloadCsvInstructionsIcon" onclick="sendDownloadCsvInstructionsModal()" aria-hidden="true"></i></a>
 
 
         <div id="typeForm">
@@ -127,66 +126,27 @@
     </div>
 </div>
 
-<div class="ui centered modal" id="bounding-box-instructions">
+<div class="ui centered modal" id="bounding-instructions-modal">
     <i class="close icon"></i>
-    <div class="modal-content">
-        <div class="modal-header">Bounding Box Instructions</div>
-    <div class="modal-body">
-        <p> Filter the map markers to include only incidents in a specified region. Click the <img src="static/images/google_maps_rectangle_button.png"/> button and drag across the map for a rectangular region OR
-        <br>
-            Click the <img src="static/images/google_maps_polygon_button.png"/> button to draw a freeform shape. To draw the shape, double click on a point on the map, then extend the line to another point and click once, then extend and click again, etc. When you want to complete the shape, simply return to the first point and click.
-        <br>
-            You can modify a rectangle/shape by dragging the white vertices of the rectangle/shape, and you can drag a shape across the map as well.
-        <br>
-            Click "Delete Bounding Box" to delete the rectangle or shape.
+    <div class="header">Bounding Box Instructions</div>
+    <div class="content">
+        <p><ul>
+        <li>Click "Create Bounding Box" to filter the map markers to include only incidents in a specified region.</li>
+        <li>Click the <img src="static/images/google_maps_rectangle_button.png"/> button and drag across the map for a rectangular region OR</li>
+        <li>Click the <img src="static/images/google_maps_polygon_button.png"/> button to draw a freeform shape. To draw the shape, double click on a point on the map, then extend the line to another point and click once, then extend and click again, etc. When you want to complete the shape, simply return to the first point and click.</li>
+        <li>You can modify a rectangle/shape by dragging the white vertices of the rectangle/shape, and you can drag a shape across the map as well.</li>
+        <li>Click "Delete Bounding Box" to delete the rectangle or shape.</li>
         </p>
     </div>
 </div>
-<form class="modal multi-step" id="instructions-modal">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title step-1" data-step="1">Step 1</h4>
-                <h4 class="modal-title step-2" data-step="2">Step 2</h4>
-                <h4 class="modal-title step-3" data-step="3">Step 3</h4>
-                <h4 class="modal-title step-4" data-step="4">Step 4</h4>
-                <h4 class="modal-title step-5" data-step="5">Step 5</h4>
-            </div>
-            <div class="modal-body step step-1">
-                <p>Sign into the Google account linked to your Android device. Go to <a href="https://takeout.google.com/settings/takeout" target="_blank">takeout.google.com/settings/takeout.</a></p>
-            </div>
-            <div class="modal-body step step-2">
-                <p>Click "Select none."
-                <br>
-                <img class="tutorial-img" src="static/images/takeout-screenshots/select-none.png" /></p>
-            </div>
-            <div class="modal-body step step-3">
-                <p>Select Location History. Make sure it is set to JSON format.
-                <br>
-                <img class="tutorial-img" src="static/images/takeout-screenshots/select-location.png" />
-                <br>
-                Click next.</p>
-            </div>
-            <div class="modal-body step step-4">
-                <p>Choose the format as follows.
-                <br>
-                <img class="tutorial-img" src="static/images/takeout-screenshots/choose-format.png" />
-                Create archive.</p>
-            </div>
-            <div class="modal-body step step-5">
-                <p>Unzip/Unarchive and extract the resulting downloaded .zip file. Open the "Location History" folder and move the "LocationHistory.json" file to a known place. <b> You'll be using this file for the upload process</b>
-                <br>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-info step step-1" data-step="1" onclick="sendEvent(2)">Continue</button>
-                <button type="button" class="btn btn-info step step-2" data-step="2" onclick="sendEvent(3)">Continue</button>
-                <button type="button" class="btn btn-info step step-3" data-step="3" onclick="sendEvent(4)">Continue</button>
-                <button type="button" class="btn btn-info step step-4" data-step="4" onclick="sendEvent(5)">Continue</button>
-            </div>
-        </div>
+
+<div class="ui centered modal" id="download-csv-instructions-modal">
+    <i class="close icon"></i>
+    <div class="header">Download CSV Instructions</div>
+    <div class="content">
+    Download a CSV containing information for all incidents that are currently on the map.
     </div>
-</form>
+</div>
 
 <script type="text/javascript">
     var map;
@@ -452,6 +412,14 @@
         function error() {
         };
         navigator.geolocation.getCurrentPosition(success, error);
+    }
+
+    function sendBoundingInstructionsModal() {
+        $("#bounding-instructions-modal").modal('show');
+    }
+
+    function sendDownloadCsvInstructionsModal() {
+        $("#download-csv-instructions-modal").modal('show');
     }
 </script>
 

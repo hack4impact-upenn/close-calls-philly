@@ -51,6 +51,18 @@
     background-color: $light-teal;
 }
 
+#boundingInstructionsIcon {
+    position: absolute;
+    left: 25.5%;
+    width: 1%;
+    top: 90px;
+}
+
+.info:hover {
+    cursor: pointer;
+    cursor: hand;
+}
+
 #createBoundingBoxButton {
     position: absolute;
     left: 5%;
@@ -70,6 +82,12 @@
     left: 5%;
     width: 20%;
     top: 175px;
+}
+
+#downloadCsvInstructionsIcon {
+    position: absolute;
+    left: 25.5%;
+    top: 180px;
 }
 
 #current_location_button, #submit{
