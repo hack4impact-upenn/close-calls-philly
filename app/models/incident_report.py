@@ -111,7 +111,7 @@ class Incident(db.Model):
                 description=fake.paragraph(),
                 injuries=has_injury,
                 injuries_description=injuries_description_entry,
-                death=choice([0]*98+[0, 1]),
+                deaths=choice([0]*98+[0, 1]),
                 license_plates=license_plates_str,
                 picture_url=fake.image_url(),
                 contact_name = "Test Contact",
