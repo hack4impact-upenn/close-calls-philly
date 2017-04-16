@@ -3,8 +3,8 @@
 
 {% block content %}
 <div id="wrapper">
-  <div id="form_button">Report Incident</div>
-    <div id="inputPanel"></div>
+    <div id="inputPanel" class="ui vertical menu">
+        <div id="form_button">Report Incident</div>
         <div id="form_container">
             <button id="close_form" class="ui icon button close">
                 <i class="remove icon"></i>
@@ -63,6 +63,8 @@
             </div>
         </form>
 
+        <button id="downloadCSVButton" class="ui button">Download CSV</button>
+
         <button id="createBoundingBoxButton" class="ui button">Create Bounding Box</button>
         <button id="deleteBoundingBoxButton" class="ui button">Delete Bounding Box</button>
         <div class="ui form" id="dateRange">
@@ -87,11 +89,11 @@
         </div>
 
         <div class="ui button" id="resetDatesButton">Reset Dates</div>
-        <button id="downloadCSVButton" class="ui button">Download CSV</button>
+
+        <div class="ui horizontal divider">Vehicle Type</div>
 
 
         <div id="typeForm">
-        <b>Vehicle Type</b>
         <form>
             <div class="ui checkbox">
               <input type="checkbox" id="automobile"></input>
@@ -115,6 +117,7 @@
             <br />
         </form>
         </div>
+    </div>
     <div id="googleMap"></div>
 </div>
 
