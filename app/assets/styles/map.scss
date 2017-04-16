@@ -99,6 +99,7 @@
     display: flex;
     flex-direction: column;
     width: 30%;
+    height: 100%;
     left: 0px;
     top: 0px;
     float: left;
@@ -163,7 +164,7 @@ form textarea#description {
     }
     #addressSearch,
     #licenseSearch {
-        width: 80%;
+        width: 100%;
         left: 5%;
     }
     #form_container,
