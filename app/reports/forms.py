@@ -87,7 +87,6 @@ class IncidentReportForm(Form):
     ], validators=[InputRequired()])
 
     injuries_description = TextAreaField('Injuries Description', validators=[
-        # validate_injuries,
         RequireDescription('injuries'),
         Length(max=5000)
     ])
@@ -116,10 +115,5 @@ class IncidentReportForm(Form):
 
 
 class EditIncidentReportForm(IncidentReportForm):
-    # duration = StringField('Idling Duration (h:m:s)', validators=[
-    #     InputRequired('Idling duration is required.'),
-    #     Regexp(r'^(\d{1,2}:)(\d{1,2}:)(\d{1,2})$',
-    #            message='Write duration as HH:MM:SS')
-    # ])
 
     submit = SubmitField('Update Report')

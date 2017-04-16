@@ -91,6 +91,8 @@ def edit_report_info(report_id):
 
         report.picture_url = form.picture_url.data
         report.description = form.description.data
+        report.injuries = form.injuries.data
+        report.injuries_description = form.injuries_description.data
         report.license_plates = form.license_plates.data.upper()
 
         if form.picture_file.data.filename:
@@ -132,6 +134,8 @@ def edit_report_info(report_id):
 
     form.picture_url.default = report.picture_url
     form.description.default = report.description
+    form.injuries.default = report.injuries
+    form.injuries_description.default = report.injuries_description
     form.license_plates.default = report.license_plates
     form.contact_name.default = report.contact_name
     form.contact_phone.default = report.contact_phone
