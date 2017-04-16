@@ -91,3 +91,16 @@ class RequiredIf(object):
                 if condition_field.data == data and not field.data:
                     Required()(form, field)
         Optional()(form, field)
+
+
+class RequireDescription(object):
+    def __init__(self, other_field_name, *args, **kwargs):
+        self.other_field_name = other_field_name
+        super(RequireDescription, self).__init__(*args, **kwargs)
+
+    def __call__(self, form, field):
+        other_field = form._fields.get(self.other_field_name)
+        if bool(other_field.data == 'Yes'):
+            Required()(form, field)
+        else:
+            Optional()(form, field)

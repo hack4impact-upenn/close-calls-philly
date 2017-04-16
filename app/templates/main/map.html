@@ -24,12 +24,12 @@
             {{ f.render_form_field(form.automobile_num) }}
             {{ f.render_form_field(form.bicycle_num) }}
             {{ f.render_form_field(form.pedestrian_num) }}
-            {{ f.render_form_field(form.other_num) }}
             {{ f.render_form_field(form.date)}}
             {{ f.render_form_field(form.time)}}
             {{ f.render_form_field(form.picture_file) }}
             {{ f.render_form_field(form.description) }}
             {{ f.render_form_field(form.injuries) }}
+            <div id="injuries-description-field" style="display:none">{{ f.render_form_field(form.injuries_description) }}</div>
             {{ f.render_form_field(form.license_plates) }}
             {{ f.render_form_field(form.contact_name) }}
             {{ f.render_form_field(form.contact_phone) }}
@@ -109,12 +109,6 @@
               <input type="checkbox" id="pedestrian"></input>
               <label>Pedestrian</label>
             </div>
-            <br />
-            <div class="ui checkbox">
-              <input type="checkbox" id="other"></input>
-              <label>Other</label>
-            </div>
-            <br />
         </form>
         </div>
     </div>
@@ -216,7 +210,7 @@
             google.maps.event.addListener(polygon.getPath(), 'set_at', function() { updateMarkersFromBounds(); });
             updateMarkersFromBounds();
         });
-            
+
 
         var oms = new OverlappingMarkerSpiderfier(map, {keepSpiderfied: true, nearbyDistance: 10});
 
@@ -247,7 +241,7 @@
         var bounds = new google.maps.LatLngBounds();
         {% for report in incident_reports %}
             var iconFile = "";
-            {% if report.injuries and report.injuries|length > 0 %}
+            {% if report.injuries == 'Yes' %}
                 iconFile = "../static/images/marker_injury.png";
             {% else %}
                 iconFile = "../static/images/marker.png";
@@ -272,11 +266,10 @@
                                 '</button>' +
                                 '<h3>Date: ' + '{{ report.date.strftime('%m-%d-%Y at %I:%M %p') }}' + '</h3>' +
                                 '<p><b>Description:</b> ' + '{{ report.description }}' + '</p>' +
-                                '<p><b>Injuries:</b> ' + '{{ report.injuries if report.injuries else '' }} ' +
+                                '<p><b>Injuries:</b> ' + '{{ report.injuries_description if report.injuries_description else '' }} ' +
                                 '<p><b>Number of Pedestrians:</b> ' + '{{ report.pedestrian_num }}' + '</p>' +
-                                '<p><b>Number of automobiles:</b> ' + '{{ report.automobile_num }}' + '</p>' +
-                                '<p><b>Number of bicycles:</b> ' + '{{ report.bicycle_num }}' + '</p>' +
-                                '<p><b>Number of other vehicles:</b> ' + '{{ report.other_num }}' + '</p>' +
+                                '<p><b>Number of Automobiles:</b> ' + '{{ report.automobile_num }}' + '</p>' +
+                                '<p><b>Number of Bicycles:</b> ' + '{{ report.bicycle_num }}' + '</p>' +
                                 '<p><b>License Plates:</b> ' + "{{ report.license_plates if report.license_plates else '' }}" + '</p>' +
                                   {% if report.picture_url %}
                                   '<p><a href="{{ report.picture_url }}" target="_blank" rel="noopener noreferrer">' + 'Link to Picture' + '</a></p>' +
@@ -297,10 +290,9 @@
             marker.pedestrianNum = '{{ report.pedestrian_num }}';
             marker.automobileNum = '{{ report.automobile_num }}';
             marker.bicycleNum = '{{ report.bicycle_num }}';
-            marker.otherNum = '{{ report.other_num }}';
             marker.description = '{{ report.description }}';
-
-            marker.injuries = '{{ report.injuries if report.injuries else '' }}';
+            marker.injuries = '{{ report.injuries }}';
+            marker.injuries_description = '{{ report.injuries_description if report.injuries == "Yes" else "No injuries." }}';
             marker.licensePlates = "{{ report.license_plates if report.license_plates else ''}}";
             marker.pictureUrl = '{{ report.picture_url if report.picture_url else '' }}';
 
@@ -442,6 +434,15 @@
         };
         navigator.geolocation.getCurrentPosition(success, error);
     }
+
+    $('#injuries-0').click(function() {
+        $('#injuries-description-field').show('fast');
+    })
+
+    $('#injuries-1').click(function() {
+        $('#injuries-description-field').hide('fast');
+    })
+
 </script>
 
 {% endblock %}

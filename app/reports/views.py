@@ -39,7 +39,7 @@ def view_reports():
 @login_required
 def view_my_reports():
     """View all idling incident reports for this user."""
-    incident_reports = current_user.incident_reports
+    incident_reports = current_user.incidents
 
     return render_template('reports/reports.html', reports=incident_reports)
 
@@ -80,7 +80,6 @@ def edit_report_info(report_id):
         report.automobile_num = form.automobile_num.data
         report.pedestrian_num = form.pedestrian_num.data
         report.bicycle_num = form.bicycle_num.data
-        report.other_num = form.other_num.data
 
         lat, lng = geocode(form.address.data)
         report.address.latitude, report.address.longitude = lat, lng
@@ -125,7 +124,6 @@ def edit_report_info(report_id):
     form.automobile_num.default = report.automobile_num
     form.pedestrian_num.default = report.pedestrian_num
     form.bicycle_num.default = report.bicycle_num
-    form.other_num.default = report.other_num
 
     form.address.default = report.address.original_user_text
 

@@ -168,7 +168,6 @@ $(document).ready(function() {
     $('#automobile').prop('checked', true);
     $('#pedestrian').prop('checked', true);
     $('#bicycle').prop('checked', true);
-    $('#other').prop('checked', true);
     $('#automobile').on('change', function(event) {
         filterMarkers();
     });
@@ -176,9 +175,6 @@ $(document).ready(function() {
         filterMarkers();
     });
     $('#pedestrian').on('change', function(event) {
-        filterMarkers();
-    });
-    $('#other').on('change', function(event) {
         filterMarkers();
     });
 });
@@ -240,8 +236,7 @@ function withinDateRange(marker) {
 function fitsVehicleType(marker) {
     return (marker.automobileNum > 0 && $('#automobile').is(':checked')) ||
            (marker.pedestrianNum > 0 && $('#pedestrian').is(':checked')) ||
-           (marker.bicycleNum > 0 && $('#bicycle').is(':checked')) ||
-           (marker.otherNum > 0 && $('#other').is(':checked'));
+           (marker.bicycleNum > 0 && $('#bicycle').is(':checked'));
 }
 
 function fitsLicenseSearch(marker) {

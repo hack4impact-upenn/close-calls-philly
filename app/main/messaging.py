@@ -11,7 +11,7 @@ from ..utils import (
     attach_image_to_incident_report,
     url_for_external
 )
-from ..models import IncidentReport, Location, User
+from ..models import User
 from ..reports.forms import IncidentReportForm
 from datetime import datetime, timedelta
 import twilio.twiml
@@ -121,30 +121,6 @@ def handle_message():
     set_cookie(response, 'picture_url', picture_url)
 
     return response
-
-
-def handle_create_report(description, duration, license_plate,
-                         location, picture_url, vehicle_id, phone_number):
-    """Create a report with given fields."""
-    lat, lon = geocode(location)
-
-    new_incident = IncidentReport(
-        vehicle_id=vehicle_id,
-        license_plate=license_plate if license_plate else None,
-        duration=timedelta(minutes=duration),
-        description=description,
-        location=Location(
-            latitude=lat,
-            longitude=lon,
-            original_user_text=location
-        ),
-        picture_url=picture_url if picture_url else None,
-        user=User.query.filter_by(phone_number=phone_number).first()
-    )
-    db.session.add(new_incident)
-    db.session.commit()
-
-    return new_incident
 
 
 def handle_start_report(twiml):
