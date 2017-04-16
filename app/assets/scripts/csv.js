@@ -10,10 +10,10 @@ function downloadCSV(isAdmin) {
         csv[0] = csv[0] + ',CONTACT EMAIL';
     }
     markersDisplayedOnMap.forEach(function(marker) {
-        var license_plates = marker.license_plates.split(',').join(';');
+        var licensePlates = marker.licensePlates.split(',').join(';');
         var line = [marker.incidentDate, marker.locationName, marker.pedestrianNum,
                     marker.automobileNum, marker.bicycleNum, marker.description, marker.injuries,
-                    marker.injuries_description, license_plates, marker.pictureUrl];
+                    marker.injuries_description, licensePlates, marker.pictureUrl];
         if (isAdmin) {
             line.push(marker.contactName);
             line.push(marker.contactPhone);

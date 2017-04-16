@@ -56,6 +56,13 @@
             </div>
         </form>
 
+        <form name="licenseForm" id="licenseForm">
+            <div class="ui action input" id="licenseSearch">
+                <input class="prompt" placeholder="Enter License Plate..." type="text" name="license" id="license">
+                <button id="licenseSubmitButton" class="ui button">Search</button>
+            </div>
+        </form>
+
         <button id="createBoundingBoxButton" class="ui button">Create Bounding Box</button>
         <button id="deleteBoundingBoxButton" class="ui button">Delete Bounding Box</button>
         <div class="ui form" id="dateRange">
@@ -123,15 +130,18 @@
 <script type="text/javascript">
     var map;
     var drawingManager;
+    var shape = null;
     var rectangle = null;
+    var polygon = null;
     var dragging = false;
 
-
-    $('#createBoundingBoxButton').click(drawRec);
+    $('#createBoundingBoxButton').click(function() {
+        drawShape();
+    })
 
     $('#deleteBoundingBoxButton').click(function() {
-        deleteRec();
-        filterMarkers();
+        deleteShape();
+        inboundsMarkers = filterMarkers();
         map.fitBounds(geographicBounds);
     });
 
@@ -175,13 +185,29 @@
         drawingManager = new google.maps.drawing.DrawingManager();
 
         google.maps.event.addListener(drawingManager, 'overlaycomplete', function(event) {
-            deleteRec();
-            rectangle = event.overlay;
-            rectangle.addListener('dragstart', draggingRectangleStart);
-            rectangle.addListener('dragend', draggingRectangleEnd);
+            deleteShape();
+            shape = event.overlay;
+        });
+
+        google.maps.event.addListener(drawingManager, 'rectanglecomplete', function(event) {
+            rectangle = shape;
+            shape = null;
+            rectangle.addListener('dragstart', draggingShapeStart);
+            rectangle.addListener('dragend', draggingShapeEnd);
             rectangle.addListener('bounds_changed', updateMarkersFromBounds);
             updateMarkersFromBounds();
         });
+
+        google.maps.event.addListener(drawingManager, 'polygoncomplete', function(event) {
+            polygon = shape;
+            shape = null;
+            polygon.addListener('dragstart', draggingShapeStart);
+            polygon.addListener('dragend', draggingShapeEnd);
+            google.maps.event.addListener(polygon.getPath(), 'set_at', function() { updateMarkersFromBounds(); });
+            google.maps.event.addListener(polygon.getPath(), 'set_at', function() { updateMarkersFromBounds(); });
+            updateMarkersFromBounds();
+        });
+
 
         var oms = new OverlappingMarkerSpiderfier(map, {keepSpiderfied: true, nearbyDistance: 10});
 
@@ -264,7 +290,7 @@
             marker.description = '{{ report.description }}';
             marker.injuries = '{{ report.injuries }}';
             marker.injuries_description = '{{ report.injuries_description if report.injuries == "Yes" else "No injuries." }}';
-            marker.license_plates = "{{ report.license_plates if report.license_plates else ''}}";
+            marker.licensePlates = "{{ report.license_plates if report.license_plates else ''}}";
             marker.pictureUrl = '{{ report.picture_url if report.picture_url else '' }}';
 
             {% if current_user.is_admin() %}
@@ -298,7 +324,7 @@
         });
     });
 
-    function drawRec() {
+    function drawShape() {
         // If already in drawing mode, cancel it.
         if (drawingManager.getMap()) {
             drawingManager.setMap(null);
@@ -309,9 +335,17 @@
                 drawingControl : true,
                 drawingControlOptions : {
                     position : google.maps.ControlPosition.TOP_CENTER,
-                    drawingModes : [ google.maps.drawing.OverlayType.RECTANGLE ]
+                    drawingModes : [ 'polygon', 'rectangle' ]
                 },
                 rectangleOptions : {
+                    strokeColor : '#6c6c6c',
+                    strokeWeight : 3.5,
+                    fillColor : '#926239',
+                    fillOpacity : 0.6,
+                    editable: true,
+                    draggable: true
+                },
+                polygonOptions : {
                     strokeColor : '#6c6c6c',
                     strokeWeight : 3.5,
                     fillColor : '#926239',
@@ -326,27 +360,41 @@
 
     }
 
-    function deleteRec() {
+    function deleteShape() {
         if (rectangle) {
             rectangle.setMap(null);
         }
+        if (polygon) {
+            polygon.setMap(null);
+        }
         rectangle = null;
+        polygon = null;
     }
 
     function updateMarkersFromBounds() {
         if (!dragging) {
-            var bounds = rectangle.getBounds();
-            map.fitBounds(bounds);
-            filterMarkers();
+            if (rectangle) {
+                var bounds = rectangle.getBounds();
+                map.fitBounds(bounds);
+            }
+            else {
+                var vertices = polygon.getPath();
+                var bounds = new google.maps.LatLngBounds();
+                for (v=0; v < vertices.getLength(); v++) {
+                    bounds.extend(vertices.getAt(v));
+                }
+                map.fitBounds(bounds);
+            }
+            inboundsMarkers = filterMarkers();
             drawingManager.setMap(null);
         }
     }
 
-    function draggingRectangleStart() {
+    function draggingShapeStart() {
         dragging = true;
     }
 
-    function draggingRectangleEnd() {
+    function draggingShapeEnd() {
         dragging = false;
         updateMarkersFromBounds()
     }

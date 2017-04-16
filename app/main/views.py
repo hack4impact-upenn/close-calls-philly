@@ -39,7 +39,7 @@ def index():
             description=form.description.data,
             injuries=form.injuries.data,
             injuries_description=form.injuries_description.data,
-            license_plates=form.license_plates.data,
+            license_plates=form.license_plates.data.upper(),
             contact_name=form.contact_name.data,
             contact_phone=form.contact_phone.data,
             contact_email=form.contact_email.data
