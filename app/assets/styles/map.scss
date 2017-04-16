@@ -72,7 +72,6 @@
 }
 
 #close_info, #close_form {
-    //position: absolute;
     background-color: $red;
     color: $white;
     height: 25px;
@@ -102,7 +101,6 @@
 
 #inputPanel {
     position: absolute;
-    flex-direction: column;
     width: 30%;
     height: 100%;
     left: 0px;
@@ -157,33 +155,44 @@ form textarea#description {
 }
 
 @media all and (max-width: $mobile-breakpoint) {
+    #inputPanel {
+        width: 100%;
+    }
+
+    #licenseSearch,
     #createBoundingBoxButton,
     #deleteBoundingBoxButton,
-    #resetDatesButton,
+    #downloadCSVButton,
     #dateRange,
-    #inputPanel {
+    #resetDatesButton,
+    #typeForm,
+    #vehicleDivider {
         display: none;
     }
     #googleMap {
         width: 100%;
     }
-    #addressSearch,
-    #licenseSearch {
-        width: 100%;
-        left: 5%;
+
+    #addressForm {
+        position: absolute;
+        width: 80%;
+        margin: auto;
+        top: 30px;
+        z-index: 1;
     }
+
     #form_container,
     #info_container {
         position: absolute;
         width: 80%;
-        left: 5%;
-        top: 80px;
+        margin: auto;
+        top: 30px;
     }
     #form_button {
         position: absolute;
         width: 80%;
-        left: 5%;
-        bottom: 0px;
+        margin: auto;
+        bottom: 10px;
     }
     #submitButton {
         left: 95%;
