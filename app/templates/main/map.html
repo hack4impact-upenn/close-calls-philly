@@ -29,7 +29,7 @@
             {{ f.render_form_field(form.picture_file) }}
             {{ f.render_form_field(form.description) }}
             {{ f.render_form_field(form.injuries) }}
-            {{ f.render_form_field(form.injuries_description) }}
+            <div id="injuries-description-field">{{ f.render_form_field(form.injuries_description) }}</div>
             {{ f.render_form_field(form.license_plates) }}
             {{ f.render_form_field(form.contact_name) }}
             {{ f.render_form_field(form.contact_phone) }}
@@ -383,6 +383,15 @@
         };
         navigator.geolocation.getCurrentPosition(success, error);
     }
+
+    $('#injuries-0').click(function() {
+        $('#injuries-description-field').show('fast');
+    })
+
+    $('#injuries-1').click(function() {
+        $('#injuries-description-field').hide('fast');
+    })
+
 </script>
 
 {% endblock %}
