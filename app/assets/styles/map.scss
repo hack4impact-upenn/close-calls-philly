@@ -168,6 +168,13 @@
     float: right;
 }
 
+#map-legend {
+    position: absolute;
+    left: 30%;
+    width: 10%;
+    height: 10%;
+}
+
 #wrapper {
     position:relative;
     overflow: hidden;
@@ -210,6 +217,7 @@ form textarea#description {
     #deleteBoundingBoxButton,
     #resetDatesButton,
     #dateRange,
+    #map-legend
     #inputPanel {
         display: none;
     }
