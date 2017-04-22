@@ -3,7 +3,7 @@
 #addressSearch {
     position: absolute;
     left: 5%;
-    top: 30px;
+    top: 10px;
     z-index: 5;
     width: 20%;
 }
@@ -11,7 +11,7 @@
 #licenseSearch {
     position: absolute;
     left: 5%;
-    top: 85px;
+    top: 60px;
     z-index: 5;
     width: 20%;
 }
@@ -20,27 +20,34 @@
     position: absolute;
     left: 5%;
     width: 20%;
-    top: 140px;
+    top: 115px;
 }
 
 #deleteBoundingBoxButton {
     position: absolute;
     left: 5%;
     width: 20%;
-    top: 185px;
+    top: 160px;
 }
 
 #downloadCSVButton {
     position: absolute;
     left: 5%;
     width: 20%;
-    top: 230px;
+    top: 205px;
+}
+
+#uploadCSVButton {
+    position: absolute;
+    left: 5%;
+    width: 20%;
+    top: 250px;
 }
 
 #dateRange {
   position: absolute;
   left: 5%;
-  top: 280px;
+  top: 295px;
   z-index: 5;
   width: 20%;
 }
@@ -48,7 +55,7 @@
 #resetDatesButton {
   position: absolute;
   left: 5%;
-  top: 430px;
+  top: 440px;
   z-index: 5;
   width: 20%;
 }
@@ -56,7 +63,7 @@
 #typeForm {
   position: absolute;
   left: 5%;
-  top: 475px;
+  top: 490px;
   z-index: 5;
   width: 20%;
 }
@@ -111,9 +118,9 @@
 #form_button {
     position: absolute;
     background-color: $red;
-    width: 20%;
+    width: 15%;
     color: white;
-    bottom: 10px;
+    bottom: 5px;
     left: 5%;
     display: table;
     margin: 0 auto;

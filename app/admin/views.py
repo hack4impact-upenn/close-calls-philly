@@ -228,3 +228,11 @@ def download_reports():
         data,
         mimetype="text/csv",
         headers={"Content-disposition": "attachment; filename=" + csv_name})
+
+@admin.route('/upload_reports', methods=['POST'])
+@login_required
+@admin_required
+def upload_reports():
+    """Upload a csv file of incidents."""
+
+

@@ -88,6 +88,7 @@
 
         <div class="ui button" id="resetDatesButton">Reset Dates</div>
         <button id="downloadCSVButton" class="ui button">Download CSV</button>
+        <button id="uploadCSVButton" class="ui button">Upload CSV</button>
 
 
         <div id="typeForm">
@@ -170,6 +171,10 @@
         {% else %}
             downloadCSV(false);
         {% endif %}
+    });
+
+    $('#uploadCSVButton').click(function() {
+        //TODO: WHAT IS HERE
     });
 
     function initializeMapAndMarkers() {
