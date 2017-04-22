@@ -108,11 +108,6 @@
         </form>
         </div>
     <div id="googleMap"></div>
-    <fieldset id="map-legend">
-        <div class="ui teal inverted segment">No injury</div>
-        <div class="ui yellow inverted segment">Injury</div>
-        <div class="ui red inverted segment">Death</div>
-    </fieldset>
 </div>
 
 <!-- Modal stuff -->
@@ -197,6 +192,19 @@
                 scrollwheel: false,
         };
         map = new google.maps.Map($('#googleMap')[0],mapProp);
+        var legend = document.createElement('div');
+        legend.innerHTML = '<h3>Legend</h3>';
+        legend.id = 'map-legend';
+        var div1 = document.createElement('div');
+        div1.innerHTML = '<img src="../static/images/marker_swatch.png"> No Injury';
+        var div2 = document.createElement('div');
+        div2.innerHTML = '<img src="../static/images/injury_swatch.png"> Injury';
+        var div3 = document.createElement('div');
+        div3.innerHTML = '<img src="../static/images/death_swatch.png"> Death';
+        legend.appendChild(div1);
+        legend.appendChild(div2);
+        legend.appendChild(div3);
+        map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push(legend);
         google.maps.event.addListener(map, 'click', function(event) {
                 $('#latitude').val(event.latLng.lat());
                 $('#replaceable').hide()
@@ -331,6 +339,7 @@
             $(".ui.navigation.grid").css("margin-bottom", "0");
             $("footer").css("margin-top", "0");
         });
+
     });
 
     function drawRec() {
