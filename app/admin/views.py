@@ -215,12 +215,13 @@ def download_reports():
 
     wr = csv.writer(outfile, delimiter=',', quoting=csv.QUOTE_MINIMAL)
     reports = db.session.query(Incident).all()
-    wr.writerow(['DATE', 'LOCATION', 'VEHICLE ID', 'DURATION',
-                'LICENSE PLATE', 'DESCRIPTION'])
+    wr.writerow(['DATE', 'LOCATION', 'NUMBER OF AUTOMOBILES', 'NUMBER OF BICYCLES',
+                'NUMBER OF PEDESTRIANS', 'DESCRIPTION', 'INJURIES', 'INJURIES DESCRIPTION',
+                'DEATHS', 'LICENSE PLATES', 'PICTURE URL', 'CONTACT NAME', 'CONTACT PHONE', 'CONTACT EMAIL'])
     for r in reports:
-        wr.writerow([r.date, r.location,
-                     r.vehicle_id, r.duration,
-                     r.license_plate, encode(r.description)])
+        wr.writerow([r.date, r.address, r.automobile_num, r.bicycle_num, r.pedestrian_num,
+                     r.description, r.injuries, r.injuries_description, r.deaths,
+                     r.license_plates, r.picture_url, r.contact_name, r.contact_phone, r.contact_email])
 
     endfile = open(csv_name, 'r+')
     data = endfile.read()
