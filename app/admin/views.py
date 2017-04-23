@@ -2,6 +2,7 @@ import csv
 import datetime
 from ..decorators import admin_required
 from datetime import datetime
+from dateutil import parser
 from flask import (
     render_template,
     abort,
@@ -243,8 +244,10 @@ def upload_reports():
     """Reads a csv and imports the data into a database."""
     # The indices in the csv of different data
     
-    def parse_start_end_time(date_index, row):
-        for date_format in ['%m/%d/%Y %H:%M', '%m/%d/%y %H:%M']:
+
+
+    def parse_datetime(date_index, row):
+        """for date_format in ['%m/%d/%Y %H:%M', '%m/%d/%y %H:%M']:
             try:
                 time_1 = datetime.strptime(row[date_index], date_format)
             except ValueError:
@@ -254,10 +257,11 @@ def upload_reports():
                 time_2 = datetime.strptime(row[date_index + 1],
                                           date_format)
             except ValueError:
-                time_2 = None
-
-        return time_1, time_2
-
+                time_2 = None"""
+        try:
+            return parser.parse(row[date_index])
+        except ValueError:
+            return None
 
     def validate_field_partial(field, data, form, row_number):
         """TODO: docstring"""
@@ -296,8 +300,12 @@ def upload_reports():
 
     with open(csv_file.filename, 'r') as csv_file:
         reader = csv.reader(csv_file)
-        # columns = reader.next()
-
+        columns = next(reader)
+        if columns != ["Date","Location","Pedestrians","Automobiles","Bicycles","Other","Description","Injuries","Picture","Contact Name","Contact Phone","Contact Email"]:
+            flash('The column names and order must match the specified form exactly. Please click the info icon for more details.', 'error')
+            return redirect(url_for('main.index'))
+        error_lines = []
+        errors = []
         for i, row in enumerate(reader, start=2):  # i is the row number
 
             address_text = row[location_index]
@@ -306,6 +314,7 @@ def upload_reports():
             # Ignore rows that do not have correct geocoding
             if coords[0] is None or coords[1] is None:
                 print_error(i, 'Failed to geocode "{:s}"'.format(address_text))
+                error_lines.append(i)
 
             # Insert correctly geocoded row to database
             else:
@@ -315,7 +324,11 @@ def upload_reports():
                     original_user_text=address_text)
                 db.session.add(loc)
 
-                time1, time2 = parse_start_end_time(date_index, row)
+                time = parse_datetime(date_index, row)
+                if time is None:
+                    error_lines.append(i)
+                    errors.append("Date/Time Format")
+                    continue
 
                 pedestrian_num_text = row[pedestrian_num_index].strip()
                 bicycle_num_text = row[bicycle_num_index].strip()
@@ -333,32 +346,32 @@ def upload_reports():
                     row_number=i
                 )
 
-                errors = 0
-
                 if not validate_field(
                     field=validator_form.description,
                     data=row[description_index]
                 ):
-                    errors += 1
+                    error_lines.append(i)
+                    errors.append("Description")
 
                 if not validate_field(
                     field=validator_form.picture_url,
                     data=row[picture_index]
                 ):
-                    errors += 1
+                    error_lines.append(i)
+                    errors.append("Picture URL")
 
-                if errors == 0:
-                    pedestrian_num_text = strip_non_alphanumeric_chars(pedestrian_num_text)
-                    bicycle_num_text = strip_non_alphanumeric_chars(bicycle_num_index)
-                    automobile_num_text = strip_non_alphanumeric_chars(automobile_num_index)
-                    other_num_text = strip_non_alphanumeric_chars(other_num_index)
+                pedestrian_num_text = strip_non_alphanumeric_chars(pedestrian_num_text)
+                bicycle_num_text = strip_non_alphanumeric_chars(bicycle_num_text)
+                automobile_num_text = strip_non_alphanumeric_chars(automobile_num_text)
+                other_num_text = strip_non_alphanumeric_chars(other_num_text)
 
-                    contact_name_text = strip_non_alphanumeric_chars(contact_name_index)
-                    contact_phone_text = strip_non_alphanumeric_chars(contact_phone_index)
-                    contact_email_text = strip_non_alphanumeric_chars(contact_email_index)
-
+                contact_name_text = strip_non_alphanumeric_chars(contact_name_text)
+                contact_phone_text = strip_non_alphanumeric_chars(contact_phone_text)
+                # contact_email_text = strip_non_alphanumeric_chars(contact_email_index)
+                try:
                     incident = Incident(
-                        date=time1,
+                        date=time,
+                        address=loc,
                         pedestrian_num=int(pedestrian_num_text) if len(pedestrian_num_text) > 0
                         else 0,
                         bicycle_num=int(bicycle_num_text) if len(bicycle_num_text) > 0
@@ -378,6 +391,16 @@ def upload_reports():
                         else None,
                     )
                     db.session.add(incident)
+                except Exception:
+                    error_lines.append(i)
+                    errors.append("Other")
 
         db.session.commit()
-        return 'OK', 200
+        if len(error_lines) > 0:
+            flash_str = 'We found errors in the following lines:\n'
+            for l, e in zip(error_lines, errors):
+                flash_str += str(l) + ', ' + e + '\n'
+            flash(flash_str, 'error')
+        else:
+            flash('All lines were added successfully.', 'success')
+        return redirect(url_for('main.index'))

@@ -262,6 +262,8 @@
                 iconFile = "../static/images/marker.png";
             {% endif %}
             $(function() {
+                console.log('{{ report.address.latitude }}');
+                console.log('{{ report.address.longitude }}');
             var marker = new google.maps.Marker({
                 // Use latitude and longitude values from incident report
                 // to set position of marker
