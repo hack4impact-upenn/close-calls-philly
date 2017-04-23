@@ -217,18 +217,19 @@ def download_reports():
         return s.encode('utf-8') if s else ''
 
     current_date = str(datetime.date.today())
-    csv_name = 'IncidentReports-' + current_date + '.csv'
+    csv_name = 'Incidents-' + current_date + '.csv'
     outfile = open(csv_name, 'w+')
     print('initial file contents:', outfile.read())
 
     wr = csv.writer(outfile, delimiter=',', quoting=csv.QUOTE_MINIMAL)
     reports = db.session.query(Incident).all()
-    wr.writerow(['DATE', 'LOCATION', 'VEHICLE ID', 'DURATION',
-                'LICENSE PLATE', 'DESCRIPTION'])
+    wr.writerow(['DATE', 'LOCATION', 'NUMBER OF AUTOMOBILES', 'NUMBER OF BICYCLES',
+                'NUMBER OF PEDESTRIANS', 'DESCRIPTION', 'INJURIES', 'INJURIES DESCRIPTION',
+                'DEATHS', 'LICENSE PLATES', 'PICTURE URL', 'CONTACT NAME', 'CONTACT PHONE', 'CONTACT EMAIL'])
     for r in reports:
-        wr.writerow([r.date, r.location,
-                     r.vehicle_id, r.duration,
-                     r.license_plate, encode(r.description)])
+        wr.writerow([r.date, r.address, r.automobile_num, r.bicycle_num, r.pedestrian_num,
+                     r.description, r.injuries, r.injuries_description, r.deaths,
+                     r.license_plates, r.picture_url, r.contact_name, r.contact_phone, r.contact_email])
 
     endfile = open(csv_name, 'r+')
     data = endfile.read()
@@ -278,30 +279,38 @@ def upload_reports():
 
     def print_error(row_number, error_message):
         """TODO: docstring"""
-        print ('Row {:d}: {}'.format(row_number, error_message))
+        print ('Row {:d}: {}L/'.format(row_number, error_message))
 
     date_index = 0
     location_index = 1
-    description_index = 6
-    injuries_index = 7
+    description_index = 5
+    injuries_index = 6
+    injuries_desc_index = 7
+    deaths_index = 8
     pedestrian_num_index = 2
     bicycle_num_index = 4
     automobile_num_index = 3
-    other_num_index = 5
-    picture_index = 8
-    contact_name_index = 9
-    contact_phone_index = 10
-    contact_email_index = 11
+    license_plates_index = 9
+    picture_index = 10
+    contact_name_index = 11
+    contact_phone_index = 12
+    contact_email_index = 13
     
     validator_form = IncidentReportForm()
 
     csv_file = request.files['file']
-    csv_file.save(secure_filename(csv_file.filename))
-
-    with open(csv_file.filename, 'r') as csv_file:
+    try:
+        csv_file.save(secure_filename(csv_file.filename))
+        actual_file = open(csv_file.filename, 'r')
+    except IOError:
+        flash("The file could not be opened.", "error")
+        return redirect(url_for('main.index'))
+    with actual_file as csv_file:
         reader = csv.reader(csv_file)
         columns = next(reader)
-        if columns != ["Date","Location","Pedestrians","Automobiles","Bicycles","Other","Description","Injuries","Picture","Contact Name","Contact Phone","Contact Email"]:
+        for c in range(len(columns)):
+            columns[c] = columns[c].upper()
+        if columns != ["DATE","LOCATION","NUMBER OF AUTOMOBILES","NUMBER OF BICYCLES","NUMBER OF PEDESTRIANS","DESCRIPTION","INJURIES","INJURIES DESCRIPTION","NUMBER OF DEATHS","LICENSE PLATES","PICTURE URL","CONTACT NAME","CONTACT PHONE","CONTACT EMAIL"]:
             flash('The column names and order must match the specified form exactly. Please click the info icon for more details.', 'error')
             return redirect(url_for('main.index'))
         error_lines = []
@@ -333,7 +342,6 @@ def upload_reports():
                 pedestrian_num_text = row[pedestrian_num_index].strip()
                 bicycle_num_text = row[bicycle_num_index].strip()
                 automobile_num_text = row[automobile_num_index].strip()
-                other_num_text = row[other_num_index].strip()
 
                 contact_name_text = row[contact_name_index].strip()
                 contact_phone_text = row[contact_phone_index].strip()
@@ -363,11 +371,9 @@ def upload_reports():
                 pedestrian_num_text = strip_non_alphanumeric_chars(pedestrian_num_text)
                 bicycle_num_text = strip_non_alphanumeric_chars(bicycle_num_text)
                 automobile_num_text = strip_non_alphanumeric_chars(automobile_num_text)
-                other_num_text = strip_non_alphanumeric_chars(other_num_text)
 
                 contact_name_text = strip_non_alphanumeric_chars(contact_name_text)
                 contact_phone_text = strip_non_alphanumeric_chars(contact_phone_text)
-                # contact_email_text = strip_non_alphanumeric_chars(contact_email_index)
                 try:
                     incident = Incident(
                         date=time,
@@ -378,10 +384,11 @@ def upload_reports():
                         else 0,
                         automobile_num=int(automobile_num_text) if len(automobile_num_text) > 0
                         else 0,
-                        other_num=int(other_num_text) if len(other_num_text) > 0
-                        else 0,
                         description=row[description_index],
                         injuries=row[injuries_index],
+                        injuries_description=row[injuries_desc_index],
+                        deaths=int(row[deaths_index]) if len(row[deaths_index]) > 0 else 0,
+                        license_plates=row[license_plates_index],
                         picture_url=row[picture_index],
                         contact_name=contact_name_text if len(contact_name_text) > 0
                         else None,
@@ -399,7 +406,7 @@ def upload_reports():
         if len(error_lines) > 0:
             flash_str = 'We found errors in the following lines:\n'
             for l, e in zip(error_lines, errors):
-                flash_str += str(l) + ', ' + e + '\n'
+                flash_str += "Line: " + str(l) + ', Error: ' + e + '\n'
             flash(flash_str, 'error')
         else:
             flash('All lines were added successfully.', 'success')

@@ -46,7 +46,6 @@ class IncidentTestCase(unittest.TestCase):
             pedestrian_num=0,
             bicycle_num=1,
             automobile_num=1,
-            other_num=0,
             date=now,
             picture_url='http://google.com',
             description='Truck idling on the road!',
@@ -55,7 +54,6 @@ class IncidentTestCase(unittest.TestCase):
         self.assertEqual(incident.pedestrian_num, 0)
         self.assertEqual(incident.bicycle_num, 1)
         self.assertEqual(incident.automobile_num, 1)
-        self.assertEqual(incident.other_num, 0)
         self.assertEqual(incident.picture_url, 'http://google.com')
         self.assertEqual(incident.description, 'Truck idling on the road!')
 
@@ -74,7 +72,6 @@ class IncidentTestCase(unittest.TestCase):
             pedestrian_num=0,
             bicycle_num=1,
             automobile_num=1,
-            other_num=0,
             date=now,
             loc=loc1
             picture_url='http://google.com',
@@ -90,7 +87,6 @@ class IncidentTestCase(unittest.TestCase):
             pedestrian_num=0,
             bicycle_num=1,
             automobile_num=1,
-            other_num=0,
             date=now,
             loc=loc1
             picture_url='http://google.com',

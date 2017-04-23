@@ -9,6 +9,8 @@ from wtforms.fields import (
     TextAreaField,
     HiddenField,
     DateField,
+    RadioField,
+    FieldList
 )
 from wtforms_components import TimeField
 from wtforms.ext.sqlalchemy.fields import QuerySelectField
@@ -18,10 +20,10 @@ from wtforms.validators import (
     Optional,
     NumberRange,
     URL,
-    Regexp,
+    Regexp
 )
 
-from app.custom_validators import StrippedLength, ValidLocation, RequiredIf
+from app.custom_validators import StrippedLength, ValidLocation, RequiredIf, RequireDescription
 from .. import db
 
 
@@ -37,19 +39,15 @@ class IncidentReportForm(Form):
     longitude = HiddenField('Longitude')
 
     automobile_num = IntegerField('Number of Automobiles', validators=[
-        Optional()
+        InputRequired()
     ])
 
     bicycle_num = IntegerField('Number of Bicycles', validators=[
-        Optional()
+        InputRequired()
     ])
 
     pedestrian_num = IntegerField('Number of Pedestrians', validators=[
-        Optional()
-    ])
-
-    other_num = IntegerField('Number of Others', validators=[
-        Optional()
+        InputRequired()
     ])
 
     today = datetime.datetime.today()
@@ -83,10 +81,17 @@ class IncidentReportForm(Form):
         Length(max=5000)
     ])
 
-    injuries = TextAreaField('Injuries (optional)', validators=[
-        Optional(),
+    injuries = RadioField('Did an injury occur?', choices=[
+        ('Yes', 'Yes'),
+        ('No', 'No')
+    ], validators=[InputRequired()])
+
+    injuries_description = TextAreaField('Injuries Description', validators=[
+        RequireDescription('injuries'),
         Length(max=5000)
     ])
+
+    deaths = IntegerField('Number of Deaths', validators=[Optional()])
 
     license_plates = TextAreaField('License Plates (optional)', validators=[
         Optional(),
@@ -112,10 +117,5 @@ class IncidentReportForm(Form):
 
 
 class EditIncidentReportForm(IncidentReportForm):
-    # duration = StringField('Idling Duration (h:m:s)', validators=[
-    #     InputRequired('Idling duration is required.'),
-    #     Regexp(r'^(\d{1,2}:)(\d{1,2}:)(\d{1,2})$',
-    #            message='Write duration as HH:MM:SS')
-    # ])
 
     submit = SubmitField('Update Report')

@@ -168,7 +168,6 @@ $(document).ready(function() {
     $('#automobile').prop('checked', true);
     $('#pedestrian').prop('checked', true);
     $('#bicycle').prop('checked', true);
-    $('#other').prop('checked', true);
     $('#automobile').on('change', function(event) {
         filterMarkers();
     });
@@ -176,9 +175,6 @@ $(document).ready(function() {
         filterMarkers();
     });
     $('#pedestrian').on('change', function(event) {
-        filterMarkers();
-    });
-    $('#other').on('change', function(event) {
         filterMarkers();
     });
 });
@@ -189,13 +185,13 @@ function getNextDate(startDate) {
 }
 
 function initializeDateRange() {
-  $('#start-date').calendar({
+  $('#startDate').calendar({
     type: 'date',
-    endCalendar: $('#end-date'),
+    endCalendar: $('#endDate'),
     popupOptions: {
-      position: 'right center',
-      lastResort: 'right center',
-      prefer: 'right',
+      position: 'top left',
+      lastResort: 'top right',
+      prefer: 'left',
       hideOnScroll: false
     },
     onChange: function (date, text, mode) {
@@ -204,13 +200,13 @@ function initializeDateRange() {
     }
   });
 
-  $('#end-date').calendar({
+  $('#endDate').calendar({
     type: 'date',
-    startCalendar: $('#start-date'),
+    startCalendar: $('#startDate'),
     popupOptions: {
-      position: 'right center',
-      lastResort: 'right center',
-      prefer: 'right',
+      position: 'top left',
+      lastResort: 'top right',
+      prefer: 'left',
       hideOnScroll: false
     },
     onChange: function (date, text, mode) {
@@ -220,8 +216,8 @@ function initializeDateRange() {
   });
 
   // initializes the dates for the calendar
-  $('#start-date').calendar('set date', startDate);
-  $('#end-date').calendar('set date', endDate);
+  $('#startDate').calendar('set date', startDate);
+  $('#endDate').calendar('set date', endDate);
 }
 
 function withinRectangleBounds(marker, bounds) {
@@ -240,8 +236,7 @@ function withinDateRange(marker) {
 function fitsVehicleType(marker) {
     return (marker.automobileNum > 0 && $('#automobile').is(':checked')) ||
            (marker.pedestrianNum > 0 && $('#pedestrian').is(':checked')) ||
-           (marker.bicycleNum > 0 && $('#bicycle').is(':checked')) ||
-           (marker.otherNum > 0 && $('#other').is(':checked'));
+           (marker.bicycleNum > 0 && $('#bicycle').is(':checked'));
 }
 
 function fitsLicenseSearch(marker) {
@@ -270,7 +265,7 @@ function filterMarkers() {
 function resetDates() {
     startDate = MIN_DATE;
     endDate = new Date();
-    $('#start-date').calendar('set date', startDate);
-    $('#end-date').calendar('set date', endDate);
+    $('#startDate').calendar('set date', startDate);
+    $('#endDate').calendar('set date', endDate);
     filterMarkers();
 }

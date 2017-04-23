@@ -3,8 +3,8 @@
 
 {% block content %}
 <div id="wrapper">
-  <div id="form_button">Report Incident</div>
-    <div id="inputPanel"></div>
+    <div id="inputPanel" class="ui vertical menu">
+        <div id="form_button">Report Incident</div>
         <div id="form_container">
             <button id="close_form" class="ui icon button close">
                 <i class="remove icon"></i>
@@ -24,12 +24,12 @@
             {{ f.render_form_field(form.automobile_num) }}
             {{ f.render_form_field(form.bicycle_num) }}
             {{ f.render_form_field(form.pedestrian_num) }}
-            {{ f.render_form_field(form.other_num) }}
             {{ f.render_form_field(form.date)}}
             {{ f.render_form_field(form.time)}}
             {{ f.render_form_field(form.picture_file) }}
             {{ f.render_form_field(form.description) }}
             {{ f.render_form_field(form.injuries) }}
+            <div id="injuries-description-field" style="display:none">{{ f.render_form_field(form.injuries_description) }}</div>
             {{ f.render_form_field(form.license_plates) }}
             {{ f.render_form_field(form.contact_name) }}
             {{ f.render_form_field(form.contact_phone) }}
@@ -56,6 +56,8 @@
             </div>
         </form>
 
+        <div class="ui horizontal divider" id="vehicleDivider">Filters</div>
+
         <form name="licenseForm" id="licenseForm">
             <div class="ui action input" id="licenseSearch">
                 <input class="prompt" placeholder="Enter License Plate..." type="text" name="license" id="license">
@@ -63,12 +65,14 @@
             </div>
         </form>
 
+        <h4>Bounding Boxes&nbsp&nbsp<a><i onclick="sendBoundingInstructionsModal()" class="info circle icon" aria-hidden="true" id="boundingInstructionsIcon"></i></a></h4>
         <button id="createBoundingBoxButton" class="ui button">Create Bounding Box</button>
+
         <button id="deleteBoundingBoxButton" class="ui button">Delete Bounding Box</button>
         <div class="ui form" id="dateRange">
           <div class="field">
             <label>Start Date</label>
-            <div class="ui calendar" id="start-date">
+            <div class="ui calendar" id="startDate">
               <div class="ui input left icon">
                 <i class="calendar icon"></i>
                 <input type="text" placeholder="Start" />
@@ -77,7 +81,7 @@
           </div>
           <div class="field">
             <label>End Date</label>
-            <div class="ui calendar" id="end-date">
+            <div class="ui calendar" id="endDate">
               <div class="ui input left icon">
                 <i class="calendar icon"></i>
                 <input type="text" placeholder="End">
@@ -87,14 +91,6 @@
         </div>
 
         <div class="ui button" id="resetDatesButton">Reset Dates</div>
-        <button id="downloadCSVButton" class="ui button">Download CSV</button>  
-        {% if current_user.is_admin() %}      
-        <form id="uploadCSVButton" action="{{ url_for('admin.upload_reports') }}" method="post" role="form" enctype="multipart/form-data">
-            <input type="file" name="file">
-            <button class="ui button" type="submit">Upload</button>
-            {{ form.hidden_tag() }}
-        </form>
-        {% endif %}
 
 
         <div id="typeForm">
@@ -114,17 +110,27 @@
               <input type="checkbox" id="pedestrian"></input>
               <label>Pedestrian</label>
             </div>
-            <br />
-            <div class="ui checkbox">
-              <input type="checkbox" id="other"></input>
-              <label>Other</label>
-            </div>
-            <br />
         </form>
         </div>
+
+    <div class="ui horizontal divider" id="vehicleDivider">CSV&nbsp&nbsp<a><i class="info circle icon" id="csvInstructionsIcon" onclick="sendDownloadCsvInstructionsModal()" aria-hidden="true"></i></a></div>
+
+    <button id="downloadCSVButton" class="ui button">Download CSV</button>
+
+    {% if current_user.is_admin() %}      
+        <form id="uploadCSVButton" action="{{ url_for('admin.upload_reports') }}" method="post" role="form" enctype="multipart/form-data">
+            <button class="ui button" type="submit" id="submitCsv">Upload CSV</button>
+            <input type="file" name="file">
+            {{ form.hidden_tag() }}
+        </form>
+    {% endif %}
+
+    </div>
+
     <div id="googleMap"></div>
 </div>
 
+<!-- Modal stuff -->
 <div class="ui centered modal" id="geocode_error">
     <i class="close icon"></i>
     <div class="header">Geocode not successful</div>
@@ -137,6 +143,56 @@
     <div class="header">Address not found</div>
     <div class="actions">
         <div class="ui approve button">Okay</div>
+    </div>
+</div>
+
+<div class="ui centered modal" id="bounding-instructions-modal">
+    <i class="close icon"></i>
+    <div class="header">Bounding Box Instructions</div>
+    <div class="content">
+        <p><ul>
+        <li>Click "Create Bounding Box" to filter the map markers to include only incidents in a specified region.</li>
+        <li>Click the <img src="static/images/google_maps_rectangle_button.png"/> button and drag across the map for a rectangular region OR</li>
+        <li>Click the <img src="static/images/google_maps_polygon_button.png"/> button to draw a freeform shape. To draw the shape, double click on a point on the map, then extend the line to another point and click once, then extend and click again, etc. When you want to complete the shape, simply return to the first point and click.</li>
+        <li>You can modify a rectangle/shape by dragging the white vertices of the rectangle/shape, and you can drag a shape across the map as well.</li>
+        <li>Click "Delete Bounding Box" to delete the rectangle or shape.</li>
+        </p>
+    </div>
+</div>
+
+<div class="ui centered modal" id="download-csv-instructions-modal">
+    <i class="close icon"></i>
+    <div class="header">CSV Instructions</div>
+    <div class="content">
+        <p>
+            Download a CSV containing information for all incidents that are currently on the map,
+            or upload a CSV with information for additional markers to add onto the map.
+        </p>
+        <p>
+            For uploading a CSV, the columns should be:
+            <ol>
+                <li>Date</li>
+                <li>Location</li>
+                <li>Number of Automobiles</li>
+                <li>Number of Bicycles</li>
+                <li>Number of Pedestrians</li>
+                <li>Description</li>
+                <li>Injuries</li>
+                <li>Injuries Description</li>
+                <li>Number of Deaths</li>
+                <li>License Plates</li>
+                <li>Picture URL</li>
+                <li>Contact Name</li>
+                <li>Contact Phone</li>
+                <li>Contact Email</li>
+            </ol>
+            The first line of the CSV must include all of these column names in this order, regardless of whether some (or all) incidents do not have certain fields filled out.
+            Please note that entry in the Injuries column should be either "Yes" or "No". If there are no injuries, the "Injuries Description" is optional.
+            The entries for "License Plates", "Picture URL", "Contact Name", "Contact Phone", and "Contact Email" are optional.
+
+            All other columns require an input.
+        </p>
+
     </div>
 </div>
 
@@ -192,6 +248,19 @@
                 scrollwheel: false,
         };
         map = new google.maps.Map($('#googleMap')[0],mapProp);
+        var legend = document.createElement('div');
+        legend.innerHTML = '<h3>Legend</h3>';
+        legend.id = 'map-legend';
+        var div1 = document.createElement('div');
+        div1.innerHTML = '<img src="../static/images/marker_swatch.png"> No Injury';
+        var div2 = document.createElement('div');
+        div2.innerHTML = '<img src="../static/images/injury_swatch.png"> Injury';
+        var div3 = document.createElement('div');
+        div3.innerHTML = '<img src="../static/images/death_swatch.png"> Death';
+        legend.appendChild(div1);
+        legend.appendChild(div2);
+        legend.appendChild(div3);
+        map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push(legend);
         google.maps.event.addListener(map, 'click', function(event) {
                 $('#latitude').val(event.latLng.lat());
                 $('#replaceable').hide()
@@ -225,7 +294,7 @@
             google.maps.event.addListener(polygon.getPath(), 'set_at', function() { updateMarkersFromBounds(); });
             updateMarkersFromBounds();
         });
-            
+
 
         var oms = new OverlappingMarkerSpiderfier(map, {keepSpiderfied: true, nearbyDistance: 10});
 
@@ -256,7 +325,9 @@
         var bounds = new google.maps.LatLngBounds();
         {% for report in incident_reports %}
             var iconFile = "";
-            {% if report.injuries and report.injuries|length > 0 %}
+            {% if report.deaths > 0 %}
+                iconFile = '../static/images/marker_deaths.png';
+            {% elif report.injuries == 'Yes' %}
                 iconFile = "../static/images/marker_injury.png";
             {% else %}
                 iconFile = "../static/images/marker.png";
@@ -283,22 +354,24 @@
                                 '</button>' +
                                 '<h3>Date: ' + '{{ report.date.strftime('%m-%d-%Y at %I:%M %p') }}' + '</h3>' +
                                 '<p><b>Description:</b> ' + '{{ report.description }}' + '</p>' +
-                                '<p><b>Injuries:</b> ' + '{{ report.injuries if report.injuries else '' }} ' +
-                                '<p><b>Number of Pedestrians:</b> ' + '{{ report.pedestrian_num }}' + '</p>' +
-                                '<p><b>Number of automobiles:</b> ' + '{{ report.automobile_num }}' + '</p>' +
-                                '<p><b>Number of bicycles:</b> ' + '{{ report.bicycle_num }}' + '</p>' +
-                                '<p><b>Number of other vehicles:</b> ' + '{{ report.other_num }}' + '</p>' +
-                                '<p><b>License Plates:</b> ' + "{{ report.license_plates if report.license_plates else '' }}" + '</p>' +
-                                  {% if report.picture_url %}
-                                  '<p><a href="{{ report.picture_url }}" target="_blank" rel="noopener noreferrer">' + 'Link to Picture' + '</a></p>' +
-                                  {% endif %}
-                                {% if current_user.is_admin() %}
-                                '<p><b>Contact Name:</b> ' + '{{ report.contact_name if report.contact_name else '' }}' +'</p>' +
-                                '<p><b>Contact Phone:</b> ' + '{{ report.contact_phone if report.contact_phone else '' }}' + '</p>' +
-                                '<p><b>Contact Email:</b> ' + '{{ report.contact_email if report.contact_email else '' }}</div>';
-                                {% else %}
-                                '</div>';
-                                {% endif %}
+                                '<p><b>Injuries:</b> ' + '{{ report.injuries_description if report.injuries_description else '' }} ';
+            {% if report.deaths > 0 %}
+                contentString += '<p><b>Number of Deaths:</b> ' + '{{ report.deaths }}' + '</p>';
+            {% endif %}
+            contentString += '<p><b>Number of Pedestrians:</b> ' + '{{ report.pedestrian_num }}' + '</p>' +
+                                '<p><b>Number of Automobiles:</b> ' + '{{ report.automobile_num }}' + '</p>' +
+                                '<p><b>Number of Bicycles:</b> ' + '{{ report.bicycle_num }}' + '</p>' +
+                                '<p><b>License Plates:</b> ' + "{{ report.license_plates if report.license_plates else '' }}" + '</p>';
+            {% if report.picture_url %}
+            contentString += '<p><a href="{{ report.picture_url }}" target="_blank" rel="noopener noreferrer">' + 'Link to Picture' + '</a></p>';
+            {% endif %}
+            {% if current_user.is_authenticated %}
+            contentString += '<p><b>Contact Name:</b> ' + '{{ report.contact_name if report.contact_name else '' }}' +'</p>';
+            contentString += '<p><b>Contact Phone:</b> ' + '{{ report.contact_phone if report.contact_phone else '' }}' + '</p>';
+            contentString += '<p><b>Contact Email:</b> ' + '{{ report.contact_email if report.contact_email else '' }}</div>';
+            {% else %}
+            contentString += '</div>';
+            {% endif %}
             bounds.extend(marker.getPosition());
 
             // Dynamically add state to marker object.
@@ -308,10 +381,10 @@
             marker.pedestrianNum = '{{ report.pedestrian_num }}';
             marker.automobileNum = '{{ report.automobile_num }}';
             marker.bicycleNum = '{{ report.bicycle_num }}';
-            marker.otherNum = '{{ report.other_num }}';
             marker.description = '{{ report.description }}';
-
-            marker.injuries = '{{ report.injuries if report.injuries else '' }}';
+            marker.injuries = '{{ report.injuries }}';
+            marker.injuries_description = '{{ report.injuries_description if report.injuries == "Yes" else "No injuries." }}';
+            marker.deaths = '{{ report.deaths }}';
             marker.licensePlates = "{{ report.license_plates if report.license_plates else ''}}";
             marker.pictureUrl = '{{ report.picture_url if report.picture_url else '' }}';
 
@@ -344,6 +417,7 @@
             $(".ui.navigation.grid").css("margin-bottom", "0");
             $("footer").css("margin-top", "0");
         });
+
     });
 
     function drawShape() {
@@ -453,6 +527,23 @@
         };
         navigator.geolocation.getCurrentPosition(success, error);
     }
+
+    $('#injuries-0').click(function() {
+        $('#injuries-description-field').show('fast');
+    })
+
+    $('#injuries-1').click(function() {
+        $('#injuries-description-field').hide('fast');
+    })
+
+    function sendBoundingInstructionsModal() {
+        $("#bounding-instructions-modal").modal('show');
+    }
+
+    function sendDownloadCsvInstructionsModal() {
+        $("#download-csv-instructions-modal").modal('show');
+    }
+
 </script>
 
 {% endblock %}

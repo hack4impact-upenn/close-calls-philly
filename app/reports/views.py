@@ -34,16 +34,6 @@ def view_reports():
     # TODO test using real data
     return render_template('reports/reports.html', reports=incident_reports)
 
-
-@reports.route('/my-reports')
-@login_required
-def view_my_reports():
-    """View all idling incident reports for this user."""
-    incident_reports = current_user.incident_reports
-
-    return render_template('reports/reports.html', reports=incident_reports)
-
-
 @reports.route('/<int:report_id>')
 @reports.route('/<int:report_id>/info')
 @login_required
@@ -80,7 +70,6 @@ def edit_report_info(report_id):
         report.automobile_num = form.automobile_num.data
         report.pedestrian_num = form.pedestrian_num.data
         report.bicycle_num = form.bicycle_num.data
-        report.other_num = form.other_num.data
 
         lat, lng = geocode(form.address.data)
         report.address.latitude, report.address.longitude = lat, lng
@@ -92,6 +81,11 @@ def edit_report_info(report_id):
 
         report.picture_url = form.picture_url.data
         report.description = form.description.data
+        report.injuries = form.injuries.data
+        report.injuries_description = form.injuries_description.data
+        report.deaths = form.deaths.data
+        if (form.deaths.data == None):
+            report.deaths = 0
         report.license_plates = form.license_plates.data.upper()
 
         if form.picture_file.data.filename:
@@ -125,7 +119,6 @@ def edit_report_info(report_id):
     form.automobile_num.default = report.automobile_num
     form.pedestrian_num.default = report.pedestrian_num
     form.bicycle_num.default = report.bicycle_num
-    form.other_num.default = report.other_num
 
     form.address.default = report.address.original_user_text
 
@@ -134,10 +127,14 @@ def edit_report_info(report_id):
 
     form.picture_url.default = report.picture_url
     form.description.default = report.description
+    form.injuries.default = report.injuries
+    form.injuries_description.default = report.injuries_description
+    form.deaths.default = report.deaths
     form.license_plates.default = report.license_plates
     form.contact_name.default = report.contact_name
     form.contact_phone.default = report.contact_phone
     form.contact_email.default = report.contact_email
+
 
     form.process()
 
