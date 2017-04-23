@@ -123,6 +123,13 @@
     float: right;
 }
 
+#map-legend {
+    background: #fff;
+    padding: 10px;
+    margin: 10px;
+    border: 2px solid #000;
+}
+
 #wrapper {
     position:relative;
     overflow: hidden;
@@ -171,9 +178,14 @@ form textarea#description {
     #downloadCSVButton,
     #uploadCSVButton,
     #dateRange,
+// <<<<<<< HEAD
     #resetDatesButton,
     #typeForm,
     #vehicleDivider {
+// =======
+//     #map-legend
+//     #inputPanel {
+// >>>>>>> sanjay-instructions
         display: none;
     }
     #googleMap {
