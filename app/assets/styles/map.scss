@@ -92,6 +92,10 @@
     cursor: pointer;
 }
 
+#boundingInstructionsIcon:hover, #csvInstructionsIcon:hover {
+    cursor: pointer;
+}
+
 #info_container, #form_container {
     display: none;
     position: absolute;

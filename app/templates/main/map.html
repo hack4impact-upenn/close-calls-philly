@@ -112,7 +112,7 @@
         </form>
         </div>
 
-    <div class="ui horizontal divider" id="vehicleDivider">CSV&nbsp&nbsp<a><i class="info circle icon" id="downloadCsvInstructionsIcon" onclick="sendDownloadCsvInstructionsModal()" aria-hidden="true"></i></a></div>
+    <div class="ui horizontal divider" id="vehicleDivider">CSV&nbsp&nbsp<a><i class="info circle icon" id="csvInstructionsIcon" onclick="sendDownloadCsvInstructionsModal()" aria-hidden="true"></i></a></div>
 
     <button id="downloadCSVButton" class="ui button">Download CSV</button>
 
@@ -166,17 +166,23 @@
             <ol>
                 <li>Date</li>
                 <li>Location</li>
+                <li>Number of Pedestrians</li>
                 <li>Number of Automobiles</li>
                 <li>Number of Bicycles</li>
-                <li>Number of Pedestrians</li>
                 <li>Description</li>
-                <li>Injuries (Yes or No)</li>
+                <li>Injuries</li>
                 <li>Injuries Description</li>
+                <li>Number of Deaths</li>
                 <li>License Plates</li>
                 <li>Picture URL</li>
+                <li>Contact Name</li>
+                <li>Contact Phone</li>
+                <li>Contact Email</li>
             </ol>
-            The columns for "License Plates" and "Picture URL" are optional.
-            If there are no injuries, the "Injuries Description" field may also left empty.
+            The first line of the CSV must include all of these column names in this order, regardless of whether some (or all) incidents do not have certain fields filled out.
+            Please note that entry in the Injuries column should be either "Yes" or "No". If there are no injuries, the "Injuries Description" is optional.
+            The entries for "License Plates", "Picture URL", "Contact Name", "Contact Phone", and "Contact Email" are optional.
+
             All other columns require an input.
         </p>
 
