@@ -380,4 +380,4 @@ def upload_reports():
                     db.session.add(incident)
 
         db.session.commit()
-        return columns
+        return 'OK', 200
