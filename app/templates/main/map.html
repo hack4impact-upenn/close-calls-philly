@@ -3,8 +3,8 @@
 
 {% block content %}
 <div id="wrapper">
-  <div id="form_button">Report Incident</div>
-    <div id="inputPanel"></div>
+    <div id="inputPanel" class="ui vertical menu">
+        <div id="form_button">Report Incident</div>
         <div id="form_container">
             <button id="close_form" class="ui icon button close">
                 <i class="remove icon"></i>
@@ -56,6 +56,8 @@
             </div>
         </form>
 
+        <div class="ui horizontal divider" id="vehicleDivider">Filters</div>
+
         <form name="licenseForm" id="licenseForm">
             <div class="ui action input" id="licenseSearch">
                 <input class="prompt" placeholder="Enter License Plate..." type="text" name="license" id="license">
@@ -68,7 +70,7 @@
         <div class="ui form" id="dateRange">
           <div class="field">
             <label>Start Date</label>
-            <div class="ui calendar" id="start-date">
+            <div class="ui calendar" id="startDate">
               <div class="ui input left icon">
                 <i class="calendar icon"></i>
                 <input type="text" placeholder="Start" />
@@ -77,7 +79,7 @@
           </div>
           <div class="field">
             <label>End Date</label>
-            <div class="ui calendar" id="end-date">
+            <div class="ui calendar" id="endDate">
               <div class="ui input left icon">
                 <i class="calendar icon"></i>
                 <input type="text" placeholder="End">
@@ -87,8 +89,6 @@
         </div>
 
         <div class="ui button" id="resetDatesButton">Reset Dates</div>
-        <button id="downloadCSVButton" class="ui button">Download CSV</button>
-
 
         <div id="typeForm">
         <b>Vehicle Type</b>
@@ -109,6 +109,15 @@
             </div>
         </form>
         </div>
+
+    <div class="ui horizontal divider" id="vehicleDivider">CSV</div>
+    
+    <button id="downloadCSVButton" class="ui button">Download CSV</button> 
+
+    <button id="uploadCSVButton" class="ui button">Upload CSV</button>    
+
+    </div>
+
     <div id="googleMap"></div>
 </div>
 

@@ -185,13 +185,13 @@ function getNextDate(startDate) {
 }
 
 function initializeDateRange() {
-  $('#start-date').calendar({
+  $('#startDate').calendar({
     type: 'date',
-    endCalendar: $('#end-date'),
+    endCalendar: $('#endDate'),
     popupOptions: {
-      position: 'right center',
-      lastResort: 'right center',
-      prefer: 'right',
+      position: 'top left',
+      lastResort: 'top right',
+      prefer: 'left',
       hideOnScroll: false
     },
     onChange: function (date, text, mode) {
@@ -200,13 +200,13 @@ function initializeDateRange() {
     }
   });
 
-  $('#end-date').calendar({
+  $('#endDate').calendar({
     type: 'date',
-    startCalendar: $('#start-date'),
+    startCalendar: $('#startDate'),
     popupOptions: {
-      position: 'right center',
-      lastResort: 'right center',
-      prefer: 'right',
+      position: 'top left',
+      lastResort: 'top right',
+      prefer: 'left',
       hideOnScroll: false
     },
     onChange: function (date, text, mode) {
@@ -216,8 +216,8 @@ function initializeDateRange() {
   });
 
   // initializes the dates for the calendar
-  $('#start-date').calendar('set date', startDate);
-  $('#end-date').calendar('set date', endDate);
+  $('#startDate').calendar('set date', startDate);
+  $('#endDate').calendar('set date', endDate);
 }
 
 function withinRectangleBounds(marker, bounds) {
@@ -265,7 +265,7 @@ function filterMarkers() {
 function resetDates() {
     startDate = MIN_DATE;
     endDate = new Date();
-    $('#start-date').calendar('set date', startDate);
-    $('#end-date').calendar('set date', endDate);
+    $('#startDate').calendar('set date', startDate);
+    $('#endDate').calendar('set date', endDate);
     filterMarkers();
 }

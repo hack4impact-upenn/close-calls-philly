@@ -1,79 +1,33 @@
 @import "app";
 
-#addressSearch {
-    position: absolute;
-    left: 5%;
-    top: 30px;
-    z-index: 5;
-    width: 20%;
-}
-
-#licenseSearch {
-    position: absolute;
-    left: 5%;
-    top: 85px;
-    z-index: 5;
-    width: 20%;
-}
-
-#createBoundingBoxButton {
-    position: absolute;
-    left: 5%;
-    width: 20%;
-    top: 140px;
-}
-
-#deleteBoundingBoxButton {
-    position: absolute;
-    left: 5%;
-    width: 20%;
-    top: 185px;
-}
-
-#downloadCSVButton {
-    position: absolute;
-    left: 5%;
-    width: 20%;
-    top: 230px;
-}
-
-#dateRange {
-  position: absolute;
-  left: 5%;
-  top: 280px;
-  z-index: 5;
-  width: 20%;
-}
-
-#resetDatesButton {
-  position: absolute;
-  left: 5%;
-  top: 430px;
-  z-index: 5;
-  width: 20%;
-}
-
+#createBoundingBoxButton,
+#deleteBoundingBoxButton,
+#downloadCSVButton,
+#uploadCSVButton,
+#dateRange,
+#resetDatesButton,
 #typeForm {
-  position: absolute;
-  left: 5%;
-  top: 475px;
-  z-index: 5;
-  width: 20%;
+    margin: 5px auto;
+    width: 100%;
+}
+
+#addressForm,
+#licenseForm {
+    margin: 5px auto;
+    width: 100%;
+}
+
+#addressSearch,
+#licenseSearch {
+    width: 100%;
 }
 
 #licenseSubmitButton {
-    position: absolute;
-    display: inline-block;
-    left: 70%;
     width: 30%;
-    height: 100%;
-    padding: 0px;
+    text-align: center;
 }
 
 #submitButton {
-    position: absolute;
-    display: inline-block;
-    left: 70%;
     width: 30%;
     background-color: $teal;
     color: $white;
@@ -81,8 +35,6 @@
     font-weight: 300;
     text-transform: uppercase;
     text-align: center;
-    height: 100%;
-    padding: 0px;
 }
 
 #submitButton:hover, #submit:hover{
@@ -109,14 +61,10 @@
 }
 
 #form_button {
-    position: absolute;
     background-color: $red;
-    width: 20%;
+    width: 100%;
     color: white;
-    bottom: 10px;
-    left: 5%;
-    display: table;
-    margin: 0 auto;
+    margin: 5px auto;
     z-index: 6;
     text-transform: uppercase;
     text-align: center;
@@ -125,7 +73,6 @@
 }
 
 #close_info, #close_form {
-    position: absolute;
     background-color: $red;
     color: $white;
     height: 25px;
@@ -133,6 +80,11 @@
     top: 5px;
     right: 0px;
     padding: 1px;
+    float: left;
+}
+
+#close_form {
+    padding: 15px;
 }
 
 #form_button:hover, #close_info:hover, #close_form:hover {
@@ -144,7 +96,7 @@
     display: none;
     position: absolute;
     background-color: white;
-    width: 30%;
+    width: 100%;
     overflow-y: scroll;
     color: black;
     top: 0px;
@@ -154,10 +106,14 @@
 }
 
 #inputPanel {
+    position: absolute;
     width: 30%;
+    height: 100%;
     left: 0px;
     top: 0px;
     float: left;
+    overflow-y: scroll;
+    padding: 15px 30px;
 }
 
 #googleMap {
@@ -205,33 +161,45 @@ form textarea#description {
 }
 
 @media all and (max-width: $mobile-breakpoint) {
+    #inputPanel {
+        width: 100%;
+    }
+
+    #licenseSearch,
     #createBoundingBoxButton,
     #deleteBoundingBoxButton,
-    #resetDatesButton,
+    #downloadCSVButton,
+    #uploadCSVButton,
     #dateRange,
-    #inputPanel {
+    #resetDatesButton,
+    #typeForm,
+    #vehicleDivider {
         display: none;
     }
     #googleMap {
         width: 100%;
     }
-    #addressSearch,
-    #licenseSearch {
+
+    #addressForm {
+        position: absolute;
         width: 80%;
-        left: 5%;
+        margin: auto;
+        top: 30px;
+        z-index: 1;
     }
+
     #form_container,
     #info_container {
         position: absolute;
-        width: 80%;
+        width: 90%;
         left: 5%;
-        top: 80px;
+        top: 30px;
     }
     #form_button {
         position: absolute;
         width: 80%;
-        left: 5%;
-        bottom: 0px;
+        margin: auto;
+        bottom: 10px;
     }
     #submitButton {
         left: 95%;
