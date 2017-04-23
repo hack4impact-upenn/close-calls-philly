@@ -56,6 +56,8 @@
             </div>
         </form>
 
+        <div class="ui horizontal divider" id="vehicleDivider">Filters</div>
+
         <form name="licenseForm" id="licenseForm">
             <div class="ui action input" id="licenseSearch">
                 <input class="prompt" placeholder="Enter License Plate..." type="text" name="license" id="license">
@@ -63,14 +65,12 @@
             </div>
         </form>
 
-        <button id="downloadCSVButton" class="ui button">Download CSV</button>
-
         <button id="createBoundingBoxButton" class="ui button">Create Bounding Box</button>
         <button id="deleteBoundingBoxButton" class="ui button">Delete Bounding Box</button>
         <div class="ui form" id="dateRange">
           <div class="field">
             <label>Start Date</label>
-            <div class="ui calendar" id="start-date">
+            <div class="ui calendar" id="startDate">
               <div class="ui input left icon">
                 <i class="calendar icon"></i>
                 <input type="text" placeholder="Start" />
@@ -79,7 +79,7 @@
           </div>
           <div class="field">
             <label>End Date</label>
-            <div class="ui calendar" id="end-date">
+            <div class="ui calendar" id="endDate">
               <div class="ui input left icon">
                 <i class="calendar icon"></i>
                 <input type="text" placeholder="End">
@@ -90,10 +90,8 @@
 
         <div class="ui button" id="resetDatesButton">Reset Dates</div>
 
-        <div class="ui horizontal divider" id="vehicleDivider">Vehicle Type</div>
-
-
         <div id="typeForm">
+        <b>Vehicle Type</b>
         <form>
             <div class="ui checkbox">
               <input type="checkbox" id="automobile"></input>
@@ -111,7 +109,15 @@
             </div>
         </form>
         </div>
+
+    <div class="ui horizontal divider" id="vehicleDivider">CSV</div>
+    
+    <button id="downloadCSVButton" class="ui button">Download CSV</button> 
+
+    <button id="uploadCSVButton" class="ui button">Upload CSV</button>    
+
     </div>
+
     <div id="googleMap"></div>
 </div>
 
