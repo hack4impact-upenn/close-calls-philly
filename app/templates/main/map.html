@@ -87,8 +87,14 @@
         </div>
 
         <div class="ui button" id="resetDatesButton">Reset Dates</div>
-        <button id="downloadCSVButton" class="ui button">Download CSV</button>
-        <button id="uploadCSVButton" class="ui button">Upload CSV</button>
+        <button id="downloadCSVButton" class="ui button">Download CSV</button>  
+        {% if current_user.is_admin() %}      
+        <form id="uploadCSVButton" action="{{ url_for('admin.upload_reports') }}" method="post" role="form" enctype="multipart/form-data">
+            <input type="file" name="file">
+            <button class="ui button" type="submit">Upload</button>
+            {{ form.hidden_tag() }}
+        </form>
+        {% endif %}
 
 
         <div id="typeForm">
@@ -174,6 +180,7 @@
     });
 
     $('#uploadCSVButton').click(function() {
+        // $('#file_upload').click();
         //TODO: WHAT IS HERE
     });
 
