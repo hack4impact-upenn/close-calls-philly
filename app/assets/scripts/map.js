@@ -39,9 +39,8 @@ function storeMarkerState(markers, map, minDate, bounds, oms) {
 
 // Use Google geocoder to update geolocation given an address through
 // the address search box
-function update_center() {
+function update_center(address) {
     geocoder = new google.maps.Geocoder();
-    address = $("#address").val();
     if (geocoder) {
         geocoder.geocode( { 'address': address},
         function(results, status) {
@@ -152,7 +151,8 @@ function addCenterButton(map) {
 // Get address submit event and checkbox change events
 $(document).ready(function() {
     $('#addressForm').on('submit', function(event) {
-        update_center();
+        console.log($("#address").val());
+        update_center($("#address").val());
         return false;
     });
     $('#licenseForm').on('submit', function(event) {
