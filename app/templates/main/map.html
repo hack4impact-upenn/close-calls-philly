@@ -117,11 +117,15 @@
 
     <button id="downloadCSVButton" class="ui button">Download CSV</button>
 
-    {% if current_user.is_admin() %}      
+    {% if current_user.is_admin() %}
         <form id="uploadCSVButton" action="{{ url_for('admin.upload_reports') }}" method="post" role="form" enctype="multipart/form-data">
-            <button class="ui button" type="submit" id="submitCsv">Upload CSV</button>
-            <input type="file" name="file">
+            <input type="file" name="file" id="open-file" style="display:none">
+            <label class="ui icon button" for="open-file" id="open-file-label">
+                <i class="file icon"></i>
+                Open File
+            </label>
             {{ form.hidden_tag() }}
+            <button class="ui button" type="submit" id="submitCsv">Upload CSV</button>
         </form>
     {% endif %}
 
@@ -543,6 +547,19 @@
     function sendDownloadCsvInstructionsModal() {
         $("#download-csv-instructions-modal").modal('show');
     }
+
+    $('#open-file').on('change', function(e) {
+        var filename;
+        var $label = $('#open-file-label');
+        if (e.target.value) {
+            filename = e.target.value.split('\\').pop();
+        }
+        if (filename) {
+            $label.html('<i class="file icon"></i>&nbsp'+filename);
+        } else {
+            $label.html();
+        }
+    });
 
 </script>
 
