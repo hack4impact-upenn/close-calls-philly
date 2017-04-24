@@ -3,7 +3,7 @@
 
 {% set deletion_endpoint = 'reports.delete_report_request' %}
 
-{% if (report.user_id == current_user.id) or current_user.is_admin() %}
+{% if current_user.is_authenticated %}
     {% set endpoints = [
         ('reports.report_info', 'Report information'),
         ('reports.edit_report_info', 'Edit report'),

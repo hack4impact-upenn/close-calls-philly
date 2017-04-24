@@ -1,10 +1,10 @@
-function downloadCSV(isAdmin) {
+function downloadCSV(isUser) {
     // Init CSV array.
     var csv = [
             ['data:text/csv;charset=utf-8,DATE,LOCATION,NUMBER OF AUTOMOBILES,NUMBER OF BICYCLES,' +
             'NUMBER OF PEDESTRIANS,DESCRIPTION,INJURIES,INJURIES DESCRIPTION,DEATHS,LICENSE PLATES,PICTURE URL']
     ];
-    if (isAdmin) {
+    if (isUser) {
         csv[0] = csv[0] + ',CONTACT NAME';
         csv[0] = csv[0] + ',CONTACT PHONE';
         csv[0] = csv[0] + ',CONTACT EMAIL';
@@ -15,7 +15,7 @@ function downloadCSV(isAdmin) {
         var line = [marker.incidentDate, marker.locationName, marker.automobileNum,
                     marker.bicycleNum, marker.pedestrianNum, marker.description, marker.injuries,
                     marker.injuries_description, marker.deaths, marker.licensePlates, marker.pictureUrl];
-        if (isAdmin) {
+        if (isUser) {
             line.push(marker.contactName);
             line.push(marker.contactPhone);
             line.push(marker.contactEmail);

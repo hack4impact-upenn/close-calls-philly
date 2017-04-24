@@ -228,7 +228,7 @@
     });
 
     $('#downloadCSVButton').click(function() {
-        {% if current_user.is_admin() %}
+        {% if current_user.is_authenticated %}
             downloadCSV(true);
         {% else %}
             downloadCSV(false);

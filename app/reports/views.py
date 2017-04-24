@@ -22,14 +22,12 @@ from ..utils import (
 
 @reports.route('/all')
 @login_required
-@admin_required
 def view_reports():
     """View all idling incident reports.
     Admins can see all reports.
     General users do not have access to this page."""
 
-    if current_user.is_admin():
-        incident_reports = Incident.query.all()
+    incident_reports = Incident.query.all()
 
     # TODO test using real data
     return render_template('reports/reports.html', reports=incident_reports)
@@ -44,10 +42,6 @@ def report_info(report_id):
     if report is None:
         abort(404)
 
-    # Either the user is looking at their own report, or the user is an admin.
-    if not current_user.is_admin():
-        abort(403)
-
     return render_template('reports/manage_report.html', report=report)
 
 
@@ -59,9 +53,6 @@ def edit_report_info(report_id):
 
     if report is None:
         abort(404)
-    # Either the user is editing their own report, or the user is an admin.
-    if not current_user.is_admin():
-        abort(403)
 
     form = EditIncidentReportForm()
 
@@ -150,9 +141,6 @@ def delete_report_request(report_id):
 
     if report is None:
         abort(404)
-
-    if not current_user.is_admin():
-        abort(403)
 
     return render_template('reports/manage_report.html', report=report)
 
