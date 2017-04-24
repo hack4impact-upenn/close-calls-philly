@@ -151,8 +151,8 @@ function addCenterButton(map) {
 // Get address submit event and checkbox change events
 $(document).ready(function() {
     $('#addressForm').on('submit', function(event) {
-        console.log($("#address").val());
-        update_center($("#address").val());
+        console.log($("#addressInput").val());
+        update_center($("#addressInput").val());
         return false;
     });
     $('#licenseForm').on('submit', function(event) {
