@@ -41,7 +41,7 @@ function storeMarkerState(markers, map, minDate, bounds, oms) {
 // the address search box
 function update_center() {
     geocoder = new google.maps.Geocoder();
-    address = $("#address").val();
+    address = $("#addressInput").val();
     if (geocoder) {
         geocoder.geocode( { 'address': address},
         function(results, status) {

@@ -51,7 +51,7 @@
 
         <form name="addressForm" id="addressForm">
             <div class="ui action input" id="addressSearch">
-                <input class="prompt" placeholder="Enter Address..." type="text" name="address" id="address">
+                <input class="prompt" placeholder="Enter Address..." type="text" name="address" id="addressInput">
                 <button id="submitButton" class="ui button">Center</button>
             </div>
         </form>
@@ -510,7 +510,7 @@
             // This is checking to see if the Geoeode Status is OK before proceeding
             if (status == google.maps.GeocoderStatus.OK) {
                 console.log(results);
-                 $('#address').val(results[0].formatted_address);
+                 $('#addressInput').val(results[0].formatted_address);
             }
         });
     }
