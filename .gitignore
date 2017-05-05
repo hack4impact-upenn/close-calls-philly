@@ -13,3 +13,4 @@ dist
 .idea
 Makefile
 .env
+.bundle
