@@ -3,7 +3,7 @@ from flask_assets import Bundle
 app_css = Bundle(
     'app.scss',
     'map.scss',
-    filters='scss',
+    filters='pyscss',
     output='styles/app.css'
 )
 
