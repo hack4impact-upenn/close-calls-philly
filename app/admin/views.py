@@ -1,6 +1,8 @@
 import csv
 import datetime
 from ..decorators import admin_required
+from datetime import datetime
+from dateutil import parser
 from flask import (
     render_template,
     abort,
@@ -11,7 +13,10 @@ from flask import (
     Response,
 )
 from flask_login import login_required, current_user
+from flask_wtf import CsrfProtect
 from flask_rq import get_queue
+import functools
+from werkzeug.utils import secure_filename
 from .forms import (
     ChangeUserEmailForm,
     ChangeUserPhoneNumberForm,
@@ -20,8 +25,11 @@ from .forms import (
 )
 from . import admin
 from ..models import User, Role, EditableHTML, Incident, IncidentLocation
+from ..reports.forms import IncidentReportForm
+
 from .. import db
-from ..utils import parse_phone_number, url_for_external
+from ..utils import parse_phone_number, url_for_external, geocode, strip_non_alphanumeric_chars
+
 from ..email import send_email
 
 
@@ -215,12 +223,13 @@ def download_reports():
 
     wr = csv.writer(outfile, delimiter=',', quoting=csv.QUOTE_MINIMAL)
     reports = db.session.query(Incident).all()
-    wr.writerow(['DATE', 'LOCATION', 'VEHICLE ID', 'DURATION',
-                'LICENSE PLATE', 'DESCRIPTION'])
+    wr.writerow(['DATE', 'LOCATION', 'NUMBER OF AUTOMOBILES', 'NUMBER OF BICYCLES',
+                'NUMBER OF PEDESTRIANS', 'DESCRIPTION', 'INJURIES', 'INJURIES DESCRIPTION',
+                'DEATHS', 'LICENSE PLATES', 'PICTURE URL', 'CONTACT NAME', 'CONTACT PHONE', 'CONTACT EMAIL'])
     for r in reports:
-        wr.writerow([r.date, r.location,
-                     r.vehicle_id, r.duration,
-                     r.license_plate, encode(r.description)])
+        wr.writerow([r.date, r.address, r.automobile_num, r.bicycle_num, r.pedestrian_num,
+                     r.description, r.injuries, r.injuries_description, r.deaths,
+                     r.license_plates, r.picture_url, r.contact_name, r.contact_phone, r.contact_email])
 
     endfile = open(csv_name, 'r+')
     data = endfile.read()
@@ -228,3 +237,177 @@ def download_reports():
         data,
         mimetype="text/csv",
         headers={"Content-disposition": "attachment; filename=" + csv_name})
+
+@admin.route('/upload_reports', methods=['POST'])
+@login_required
+@admin_required
+def upload_reports():
+    """Reads a csv and imports the data into a database."""
+    # The indices in the csv of different data
+    
+
+
+    def parse_datetime(date_index, row):
+        """for date_format in ['%m/%d/%Y %H:%M', '%m/%d/%y %H:%M']:
+            try:
+                time_1 = datetime.strptime(row[date_index], date_format)
+            except ValueError:
+                time_1 = None
+
+            try:
+                time_2 = datetime.strptime(row[date_index + 1],
+                                          date_format)
+            except ValueError:
+                time_2 = None"""
+        try:
+            return parser.parse(row[date_index])
+        except ValueError:
+            return None
+
+    def validate_field_partial(field, data, form, row_number):
+        """TODO: docstring"""
+        field.data = data
+        field.raw_data = data
+        validated = field.validate(form)
+
+        if not validated:
+            for error in field.errors:
+                print_error(row_number, error)
+
+        return validated
+
+
+    def print_error(row_number, error_message):
+        """TODO: docstring"""
+        print ('Row {:d}: {}L/'.format(row_number, error_message))
+
+    date_index = 0
+    location_index = 1
+    description_index = 5
+    injuries_index = 6
+    injuries_desc_index = 7
+    deaths_index = 8
+    pedestrian_num_index = 2
+    bicycle_num_index = 4
+    automobile_num_index = 3
+    license_plates_index = 9
+    picture_index = 10
+    contact_name_index = 11
+    contact_phone_index = 12
+    contact_email_index = 13
+    
+    validator_form = IncidentReportForm()
+
+    csv_file = request.files['file']
+    try:
+        csv_file.save(secure_filename(csv_file.filename))
+        actual_file = open(csv_file.filename, 'r')
+    except IOError:
+        flash("The file could not be opened.", "error")
+        return redirect(url_for('main.index'))
+    with actual_file as csv_file:
+        reader = csv.reader(csv_file)
+        columns = next(reader)
+        for c in range(len(columns)):
+            columns[c] = columns[c].upper()
+        if columns != ["DATE","LOCATION","NUMBER OF AUTOMOBILES","NUMBER OF BICYCLES","NUMBER OF PEDESTRIANS","DESCRIPTION","INJURIES","INJURIES DESCRIPTION","NUMBER OF DEATHS","LICENSE PLATES","PICTURE URL","CONTACT NAME","CONTACT PHONE","CONTACT EMAIL"]:
+            flash('The column names and order must match the specified form exactly. Please click the info icon for more details.', 'error')
+            return redirect(url_for('main.index'))
+        error_lines = []
+        errors = []
+        for i, row in enumerate(reader, start=2):  # i is the row number
+
+            address_text = row[location_index]
+            coords = geocode(address_text)
+
+            # Ignore rows that do not have correct geocoding
+            if coords[0] is None or coords[1] is None:
+                print_error(i, 'Failed to geocode "{:s}"'.format(address_text))
+                error_lines.append(i)
+
+            # Insert correctly geocoded row to database
+            else:
+                loc = IncidentLocation(
+                    latitude=coords[0],
+                    longitude=coords[1],
+                    original_user_text=address_text)
+                db.session.add(loc)
+
+                time = parse_datetime(date_index, row)
+                if time is None:
+                    error_lines.append(i)
+                    errors.append("Date/Time Format")
+                    continue
+
+                pedestrian_num_text = row[pedestrian_num_index].strip()
+                bicycle_num_text = row[bicycle_num_index].strip()
+                automobile_num_text = row[automobile_num_index].strip()
+
+                contact_name_text = row[contact_name_index].strip()
+                contact_phone_text = row[contact_phone_index].strip()
+                contact_email_text = row[contact_email_index].strip()
+
+                # Validate all the fields
+                validate_field = functools.partial(
+                    validate_field_partial,
+                    form=validator_form,
+                    row_number=i
+                )
+
+                if not validate_field(
+                    field=validator_form.description,
+                    data=row[description_index]
+                ):
+                    error_lines.append(i)
+                    errors.append("Description")
+
+                if not validate_field(
+                    field=validator_form.picture_url,
+                    data=row[picture_index]
+                ):
+                    error_lines.append(i)
+                    errors.append("Picture URL")
+
+                pedestrian_num_text = strip_non_alphanumeric_chars(pedestrian_num_text)
+                bicycle_num_text = strip_non_alphanumeric_chars(bicycle_num_text)
+                automobile_num_text = strip_non_alphanumeric_chars(automobile_num_text)
+
+                contact_name_text = strip_non_alphanumeric_chars(contact_name_text)
+                contact_phone_text = strip_non_alphanumeric_chars(contact_phone_text)
+                try:
+                    incident = Incident(
+                        date=time,
+                        address=loc,
+                        pedestrian_num=int(pedestrian_num_text) if len(pedestrian_num_text) > 0
+                        else 0,
+                        bicycle_num=int(bicycle_num_text) if len(bicycle_num_text) > 0
+                        else 0,
+                        automobile_num=int(automobile_num_text) if len(automobile_num_text) > 0
+                        else 0,
+                        description=row[description_index],
+                        injuries=row[injuries_index],
+                        injuries_description=row[injuries_desc_index],
+                        deaths=int(row[deaths_index]) if len(row[deaths_index]) > 0 else 0,
+                        license_plates=row[license_plates_index],
+                        picture_url=row[picture_index],
+                        contact_name=contact_name_text if len(contact_name_text) > 0
+                        else None,
+                        contact_phone=int(contact_phone_text) if len(contact_phone_text) > 0
+                        else None,
+                        contact_email=contact_email_text if len(contact_email_text) > 0
+                        else None,
+                    )
+                    db.session.add(incident)
+                except Exception:
+                    error_lines.append(i)
+                    errors.append("Other")
+
+        db.session.commit()
+        if len(error_lines) > 0:
+            flash_str = 'We found errors in the following lines:\n'
+            for l, e in zip(error_lines, errors):
+                flash_str += "Line: " + str(l) + ', Error: ' + e + '\n'
+            flash(flash_str, 'error')
+        else:
+            flash('All lines were added successfully.', 'success')
+        return redirect(url_for('main.index'))

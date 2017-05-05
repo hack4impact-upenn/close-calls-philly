@@ -3,8 +3,8 @@
 
 {% block content %}
 <div id="wrapper">
-  <div id="form_button">Report Incident</div>
-    <div id="inputPanel"></div>
+    <div id="inputPanel" class="ui vertical menu">
+        <div id="form_button">Report Incident</div>
         <div id="form_container">
             <button id="close_form" class="ui icon button close">
                 <i class="remove icon"></i>
@@ -51,10 +51,12 @@
 
         <form name="addressForm" id="addressForm">
             <div class="ui action input" id="addressSearch">
-                <input class="prompt" placeholder="Enter Address..." type="text" name="address" id="address">
+                <input class="prompt" placeholder="Enter Address..." type="text" name="address" id="addressInput">
                 <button id="submitButton" class="ui button">Center</button>
             </div>
         </form>
+
+        <div class="ui horizontal divider" id="vehicleDivider">Filters</div>
 
         <form name="licenseForm" id="licenseForm">
             <div class="ui action input" id="licenseSearch">
@@ -63,12 +65,14 @@
             </div>
         </form>
 
+        <h4>Bounding Boxes&nbsp&nbsp<a><i onclick="sendBoundingInstructionsModal()" class="info circle icon" aria-hidden="true" id="boundingInstructionsIcon"></i></a></h4>
         <button id="createBoundingBoxButton" class="ui button">Create Bounding Box</button>
+
         <button id="deleteBoundingBoxButton" class="ui button">Delete Bounding Box</button>
         <div class="ui form" id="dateRange">
           <div class="field">
             <label>Start Date</label>
-            <div class="ui calendar" id="start-date">
+            <div class="ui calendar" id="startDate">
               <div class="ui input left icon">
                 <i class="calendar icon"></i>
                 <input type="text" placeholder="Start" />
@@ -77,7 +81,7 @@
           </div>
           <div class="field">
             <label>End Date</label>
-            <div class="ui calendar" id="end-date">
+            <div class="ui calendar" id="endDate">
               <div class="ui input left icon">
                 <i class="calendar icon"></i>
                 <input type="text" placeholder="End">
@@ -87,7 +91,6 @@
         </div>
 
         <div class="ui button" id="resetDatesButton">Reset Dates</div>
-        <button id="downloadCSVButton" class="ui button">Download CSV</button>
 
 
         <div id="typeForm">
@@ -109,9 +112,29 @@
             </div>
         </form>
         </div>
+
+    <div class="ui horizontal divider" id="vehicleDivider">CSV&nbsp&nbsp<a><i class="info circle icon" id="csvInstructionsIcon" onclick="sendDownloadCsvInstructionsModal()" aria-hidden="true"></i></a></div>
+
+    <button id="downloadCSVButton" class="ui button">Download CSV</button>
+
+    {% if current_user.is_admin() %}
+        <form id="uploadCSVButton" action="{{ url_for('admin.upload_reports') }}" method="post" role="form" enctype="multipart/form-data">
+            <input type="file" name="file" id="open-file" style="display:none">
+            <label class="ui icon button" for="open-file" id="open-file-label">
+                <i class="file icon"></i>
+                Open File
+            </label>
+            {{ form.hidden_tag() }}
+            <button class="ui button" type="submit" id="submitCsv">Upload CSV</button>
+        </form>
+    {% endif %}
+
+    </div>
+
     <div id="googleMap"></div>
 </div>
 
+<!-- Modal stuff -->
 <div class="ui centered modal" id="geocode_error">
     <i class="close icon"></i>
     <div class="header">Geocode not successful</div>
@@ -124,6 +147,56 @@
     <div class="header">Address not found</div>
     <div class="actions">
         <div class="ui approve button">Okay</div>
+    </div>
+</div>
+
+<div class="ui centered modal" id="bounding-instructions-modal">
+    <i class="close icon"></i>
+    <div class="header">Bounding Box Instructions</div>
+    <div class="content">
+        <p><ul>
+        <li>Click "Create Bounding Box" to filter the map markers to include only incidents in a specified region.</li>
+        <li>Click the <img src="static/images/google_maps_rectangle_button.png"/> button and drag across the map for a rectangular region OR</li>
+        <li>Click the <img src="static/images/google_maps_polygon_button.png"/> button to draw a freeform shape. To draw the shape, double click on a point on the map, then extend the line to another point and click once, then extend and click again, etc. When you want to complete the shape, simply return to the first point and click.</li>
+        <li>You can modify a rectangle/shape by dragging the white vertices of the rectangle/shape, and you can drag a shape across the map as well.</li>
+        <li>Click "Delete Bounding Box" to delete the rectangle or shape.</li>
+        </p>
+    </div>
+</div>
+
+<div class="ui centered modal" id="download-csv-instructions-modal">
+    <i class="close icon"></i>
+    <div class="header">CSV Instructions</div>
+    <div class="content">
+        <p>
+            Download a CSV containing information for all incidents that are currently on the map,
+            or upload a CSV with information for additional markers to add onto the map.
+        </p>
+        <p>
+            For uploading a CSV, the columns should be:
+            <ol>
+                <li>Date</li>
+                <li>Location</li>
+                <li>Number of Automobiles</li>
+                <li>Number of Bicycles</li>
+                <li>Number of Pedestrians</li>
+                <li>Description</li>
+                <li>Injuries</li>
+                <li>Injuries Description</li>
+                <li>Number of Deaths</li>
+                <li>License Plates</li>
+                <li>Picture URL</li>
+                <li>Contact Name</li>
+                <li>Contact Phone</li>
+                <li>Contact Email</li>
+            </ol>
+            The first line of the CSV must include all of these column names in this order, regardless of whether some (or all) incidents do not have certain fields filled out.
+            Please note that entry in the Injuries column should be either "Yes" or "No". If there are no injuries, the "Injuries Description" is optional.
+            The entries for "License Plates", "Picture URL", "Contact Name", "Contact Phone", and "Contact Email" are optional.
+
+            All other columns require an input.
+        </p>
+
     </div>
 </div>
 
@@ -166,6 +239,11 @@
         {% endif %}
     });
 
+    $('#uploadCSVButton').click(function() {
+        // $('#file_upload').click();
+        //TODO: WHAT IS HERE
+    });
+
     function initializeMapAndMarkers() {
         var mapProp = {
                 mapTypeId: google.maps.MapTypeId.ROADMAP,
@@ -174,6 +252,19 @@
                 scrollwheel: false,
         };
         map = new google.maps.Map($('#googleMap')[0],mapProp);
+        var legend = document.createElement('div');
+        legend.innerHTML = '<h3>Legend</h3>';
+        legend.id = 'map-legend';
+        var div1 = document.createElement('div');
+        div1.innerHTML = '<img src="../static/images/marker_swatch.png"> No Injury';
+        var div2 = document.createElement('div');
+        div2.innerHTML = '<img src="../static/images/injury_swatch.png"> Injury';
+        var div3 = document.createElement('div');
+        div3.innerHTML = '<img src="../static/images/death_swatch.png"> Death';
+        legend.appendChild(div1);
+        legend.appendChild(div2);
+        legend.appendChild(div3);
+        map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push(legend);
         google.maps.event.addListener(map, 'click', function(event) {
                 $('#latitude').val(event.latLng.lat());
                 $('#replaceable').hide()
@@ -238,12 +329,16 @@
         var bounds = new google.maps.LatLngBounds();
         {% for report in incident_reports %}
             var iconFile = "";
-            {% if report.injuries == 'Yes' %}
+            {% if report.deaths > 0 %}
+                iconFile = '../static/images/marker_deaths.png';
+            {% elif report.injuries == 'Yes' %}
                 iconFile = "../static/images/marker_injury.png";
             {% else %}
                 iconFile = "../static/images/marker.png";
             {% endif %}
             $(function() {
+                console.log('{{ report.address.latitude }}');
+                console.log('{{ report.address.longitude }}');
             var marker = new google.maps.Marker({
                 // Use latitude and longitude values from incident report
                 // to set position of marker
@@ -263,21 +358,24 @@
                                 '</button>' +
                                 '<h3>Date: ' + '{{ report.date.strftime('%m-%d-%Y at %I:%M %p') }}' + '</h3>' +
                                 '<p><b>Description:</b> ' + '{{ report.description }}' + '</p>' +
-                                '<p><b>Injuries:</b> ' + '{{ report.injuries_description if report.injuries_description else '' }} ' +
-                                '<p><b>Number of Pedestrians:</b> ' + '{{ report.pedestrian_num }}' + '</p>' +
+                                '<p><b>Injuries:</b> ' + '{{ report.injuries_description if report.injuries_description else '' }} ';
+            {% if report.deaths > 0 %}
+                contentString += '<p><b>Number of Deaths:</b> ' + '{{ report.deaths }}' + '</p>';
+            {% endif %}
+            contentString += '<p><b>Number of Pedestrians:</b> ' + '{{ report.pedestrian_num }}' + '</p>' +
                                 '<p><b>Number of Automobiles:</b> ' + '{{ report.automobile_num }}' + '</p>' +
                                 '<p><b>Number of Bicycles:</b> ' + '{{ report.bicycle_num }}' + '</p>' +
-                                '<p><b>License Plates:</b> ' + "{{ report.license_plates if report.license_plates else '' }}" + '</p>' +
-                                  {% if report.picture_url %}
-                                  '<p><a href="{{ report.picture_url }}" target="_blank" rel="noopener noreferrer">' + 'Link to Picture' + '</a></p>' +
-                                  {% endif %}
-                                {% if current_user.is_admin() %}
-                                '<p><b>Contact Name:</b> ' + '{{ report.contact_name if report.contact_name else '' }}' +'</p>' +
-                                '<p><b>Contact Phone:</b> ' + '{{ report.contact_phone if report.contact_phone else '' }}' + '</p>' +
-                                '<p><b>Contact Email:</b> ' + '{{ report.contact_email if report.contact_email else '' }}</div>';
-                                {% else %}
-                                '</div>';
-                                {% endif %}
+                                '<p><b>License Plates:</b> ' + "{{ report.license_plates if report.license_plates else '' }}" + '</p>';
+            {% if report.picture_url %}
+            contentString += '<p><a href="{{ report.picture_url }}" target="_blank" rel="noopener noreferrer">' + 'Link to Picture' + '</a></p>';
+            {% endif %}
+            {% if current_user.is_authenticated %}
+            contentString += '<p><b>Contact Name:</b> ' + '{{ report.contact_name if report.contact_name else '' }}' +'</p>';
+            contentString += '<p><b>Contact Phone:</b> ' + '{{ report.contact_phone if report.contact_phone else '' }}' + '</p>';
+            contentString += '<p><b>Contact Email:</b> ' + '{{ report.contact_email if report.contact_email else '' }}</div>';
+            {% else %}
+            contentString += '</div>';
+            {% endif %}
             bounds.extend(marker.getPosition());
 
             // Dynamically add state to marker object.
@@ -290,6 +388,7 @@
             marker.description = '{{ report.description }}';
             marker.injuries = '{{ report.injuries }}';
             marker.injuries_description = '{{ report.injuries_description if report.injuries == "Yes" else "No injuries." }}';
+            marker.deaths = '{{ report.deaths }}';
             marker.licensePlates = "{{ report.license_plates if report.license_plates else ''}}";
             marker.pictureUrl = '{{ report.picture_url if report.picture_url else '' }}';
 
@@ -322,6 +421,7 @@
             $(".ui.navigation.grid").css("margin-bottom", "0");
             $("footer").css("margin-top", "0");
         });
+
     });
 
     function drawShape() {
@@ -410,7 +510,7 @@
             // This is checking to see if the Geoeode Status is OK before proceeding
             if (status == google.maps.GeocoderStatus.OK) {
                 console.log(results);
-                 $('#address').val(results[0].formatted_address);
+                 $('#addressInput').val(results[0].formatted_address);
             }
         });
     }
@@ -439,6 +539,27 @@
     $('#injuries-1').click(function() {
         $('#injuries-description-field').hide('fast');
     })
+
+    function sendBoundingInstructionsModal() {
+        $("#bounding-instructions-modal").modal('show');
+    }
+
+    function sendDownloadCsvInstructionsModal() {
+        $("#download-csv-instructions-modal").modal('show');
+    }
+
+    $('#open-file').on('change', function(e) {
+        var filename;
+        var $label = $('#open-file-label');
+        if (e.target.value) {
+            filename = e.target.value.split('\\').pop();
+        }
+        if (filename) {
+            $label.html('<i class="file icon"></i>&nbsp'+filename);
+        } else {
+            $label.html();
+        }
+    });
 
 </script>
 
