@@ -30,20 +30,21 @@ MarkupSafe==0.23
 packaging==16.8
 psycopg2==2.6.2
 pyparsing==2.1.10
-PySocks==1.6.7
+PySocks==1.6.6
 python-dateutil==2.6.0
 python-editor==1.0.3
 pytimeparse==1.1.5
-pytz==2017.2
+pytz==2016.10
 raygun4py==3.1.4
 redis==2.10.5
 requests==2.9.1
 rq==0.7.1
 -e git://github.com/ui/rq-scheduler.git@4e6837bb6a6e5be4ca364ff9d6218c2b2153009a#egg=rq_scheduler
+sass==2.3
 six==1.10.0
 SQLAlchemy==1.1.5
 twilio==5.7.0
-validators==0.11.3
+validators==0.11.2
 webassets==0.12.1
 Werkzeug==0.11.15
 WTForms==2.1
