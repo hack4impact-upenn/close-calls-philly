@@ -1,2 +1,2 @@
 source "http://gemcutter.org"
-gem 'hassle', 0.0.1
+gem 'hassle', '0.0.1'

@@ -1,0 +1,21 @@
+GEM
+  remote: http://gemcutter.org/
+  specs:
+    haml (5.0.1)
+      temple (>= 0.8.0)
+      tilt
+    hassle (0.0.1)
+      haml
+      rack
+    rack (2.0.1)
+    temple (0.8.0)
+    tilt (2.0.7)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  hassle (= 0.0.1)
+
+BUNDLED WITH
+   1.14.6
