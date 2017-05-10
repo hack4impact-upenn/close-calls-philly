@@ -510,7 +510,12 @@
             // This is checking to see if the Geoeode Status is OK before proceeding
             if (status == google.maps.GeocoderStatus.OK) {
                 console.log(results);
-                 $('#addressInput').val(results[0].formatted_address);
+                if ($("#form_container").is(":visible")) {
+                    $("#address").val(results[0].formatted_address);
+                }
+                else {
+                    $('#addressInput').val(results[0].formatted_address);
+                }
             }
         });
     }
