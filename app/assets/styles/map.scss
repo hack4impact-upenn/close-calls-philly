@@ -66,7 +66,7 @@
     padding: 1em;
 }
 
-#form_button {
+#map_button {
     background-color: $red;
     width: 100%;
     color: white;
@@ -78,7 +78,7 @@
     border-radius: 0.5em;
 }
 
-#close_info, #close_form {
+#close_info, #close_controls {
     background-color: $red;
     color: $white;
     height: 25px;
@@ -89,11 +89,11 @@
     float: right;
 }
 
-#close_form {
+#close_controls {
     margin: 15px;
 }
 
-#form_button:hover, #close_info:hover, #close_form:hover {
+#map_button:hover, #close_info:hover, #close_controls:hover {
     background-color: $light-red;
     cursor: pointer;
 }
@@ -107,7 +107,6 @@
 }
 
 #info_container, #form_container {
-    display: none;
     position: absolute;
     background-color: white;
     width: 100%;
@@ -117,6 +116,10 @@
     left: 0px;
     z-index: 6;
     height: 100%;
+}
+
+#info_container {
+    display: none;
 }
 
 #inputPanel {
@@ -192,14 +195,9 @@ form textarea#description {
     #downloadCSVButton,
     #uploadCSVButton,
     #dateRange,
-// <<<<<<< HEAD
     #resetDatesButton,
     #typeForm,
     #vehicleDivider {
-// =======
-//     #map-legend
-//     #inputPanel {
-// >>>>>>> sanjay-instructions
         display: none;
     }
     #googleMap {
@@ -221,7 +219,7 @@ form textarea#description {
         left: 5%;
         top: 30px;
     }
-    #form_button {
+    #map_button {
         position: absolute;
         width: 80%;
         margin: auto;

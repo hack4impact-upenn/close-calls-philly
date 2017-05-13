@@ -4,11 +4,15 @@
 {% block content %}
 <div id="wrapper">
     <div id="inputPanel" class="ui vertical menu">
-        <div id="form_button">Report Incident</div>
+        <div style="text-align:center"><h3>Map Controls</h3></div>
+        <button id="close_controls" class="ui icon button close">
+            <i class="remove icon"></i>
+        </button>
         <div id="form_container">
-            <button id="close_form" class="ui icon button close">
-                <i class="remove icon"></i>
-            </button>
+            <div id="map_button">Map Controls</div>
+            <br>
+            <!--<div style="text-align:center"><h3>Incident Report</h3></div> -->
+            <div class="ui horizontal divider">Incident Report</div>
             <div id ="form_fields">
             {% set flashes = {
             'error': get_flashed_messages(category_filter=['form-error']),
@@ -220,14 +224,14 @@
 
     $('#resetDatesButton').click(resetDates);
 
-    $('#form_button').click(function(){
+    $('#map_button').click(function(){
         $('#form_container').toggle();
         $('#info_container').hide();
         $('#form_button').toggle();
     });
 
-    $('#close_form').click(function(){
-        $('#form_container').hide();
+    $('#close_controls').click(function(){
+        $('#form_container').show();
         $('#form_button').toggle();
     });
 
