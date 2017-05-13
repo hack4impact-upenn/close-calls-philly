@@ -17,6 +17,10 @@
     width: 100%;
 }
 
+#centerMapDivider {
+    clear: both;
+}
+
 #addressForm,
 #licenseForm {
     margin: 5px auto;
@@ -28,12 +32,7 @@
     width: 100%;
 }
 
-#licenseSubmitButton {
-    width: 30%;
-    text-align: center;
-}
-
-#submitButton {
+#submitButton, #licenseSubmitButton {
     width: 30%;
     background-color: $teal;
     color: $white;
@@ -41,23 +40,25 @@
     font-weight: 300;
     text-transform: uppercase;
     text-align: center;
+    padding: 0px;
+    display: inline-block;
 }
 
-#submitButton:hover, #submit:hover{
+#submitButton:hover, #licenseSubmitButton:hover, #submit:hover{
     background-color: $light-teal;
 }
 
-#current_location_button, #submit{
-    background-color: $teal;
-    color: $white;
+.long-button, #submit{
+    background-color: $teal !important;
+    color: $white !important;
     width: 100%;
-    font-weight: 300;
-    text-transform: uppercase;
+    font-weight: 300 !important;
+    text-transform: uppercase !important;
     margin-bottom: 1em;
 }
 
-#current_location_button:hover, #submit:hover {
-    background-color: $light-teal;
+.long-button:hover, #submit:hover {
+    background-color: $light-teal !important;
     cursor: pointer;
 }
 
@@ -66,7 +67,7 @@
     padding: 1em;
 }
 
-#map_button {
+#map_button, #form_button {
     background-color: $red;
     width: 100%;
     color: white;
@@ -78,7 +79,11 @@
     border-radius: 0.5em;
 }
 
-#close_info, #close_controls {
+#form_button {
+    display: none;
+}
+
+#close_info, /*#close_controls*/ {
     background-color: $red;
     color: $white;
     height: 25px;
@@ -89,11 +94,11 @@
     float: right;
 }
 
-#close_controls {
+/*#close_controls {
     margin: 15px;
-}
+}*/
 
-#map_button:hover, #close_info:hover, #close_controls:hover {
+#map_button:hover, #form_button:hover, #close_info:hover, /*#close_controls:hover*/ {
     background-color: $light-red;
     cursor: pointer;
 }
@@ -106,9 +111,8 @@
     width: 100%;
 }
 
-#info_container, #form_container {
+#info_container, #form_container, #map_controls {
     position: absolute;
-    background-color: white;
     width: 100%;
     overflow-y: scroll;
     color: black;
@@ -118,7 +122,11 @@
     height: 100%;
 }
 
-#info_container {
+#info_container, #form_container {
+    background-color: white;
+}
+
+#info_container, #map_controls {
     display: none;
 }
 
@@ -190,8 +198,8 @@ form textarea#description {
     }
 
     #licenseSearch,
-    #createBoundingBoxButton,
-    #deleteBoundingBoxButton,
+    #centerMapDivider,
+    #boundingBoxSection,
     #downloadCSVButton,
     #uploadCSVButton,
     #dateRange,
@@ -204,26 +212,34 @@ form textarea#description {
         width: 100%;
     }
 
+    #map_controls {
+        pointer-events: none;
+        width: 80%;
+        left: 5%;
+    }
+
     #addressForm {
         position: absolute;
-        width: 80%;
+        pointer-events: auto;
         margin: auto;
-        top: 30px;
+        top: 60px;
         z-index: 1;
     }
 
     #form_container,
     #info_container {
         position: absolute;
-        width: 90%;
-        left: 5%;
-        top: 30px;
-    }
-    #map_button {
-        position: absolute;
         width: 80%;
+        left: 5%;
+        top: 20px;
+    }
+    #form_button {
+        position: absolute;
+        pointer-events: auto;
+        width: 100%;
         margin: auto;
-        bottom: 10px;
+        top: 20px;
+        // bottom: 10px;
     }
     #submitButton {
         left: 95%;
