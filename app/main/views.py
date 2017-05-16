@@ -41,7 +41,7 @@ def index():
             injuries_description=form.injuries_description.data,
             license_plates=form.license_plates.data.upper(),
             contact_name=form.contact_name.data,
-            contact_phone=form.contact_phone.data,
+            contact_phone=(form.contact_phone.data if len(form.contact_phone.data) > 0 else None),
             contact_email=form.contact_email.data
         )
 
