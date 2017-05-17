@@ -52,11 +52,11 @@ class IncidentReportForm(Form):
 
     today = datetime.datetime.today()
 
-    date = DateField('Date (year-month-day)',
+    date = DateField('Date of Event (year-month-day)',
                      default=today.strftime('%m-%d-%Y'),
                      validators=[InputRequired()])
 
-    time = TimeField('Time (hours:minutes am/pm)',
+    time = TimeField('Time of Event (hours:minutes am/pm)',
                      default=today.strftime('%I:%M %p'),
                      validators=[InputRequired()])
 
