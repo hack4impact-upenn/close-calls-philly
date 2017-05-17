@@ -1,4 +1,4 @@
-Close Call Philly
+# Close Call Philly
 
 ## Team Members
 * Katie Jiang
