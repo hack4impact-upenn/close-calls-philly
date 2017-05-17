@@ -149,6 +149,14 @@
     </div>
 </div>
 
+<div class="ui centered modal" id="injury-call-modal">
+    <i class="close icon"></i>
+    <div class="header">In case of an injury, please be sure to call 911.</div>
+    <div class="actions">
+        <div class="ui approve button">Okay</div>
+    </div>
+</div>
+
 <div class="ui centered modal" id="bounding-instructions-modal">
     <i class="close icon"></i>
     <div class="header">Bounding Box Instructions</div>
@@ -556,6 +564,7 @@
 
     $('#injuries-0').click(function() {
         $('#injuries-description-field').show('fast');
+        $("#injury-call-modal").modal('show');
     })
 
     $('#injuries-1').click(function() {
