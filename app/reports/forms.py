@@ -77,7 +77,7 @@ class IncidentReportForm(Form):
         ])
 
     description = TextAreaField('Description', validators=[
-        InputRequired(),
+        Optional(),
         Length(max=5000)
     ])
 
