@@ -21,6 +21,7 @@
                     <button id="licenseSubmitButton" class="ui button">Search</button>
                 </div>
             </form>
+            <br />
             <div id="boundingBoxSection">
                 <h4>Bounding Boxes&nbsp&nbsp<a><i onclick="sendBoundingInstructionsModal()" class="info circle icon" aria-hidden="true" id="boundingInstructionsIcon"></i></a></h4>
                 <button id="createBoundingBoxButton" class="ui button long-button">Create Bounding Box</button>
@@ -102,6 +103,7 @@
             {{ f.begin_form(form, flashes) }}
             {{ f.render_form_field(form.address) }}
             <div class="ui button long-button" id="current_location_button" onclick="geoFindMe()">Use Current location</div>
+            <br /><br />
             {{ f.render_form_field(form.automobile_num) }}
             {{ f.render_form_field(form.bicycle_num) }}
             {{ f.render_form_field(form.pedestrian_num) }}
