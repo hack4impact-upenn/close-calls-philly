@@ -61,7 +61,7 @@ class IncidentReportForm(Form):
                      validators=[InputRequired()])
 
     picture_file = FileField(
-        'Upload a photo (optional)',
+        'Upload a Photo',
         validators=[
             Optional(),
             FileAllowed(['jpg', 'jpe', 'jpeg', 'png', 'gif', 'svg', 'bmp'],
@@ -93,22 +93,22 @@ class IncidentReportForm(Form):
 
     deaths = IntegerField('Number of Deaths', validators=[Optional()])
 
-    license_plates = TextAreaField('License Plates (optional)', validators=[
+    license_plates = TextAreaField('License Plates', validators=[
         Optional(),
         Length(max=5000)
     ])
 
-    contact_name = StringField('Contact Name (optional)', validators=[
+    contact_name = StringField('Contact Name', validators=[
         Optional(),
         Length(max=1000)
     ])
 
-    contact_phone = StringField('Contact Phone (optional)', validators=[
+    contact_phone = StringField('Contact Phone', validators=[
         Optional(),
         Length(max=1000)
     ])
 
-    contact_email = StringField('Contact E-mail (optional)', validators=[
+    contact_email = StringField('Contact E-mail', validators=[
         Optional(),
         Length(max=100)
     ])
