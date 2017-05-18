@@ -67,9 +67,11 @@ def edit_report_info(report_id):
 
     if form.validate_on_submit():
 
-        report.automobile_num = form.automobile_num.data
-        report.pedestrian_num = form.pedestrian_num.data
-        report.bicycle_num = form.bicycle_num.data
+        report.car = form.car.data
+        report.bus = form.bus.data
+        report.truck = form.truck.data
+        report.bicycle = form.bicycle.data
+        report.pedestrian = form.pedestrian.data
 
         lat, lng = geocode(form.address.data)
         report.address.latitude, report.address.longitude = lat, lng
@@ -116,9 +118,11 @@ def edit_report_info(report_id):
 
     # pre-populate form
 
-    form.automobile_num.default = report.automobile_num
-    form.pedestrian_num.default = report.pedestrian_num
-    form.bicycle_num.default = report.bicycle_num
+    form.car.default = report.car
+    form.bus.default = report.bus
+    form.truck.default = report.truck
+    form.bicycle.default = report.bicycle
+    form.pedestrian.default = report.pedestrian
 
     form.address.default = report.address.original_user_text
 

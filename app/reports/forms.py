@@ -10,7 +10,8 @@ from wtforms.fields import (
     HiddenField,
     DateField,
     RadioField,
-    FieldList
+    FieldList,
+    BooleanField
 )
 from wtforms_components import TimeField
 from wtforms.ext.sqlalchemy.fields import QuerySelectField
@@ -38,15 +39,23 @@ class IncidentReportForm(Form):
 
     longitude = HiddenField('Longitude')
 
-    automobile_num = IntegerField('Number of Automobiles', validators=[
+    car = BooleanField('Car', validators=[
         InputRequired()
     ])
 
-    bicycle_num = IntegerField('Number of Bicycles', validators=[
+    bus = BooleanField('Bus', validators=[
         InputRequired()
     ])
 
-    pedestrian_num = IntegerField('Number of Pedestrians', validators=[
+    truck = BooleanField('Truck', validators=[
+        InputRequired()
+    ])
+
+    bicycle = BooleanField('Bicycle', validators=[
+        InputRequired()
+    ])
+
+    pedestrian = BooleanField('Pedestrian', validators=[
         InputRequired()
     ])
 

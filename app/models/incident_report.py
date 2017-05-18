@@ -35,9 +35,11 @@ class Incident(db.Model):
                                 lazy='joined',
                                 backref='incident')
     date = db.Column(db.DateTime)
-    pedestrian_num = db.Column(db.Integer)
-    bicycle_num = db.Column(db.Integer)
-    automobile_num = db.Column(db.Integer)
+    car = db.Column(db.Boolean)
+    bus = db.Column(db.Boolean)
+    truck = db.Column(db.Boolean)
+    bicycle = db.Column(db.Boolean)
+    pedestrian = db.Column(db.Boolean)
     description = db.Column(db.Text)
     license_plates = db.Column(db.String, default=None) # optional
     injuries = db.Column(db.Text)
@@ -96,18 +98,16 @@ class Incident(db.Model):
             if random.random() >= 0.5:
                 has_injury = 'Yes'
                 injuries_description_entry = "An injury occurred."
-            num_automobiles = random.randint(0, 2)
             license_plates_str = ""
-            for _ in range(num_automobiles):
-                license_plates_str += rand_alphanumeric(6) + ', '
-            if len(license_plates_str) > 0:
-                license_plates_str = license_plates_str[:-2]
+            license_plates_str += rand_alphanumeric(6)
             r = Incident(
                 address=l,
                 date=fake.date_time_between(start_date="-1y", end_date="now"),
-                pedestrian_num=random.randint(0, 2),
-                bicycle_num=random.randint(0, 2),
-                automobile_num=num_automobiles,
+                car=bool(random.getrandbits(1)),
+                bus=bool(random.getrandbits(1)),
+                truck=bool(random.getrandbits(1)),
+                bicycle=bool(random.getrandbits(1)),
+                pedestrian=bool(random.getrandbits(1)),
                 description=fake.paragraph(),
                 injuries=has_injury,
                 injuries_description=injuries_description_entry,

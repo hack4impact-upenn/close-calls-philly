@@ -54,8 +54,18 @@
                 <b>Vehicle Type</b>
                 <form>
                     <div class="ui checkbox">
-                        <input type="checkbox" id="automobile"></input>
-                        <label>Automobile</label>
+                        <input type="checkbox" id="car"></input>
+                        <label>Car</label>
+                    </div>
+                    <br />
+                    <div class="ui checkbox">
+                        <input type="checkbox" id="bus"></input>
+                        <label>Bus</label>
+                    </div>
+                    <br />
+                    <div class="ui checkbox">
+                        <input type="checkbox" id="truck"></input>
+                        <label>Truck</label>
                     </div>
                     <br />
                     <div class="ui checkbox">
@@ -103,10 +113,13 @@
             {{ f.begin_form(form, flashes) }}
             {{ f.render_form_field(form.address) }}
             <div class="ui button long-button" id="current_location_button" onclick="geoFindMe()">Use Current location</div>
-            <br /><br />
-            {{ f.render_form_field(form.automobile_num) }}
-            {{ f.render_form_field(form.bicycle_num) }}
-            {{ f.render_form_field(form.pedestrian_num) }}
+            <br />
+            <h4>Select Types of Vehicles Involved<span style="color: red; font-style: italic"> *</span></h4>
+            {{ f.render_form_field(form.car) }}
+            {{ f.render_form_field(form.bus) }}
+            {{ f.render_form_field(form.truck) }}
+            {{ f.render_form_field(form.bicycle) }}
+            {{ f.render_form_field(form.pedestrian) }}
             {{ f.render_form_field(form.date)}}
             {{ f.render_form_field(form.time)}}
             {{ f.render_form_field(form.picture_file) }}
@@ -182,13 +195,15 @@
         <p>
             For uploading a CSV, the columns should be:
             <ol>
-                <li>Date</li>
+                <li>Date (year-month-day)</li>
                 <li>Location</li>
-                <li>Number of Automobiles</li>
-                <li>Number of Bicycles</li>
-                <li>Number of Pedestrians</li>
+                <li>Car (True or False)</li>
+                <li>Bus (True or False)</li>
+                <li>Truck (True or False)</li>
+                <li>Bicycle (True or False)</li>
+                <li>Pedestrian (True or False)</li>
                 <li>Description</li>
-                <li>Injuries</li>
+                <li>Injuries (Yes or No)</li>
                 <li>Injuries Description</li>
                 <li>Number of Deaths</li>
                 <li>License Plates</li>
@@ -387,10 +402,23 @@
             {% if report.deaths > 0 %}
                 contentString += '<p><b>Number of Deaths:</b> ' + '{{ report.deaths }}' + '</p>';
             {% endif %}
-            contentString += '<p><b>Number of Pedestrians:</b> ' + '{{ report.pedestrian_num }}' + '</p>' +
-                                '<p><b>Number of Automobiles:</b> ' + '{{ report.automobile_num }}' + '</p>' +
-                                '<p><b>Number of Bicycles:</b> ' + '{{ report.bicycle_num }}' + '</p>' +
-                                '<p><b>License Plates:</b> ' + "{{ report.license_plates if report.license_plates else '' }}" + '</p>';
+            var vehicleTypes = []
+            {% if report.car %}
+                vehicleTypes.push('Car');
+            {% endif %}
+            {% if report.bus %}
+                vehicleTypes.push('Bus');
+            {% endif %}
+            {% if report.truck %}
+                vehicleTypes.push('Truck');
+            {% endif %}
+            {% if report.bicycle %}
+                vehicleTypes.push('Bicycle');
+            {% endif %}
+            {% if report.pedestrian %}
+                vehicleTypes.push('Pedestrian');
+            {% endif %}
+            contentString += '<p><b>Types of Vehicles Involved:</b> ' + vehicleTypes.join(', ') + '</p>'
             {% if report.picture_url %}
             contentString += '<p><a href="{{ report.picture_url }}" target="_blank" rel="noopener noreferrer">' + 'Link to Picture' + '</a></p>';
             {% endif %}
@@ -407,9 +435,11 @@
             marker.incidentDate = incidentDate;
             marker.locationName = '\"{{ report.address | replace("\n", ", ") }}\"';
 
-            marker.pedestrianNum = '{{ report.pedestrian_num }}';
-            marker.automobileNum = '{{ report.automobile_num }}';
-            marker.bicycleNum = '{{ report.bicycle_num }}';
+            marker.car = '{{ report.car }}';
+            marker.bus = '{{ report.bus }}';
+            marker.truck = '{{ report.truck }}';
+            marker.bicycle = '{{ report.bicycle }}';
+            marker.pedestrian = '{{ report.pedestrian }}';
             marker.description = '{{ report.description }}';
             marker.injuries = '{{ report.injuries }}';
             marker.injuries_description = '{{ report.injuries_description if report.injuries == "Yes" else "No injuries." }}';
