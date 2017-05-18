@@ -122,11 +122,13 @@
             {{ f.render_form_field(form.pedestrian) }}
             {{ f.render_form_field(form.date)}}
             {{ f.render_form_field(form.time)}}
-            {{ f.render_form_field(form.picture_file) }}
             {{ f.render_form_field(form.description) }}
+            {{ f.render_form_field(form.road_conditions) }}
             {{ f.render_form_field(form.injuries) }}
             <div id="injuries-description-field" style="display:none">{{ f.render_form_field(form.injuries_description) }}</div>
+            {{ f.render_form_field(form.witness) }}
             {{ f.render_form_field(form.license_plates) }}
+            {{ f.render_form_field(form.picture_file) }}
             {{ f.render_form_field(form.contact_name) }}
             {{ f.render_form_field(form.contact_phone) }}
             {{ f.render_form_field(form.contact_email) }}
@@ -203,8 +205,10 @@
                 <li>Bicycle (True or False)</li>
                 <li>Pedestrian (True or False)</li>
                 <li>Description</li>
+                <li>Weather/Road Conditions</li>
                 <li>Injuries (Yes or No)</li>
                 <li>Injuries Description</li>
+                <li>Observed/Experienced (Yes or No)</li>
                 <li>Number of Deaths</li>
                 <li>License Plates</li>
                 <li>Picture URL</li>
@@ -213,9 +217,9 @@
                 <li>Contact Email</li>
             </ol>
             The first line of the CSV must include all of these column names in this order, regardless of whether some (or all) incidents do not have certain fields filled out.
-            Please note that entry in the Injuries column should be either "Yes" or "No". If there are no injuries, the "Injuries Description" is optional.
-            The entries for "License Plates", "Picture URL", "Contact Name", "Contact Phone", and "Contact Email" are optional.
-
+            Please note that entries in the "Injuries" and "Weather/Road Conditions" columns should be either "Yes" or "No", and the entries for the various types of vehicles should be either "True" or "False".
+            If there are no injuries, the "Injuries Description" is optional.
+            The entries for "Description", "Road/Weather Conditions", "License Plates", "Picture URL", "Contact Name", "Contact Phone", and "Contact Email" are optional.
             All other columns require an input.
         </p>
 
@@ -260,11 +264,6 @@
         $('#map_button').toggle();
         form_mode = true;
     });
-
-    /*$('#close_controls').click(function(){
-        $('#form_container').show();
-        $('#form_button').toggle();
-    });*/
 
     $('#downloadCSVButton').click(function() {
         {% if current_user.is_admin() %}
@@ -398,7 +397,9 @@
                                 '</button>' +
                                 '<h3>Date: ' + '{{ report.date.strftime('%m-%d-%Y at %I:%M %p') }}' + '</h3>' +
                                 '<p><b>Description:</b> ' + '{{ report.description }}' + '</p>' +
-                                '<p><b>Injuries:</b> ' + '{{ report.injuries_description if report.injuries_description else '' }} ';
+                                '<p><b>Weather/Road Conditions:</b> ' + '{{ report.road_conditions }}' + '</p>' +
+                                '<p><b>Injuries:</b> ' + '{{ report.injuries_description if report.injuries_description else 'No injuries.' }} ' +
+                                '<p><b>Experienced/Observed:</b> ' + '{{ report.witness }}' + '</p>';
             {% if report.deaths > 0 %}
                 contentString += '<p><b>Number of Deaths:</b> ' + '{{ report.deaths }}' + '</p>';
             {% endif %}
@@ -441,8 +442,10 @@
             marker.bicycle = '{{ report.bicycle }}';
             marker.pedestrian = '{{ report.pedestrian }}';
             marker.description = '{{ report.description }}';
+            marker.road_conditions = '{{ report.road_conditions }}';
             marker.injuries = '{{ report.injuries }}';
             marker.injuries_description = '{{ report.injuries_description if report.injuries == "Yes" else "No injuries." }}';
+            marker.witness = '{{ report.witness }}';
             marker.deaths = '{{ report.deaths }}';
             marker.licensePlates = "{{ report.license_plates if report.license_plates else ''}}";
             marker.pictureUrl = '{{ report.picture_url if report.picture_url else '' }}';

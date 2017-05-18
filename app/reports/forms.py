@@ -59,6 +59,31 @@ class IncidentReportForm(Form):
         InputRequired()
     ])
 
+    injuries = RadioField('Did an injury occur?', choices=[
+        ('Yes', 'Yes'),
+        ('No', 'No')
+    ], validators=[InputRequired()])
+
+    injuries_description = TextAreaField('Injuries Description', validators=[
+        RequireDescription('injuries'),
+        Length(max=5000)
+    ])
+
+    witness = RadioField('Did you observe or experience the accident?', choices=[
+        ('Yes', 'Yes'),
+        ('No', 'No')
+    ], validators=[InputRequired()])
+
+    description = TextAreaField('Description', validators=[
+        Optional(),
+        Length(max=5000)
+    ])
+
+    road_conditions = TextAreaField('Description', validators=[
+        Optional(),
+        Length(max=5000)
+    ])
+
     today = datetime.datetime.today()
 
     date = DateField('Date of Event (year-month-day)',
@@ -84,21 +109,6 @@ class IncidentReportForm(Form):
                     'Please upload the image to an image hosting website '
                     'and paste the link here.')
         ])
-
-    description = TextAreaField('Description', validators=[
-        Optional(),
-        Length(max=5000)
-    ])
-
-    injuries = RadioField('Did an injury occur?', choices=[
-        ('Yes', 'Yes'),
-        ('No', 'No')
-    ], validators=[InputRequired()])
-
-    injuries_description = TextAreaField('Injuries Description', validators=[
-        RequireDescription('injuries'),
-        Length(max=5000)
-    ])
 
     deaths = IntegerField('Number of Deaths', validators=[Optional()])
 

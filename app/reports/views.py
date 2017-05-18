@@ -82,9 +82,11 @@ def edit_report_info(report_id):
                                hour=t.hour, minute=t.minute, second=t.second)
 
         report.picture_url = form.picture_url.data
-        report.description = form.description.data
         report.injuries = form.injuries.data
         report.injuries_description = form.injuries_description.data
+        report.witness = form.witness.data
+        report.description = form.description.data
+        report.road_conditions = form.road_conditions.data
         report.deaths = form.deaths.data
         if (form.deaths.data == None):
             report.deaths = 0

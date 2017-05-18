@@ -37,8 +37,10 @@
         <tr><td>Bicycle</td><td>{{ report.bicycle }}</td></tr>
         <tr><td>Pedestrian</td><td>{{ report.pedestrian }}</td></tr>
         <tr><td>Description</td><td>{{ report.description }}</td></tr>
+        <tr><td>Weather/Road Conditions</td><td>{{ report.road_conditions }}</td></tr>
         <tr><td>Injuries</td><td>{{ report.injuries }}</td></tr>
         <tr><td>Injuries Description</td><td>{{ report.injuries_description }}</td></tr>
+        <tr><td>Observed/Experienced</td><td>{{ report.witness }}</td></tr>
         <tr><td>Number of Deaths</td><td>{{ report.deaths }}</td></tr>
         <tr><td>License Plates</td><td>{{ report.license_plates }}</td></tr>
         <tr><td>Picture</td>
@@ -113,12 +115,14 @@
                     {{ f.render_form_field(form.pedestrian) }}
                     {{ f.render_form_field(form.date)}}
                     {{ f.render_form_field(form.time)}}
-                    {{ f.render_form_field(form.picture_file) }}
                     {{ f.render_form_field(form.description) }}
+                    {{ f.render_form_field(form.road_conditions) }}
                     {{ f.render_form_field(form.injuries)}}
                     {{ f.render_form_field(form.injuries_description)}}
+                    {{ f.render_form_field(form.witness)}}
                     {{ f.render_form_field(form.deaths) }}
                     {{ f.render_form_field(form.license_plates) }}
+                    {{ f.render_form_field(form.picture_file) }}
                     {{ f.render_form_field(form.contact_name)}}
                     {{ f.render_form_field(form.contact_phone)}}
                     {{ f.render_form_field(form.contact_email)}}

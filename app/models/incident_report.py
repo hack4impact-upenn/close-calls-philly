@@ -40,10 +40,12 @@ class Incident(db.Model):
     truck = db.Column(db.Boolean)
     bicycle = db.Column(db.Boolean)
     pedestrian = db.Column(db.Boolean)
-    description = db.Column(db.Text)
-    license_plates = db.Column(db.String, default=None) # optional
     injuries = db.Column(db.Text)
     injuries_description = db.Column(db.Text, default=None) # optional
+    witness = db.Column(db.Text)
+    description = db.Column(db.Text) # optional
+    road_conditions = db.Column(db.Text) # optional
+    license_plates = db.Column(db.String, default=None) # optional
     deaths = db.Column(db.Integer, default=0) # optional
     picture_url = db.Column(db.Text, default=None) # optional
     contact_name = db.Column(db.Text, default=None) # optional
@@ -94,10 +96,13 @@ class Incident(db.Model):
                                                   radius=0.01))
             )
             has_injury = 'No'
+            is_witness = 'No'
             injuries_description_entry = ""
             if random.random() >= 0.5:
                 has_injury = 'Yes'
                 injuries_description_entry = "An injury occurred."
+            if random.random() >= 0.5:
+                is_witness = 'Yes'
             license_plates_str = ""
             license_plates_str += rand_alphanumeric(6)
             r = Incident(
@@ -108,9 +113,11 @@ class Incident(db.Model):
                 truck=bool(random.getrandbits(1)),
                 bicycle=bool(random.getrandbits(1)),
                 pedestrian=bool(random.getrandbits(1)),
-                description=fake.paragraph(),
                 injuries=has_injury,
                 injuries_description=injuries_description_entry,
+                witness=is_witness,
+                description=fake.paragraph(),
+                road_conditions=fake.paragraph(),
                 deaths=choice([0]*98+[0, 1]),
                 license_plates=license_plates_str,
                 picture_url=fake.image_url(),
