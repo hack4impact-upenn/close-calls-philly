@@ -126,6 +126,18 @@
     background-color: white;
 }
 
+#form_container {
+    padding: 12px;
+}
+
+#map_controls {
+    padding: 15px;
+}
+
+#map_button {
+    width: 95%;
+}
+
 #info_container, #map_controls {
     display: none;
 }
