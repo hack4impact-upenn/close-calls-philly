@@ -186,6 +186,7 @@
                 <li>Number of Automobiles</li>
                 <li>Number of Bicycles</li>
                 <li>Number of Pedestrians</li>
+                <li>Category</li>
                 <li>Description</li>
                 <li>Injuries</li>
                 <li>Injuries Description</li>
@@ -381,7 +382,8 @@
                                 '<i class="remove icon"></i>' +
                                 '</button>' +
                                 '<h3>Date: ' + '{{ report.date.strftime('%m-%d-%Y at %I:%M %p') }}' + '</h3>' +
-                                '<p><b>Description:</b> ' + '{{ report.category }}<br>{{ report.description }}' + '</p>' +
+                                '<p><b>Category:</b> ' + '{{ report.category }}</p>'+
+                                '<p><b>Description:</b> ' + '{{ report.description }}' + '</p>' +
                                 '<p><b>Number of Pedestrians:</b> ' + '{{ report.pedestrian_num }}' + '</p>' +
                                 '<p><b>Number of Automobiles:</b> ' + '{{ report.automobile_num }}' + '</p>' +
                                 '<p><b>Number of Bicycles:</b> ' + '{{ report.bicycle_num }}' + '</p>' +
@@ -407,6 +409,7 @@
             marker.pedestrianNum = '{{ report.pedestrian_num }}';
             marker.automobileNum = '{{ report.automobile_num }}';
             marker.bicycleNum = '{{ report.bicycle_num }}';
+            marker.category = '{{ report.category }}';
             marker.description = '{{ report.description }}';
             marker.injuries = '{{ report.injuries }}';
             marker.injuries_description = '{{ report.injuries_description if report.injuries == "Yes" else "No injuries." }}';

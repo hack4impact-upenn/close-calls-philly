@@ -127,6 +127,7 @@ def edit_report_info(report_id):
     form.time.default = report.date
 
     form.picture_url.default = report.picture_url
+    form.category.default = report.category
     form.description.default = report.description
     form.injuries.default = report.injuries
     form.injuries_description.default = report.injuries_description

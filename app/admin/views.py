@@ -283,18 +283,19 @@ def upload_reports():
 
     date_index = 0
     location_index = 1
-    description_index = 5
-    injuries_index = 6
-    injuries_desc_index = 7
-    deaths_index = 8
+    category_index = 5
+    description_index = 6
+    injuries_index = 7
+    injuries_desc_index = 8
+    deaths_index = 9
     pedestrian_num_index = 2
     bicycle_num_index = 4
     automobile_num_index = 3
-    license_plates_index = 9
-    picture_index = 10
-    contact_name_index = 11
-    contact_phone_index = 12
-    contact_email_index = 13
+    license_plates_index = 10
+    picture_index = 11
+    contact_name_index = 12
+    contact_phone_index = 13
+    contact_email_index = 14
     
     validator_form = IncidentReportForm()
 
@@ -310,7 +311,7 @@ def upload_reports():
         columns = next(reader)
         for c in range(len(columns)):
             columns[c] = columns[c].upper()
-        if columns != ["DATE","LOCATION","NUMBER OF AUTOMOBILES","NUMBER OF BICYCLES","NUMBER OF PEDESTRIANS","DESCRIPTION","INJURIES","INJURIES DESCRIPTION","NUMBER OF DEATHS","LICENSE PLATES","PICTURE URL","CONTACT NAME","CONTACT PHONE","CONTACT EMAIL"]:
+        if columns != ["DATE","LOCATION","NUMBER OF AUTOMOBILES","NUMBER OF BICYCLES","NUMBER OF PEDESTRIANS","CATEGORY","DESCRIPTION","INJURIES","INJURIES DESCRIPTION","NUMBER OF DEATHS","LICENSE PLATES","PICTURE URL","CONTACT NAME","CONTACT PHONE","CONTACT EMAIL"]:
             flash('The column names and order must match the specified form exactly. Please click the info icon for more details.', 'error')
             return redirect(url_for('main.index'))
         error_lines = []
@@ -360,6 +361,7 @@ def upload_reports():
                 ):
                     error_lines.append(i)
                     errors.append("Description")
+                    continue
 
                 if not validate_field(
                     field=validator_form.picture_url,
@@ -367,6 +369,11 @@ def upload_reports():
                 ):
                     error_lines.append(i)
                     errors.append("Picture URL")
+                    continue
+                if row[category_index].lower() not in [s[0].lower() for s in validator_form.category.choices]:
+                    error_lines.append(i)
+                    errors.append("Category does not match any of the options")
+                    continue
 
                 pedestrian_num_text = strip_non_alphanumeric_chars(pedestrian_num_text)
                 bicycle_num_text = strip_non_alphanumeric_chars(bicycle_num_text)
@@ -384,6 +391,7 @@ def upload_reports():
                         else 0,
                         automobile_num=int(automobile_num_text) if len(automobile_num_text) > 0
                         else 0,
+                        category=row[category_index],
                         description=row[description_index],
                         injuries=row[injuries_index],
                         injuries_description=row[injuries_desc_index],
