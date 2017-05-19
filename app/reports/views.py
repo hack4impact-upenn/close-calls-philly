@@ -80,6 +80,7 @@ def edit_report_info(report_id):
                                hour=t.hour, minute=t.minute, second=t.second)
 
         report.picture_url = form.picture_url.data
+        report.category = form.category.data
         report.description = form.description.data
         report.injuries = form.injuries.data
         report.injuries_description = form.injuries_description.data

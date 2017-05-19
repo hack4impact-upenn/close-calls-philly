@@ -38,7 +38,8 @@ class Incident(db.Model):
     pedestrian_num = db.Column(db.Integer)
     bicycle_num = db.Column(db.Integer)
     automobile_num = db.Column(db.Integer)
-    description = db.Column(db.Text)
+    category = db.Column(db.String)
+    description = db.Column(db.Text, default=None)
     license_plates = db.Column(db.String, default=None) # optional
     injuries = db.Column(db.Text)
     injuries_description = db.Column(db.Text, default=None) # optional
@@ -108,6 +109,7 @@ class Incident(db.Model):
                 pedestrian_num=random.randint(0, 2),
                 bicycle_num=random.randint(0, 2),
                 automobile_num=num_automobiles,
+                category="Running a red light",
                 description=fake.paragraph(),
                 injuries=has_injury,
                 injuries_description=injuries_description_entry,

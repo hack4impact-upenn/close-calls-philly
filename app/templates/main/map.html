@@ -116,6 +116,7 @@
             {{ f.render_form_field(form.date)}}
             {{ f.render_form_field(form.time)}}
             {{ f.render_form_field(form.picture_file) }}
+            {{ f.render_form_field(form.category) }}
             {{ f.render_form_field(form.description) }}
             {{ f.render_form_field(form.injuries) }}
             <div id="injuries-description-field" style="display:none">{{ f.render_form_field(form.injuries_description) }}</div>
@@ -281,7 +282,9 @@
         div3.innerHTML = '<img src="../static/images/death_swatch.png"> Death';
         legend.appendChild(div1);
         legend.appendChild(div2);
-        legend.appendChild(div3);
+        {% if current_user.is_authenticated %}
+            legend.appendChild(div3);
+        {% endif %}
         map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push(legend);
         google.maps.event.addListener(map, 'click', function(event) {
                 $('#latitude').val(event.latLng.lat());
@@ -352,16 +355,14 @@
         var bounds = new google.maps.LatLngBounds();
         {% for report in incident_reports %}
             var iconFile = "";
-            {% if report.deaths > 0 %}
+            {% if (report.deaths > 0) and (current_user.is_authenticated) %}
                 iconFile = '../static/images/marker_deaths.png';
-            {% elif report.injuries == 'Yes' %}
+            {% elif report.injuries == 'Yes' or ((not current_user.is_authenticated) and (report.deaths > 0)) %}
                 iconFile = "../static/images/marker_injury.png";
             {% else %}
                 iconFile = "../static/images/marker.png";
             {% endif %}
-            $(function() {
-                console.log('{{ report.address.latitude }}');
-                console.log('{{ report.address.longitude }}');
+        $(function() {
             var marker = new google.maps.Marker({
                 // Use latitude and longitude values from incident report
                 // to set position of marker
@@ -380,24 +381,22 @@
                                 '<i class="remove icon"></i>' +
                                 '</button>' +
                                 '<h3>Date: ' + '{{ report.date.strftime('%m-%d-%Y at %I:%M %p') }}' + '</h3>' +
-                                '<p><b>Description:</b> ' + '{{ report.description }}' + '</p>' +
-                                '<p><b>Injuries:</b> ' + '{{ report.injuries_description if report.injuries_description else '' }} ';
-            {% if report.deaths > 0 %}
-                contentString += '<p><b>Number of Deaths:</b> ' + '{{ report.deaths }}' + '</p>';
-            {% endif %}
-            contentString += '<p><b>Number of Pedestrians:</b> ' + '{{ report.pedestrian_num }}' + '</p>' +
+                                '<p><b>Description:</b> ' + '{{ report.category }}<br>{{ report.description }}' + '</p>' +
+                                '<p><b>Number of Pedestrians:</b> ' + '{{ report.pedestrian_num }}' + '</p>' +
                                 '<p><b>Number of Automobiles:</b> ' + '{{ report.automobile_num }}' + '</p>' +
                                 '<p><b>Number of Bicycles:</b> ' + '{{ report.bicycle_num }}' + '</p>' +
-                                '<p><b>License Plates:</b> ' + "{{ report.license_plates if report.license_plates else '' }}" + '</p>';
-            {% if report.picture_url %}
-            contentString += '<p><a href="{{ report.picture_url }}" target="_blank" rel="noopener noreferrer">' + 'Link to Picture' + '</a></p>';
-            {% endif %}
+                                '<p><b>Injuries:</b> ' + '{{ report.injuries_description if report.injuries_description else '' }} </p>';
             {% if current_user.is_authenticated %}
-            contentString += '<p><b>Contact Name:</b> ' + '{{ report.contact_name if report.contact_name else '' }}' +'</p>';
-            contentString += '<p><b>Contact Phone:</b> ' + '{{ report.contact_phone if report.contact_phone else '' }}' + '</p>';
-            contentString += '<p><b>Contact Email:</b> ' + '{{ report.contact_email if report.contact_email else '' }}</div>';
+                contentString += '<p><b>Number of Deaths:</b> ' + '{{ report.deaths }}' + '</p>';
+                contentString += '<p><b>License Plates:</b> ' + "{{ report.license_plates if report.license_plates else '' }}" + '</p>';
+                {% if report.picture_url %}
+                    contentString += '<p><a href="{{ report.picture_url }}" target="_blank" rel="noopener noreferrer">' + 'Link to Picture' + '</a></p>';
+                {% endif %}
+                contentString += '<p><b>Contact Name:</b> ' + '{{ report.contact_name if report.contact_name else '' }}' +'</p>';
+                contentString += '<p><b>Contact Phone:</b> ' + '{{ report.contact_phone if report.contact_phone else '' }}' + '</p>';
+                contentString += '<p><b>Contact Email:</b> ' + '{{ report.contact_email if report.contact_email else '' }}</p></div>';
             {% else %}
-            contentString += '</div>';
+                contentString += '</div>';
             {% endif %}
             bounds.extend(marker.getPosition());
 
@@ -420,6 +419,7 @@
             marker.contactPhone = '{{ report.contact_phone if report.contact_phone else '' }}';
             marker.contactEmail = '{{ report.contact_email if report.contact_email else '' }}';
             {% endif %}
+
 
             marker.contentString = contentString;
             markers.push(marker);

@@ -36,6 +36,7 @@ def index():
             pedestrian_num=form.pedestrian_num.data,
             bicycle_num=form.bicycle_num.data,
             automobile_num=form.automobile_num.data,
+            category=form.category.data,
             description=form.description.data,
             injuries=form.injuries.data,
             injuries_description=form.injuries_description.data,
