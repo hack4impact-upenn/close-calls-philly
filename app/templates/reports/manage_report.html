@@ -107,6 +107,7 @@
                     'success': get_flashed_messages(category_filter=['form-success'])
                     } %}
                     {{ f.begin_form(form, flashes) }}
+                    {{ f.render_form_field(form.witness)}}
                     {{ f.render_form_field(form.address) }}
                     {{ f.render_form_field(form.car) }}
                     {{ f.render_form_field(form.bus) }}
@@ -119,7 +120,6 @@
                     {{ f.render_form_field(form.road_conditions) }}
                     {{ f.render_form_field(form.injuries)}}
                     {{ f.render_form_field(form.injuries_description)}}
-                    {{ f.render_form_field(form.witness)}}
                     {{ f.render_form_field(form.deaths) }}
                     {{ f.render_form_field(form.license_plates) }}
                     {{ f.render_form_field(form.picture_file) }}

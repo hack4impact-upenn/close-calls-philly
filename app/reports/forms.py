@@ -40,23 +40,23 @@ class IncidentReportForm(Form):
     longitude = HiddenField('Longitude')
 
     car = BooleanField('Car', validators=[
-        InputRequired()
+        Optional()
     ])
 
     bus = BooleanField('Bus', validators=[
-        InputRequired()
+        Optional()
     ])
 
     truck = BooleanField('Truck', validators=[
-        InputRequired()
+        Optional()
     ])
 
     bicycle = BooleanField('Bicycle', validators=[
-        InputRequired()
+        Optional()
     ])
 
     pedestrian = BooleanField('Pedestrian', validators=[
-        InputRequired()
+        Optional()
     ])
 
     injuries = RadioField('Did an injury occur?', choices=[
@@ -79,7 +79,7 @@ class IncidentReportForm(Form):
         Length(max=5000)
     ])
 
-    road_conditions = TextAreaField('Description', validators=[
+    road_conditions = TextAreaField('Weather/Road Conditions', validators=[
         Optional(),
         Length(max=5000)
     ])

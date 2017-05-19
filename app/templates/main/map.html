@@ -111,6 +111,7 @@
             } %}
 
             {{ f.begin_form(form, flashes) }}
+            {{ f.render_form_field(form.witness) }}
             {{ f.render_form_field(form.address) }}
             <div class="ui button long-button" id="current_location_button" onclick="geoFindMe()">Use Current location</div>
             <br />
@@ -126,7 +127,6 @@
             {{ f.render_form_field(form.road_conditions) }}
             {{ f.render_form_field(form.injuries) }}
             <div id="injuries-description-field" style="display:none">{{ f.render_form_field(form.injuries_description) }}</div>
-            {{ f.render_form_field(form.witness) }}
             {{ f.render_form_field(form.license_plates) }}
             {{ f.render_form_field(form.picture_file) }}
             {{ f.render_form_field(form.contact_name) }}
@@ -166,7 +166,7 @@
 
 <div class="ui centered modal" id="injury-call-modal">
     <i class="close icon"></i>
-    <div class="header">In case of an injury, please be sure to call 911.</div>
+    <div class="header">In case of a serious injury, please be sure to call 911.</div>
     <div class="actions">
         <div class="ui approve button">Okay</div>
     </div>
