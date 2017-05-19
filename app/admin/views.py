@@ -247,20 +247,24 @@ def upload_reports():
         """TODO: docstring"""
         print ('Row {:d}: {}L/'.format(row_number, error_message))
 
-    date_index = 0
-    location_index = 1
-    description_index = 5
-    injuries_index = 6
-    injuries_desc_index = 7
-    deaths_index = 8
-    pedestrian_num_index = 2
-    bicycle_num_index = 4
-    automobile_num_index = 3
-    license_plates_index = 9
-    picture_index = 10
-    contact_name_index = 11
-    contact_phone_index = 12
-    contact_email_index = 13
+    witness_index = 0
+    date_index = 1
+    location_index = 2
+    car_index = 3
+    bus_index = 4
+    truck_index = 5
+    bicycle_index = 6
+    pedestrian_index = 7
+    injuries_index = 8
+    injuries_desc_index = 9
+    description_index = 10
+    road_conditions_index = 11
+    deaths_index = 12
+    license_plates_index = 13
+    picture_index = 14
+    contact_name_index = 15
+    contact_phone_index = 16
+    contact_email_index = 17
 
     validator_form = IncidentReportForm()
 
@@ -305,9 +309,12 @@ def upload_reports():
                     errors.append("Date/Time Format")
                     continue
 
-                pedestrian_num_text = row[pedestrian_num_index].strip()
-                bicycle_num_text = row[bicycle_num_index].strip()
-                automobile_num_text = row[automobile_num_index].strip()
+                witness_text = row[witness_index].strip()
+                car_text = row[car_index].strip()
+                bus_text = row[bus_index].strip()
+                truck_text = row truck_index].strip()
+                bicycle_text = row[bicycle_index].strip()
+                pedestrian_text = row[pedestrian_index].strip()
 
                 contact_name_text = row[contact_name_index].strip()
                 contact_phone_text = row[contact_phone_index].strip()
@@ -327,32 +334,38 @@ def upload_reports():
                     error_lines.append(i)
                     errors.append("Description")
 
-                if not validate_field(
-                    field=validator_form.picture_url,
-                    data=row[picture_index]
-                ):
+                if not validate_field(field=validator_form.picture_url,data=row[picture_index]):
                     error_lines.append(i)
                     errors.append("Picture URL")
 
-                pedestrian_num_text = strip_non_alphanumeric_chars(pedestrian_num_text)
-                bicycle_num_text = strip_non_alphanumeric_chars(bicycle_num_text)
-                automobile_num_text = strip_non_alphanumeric_chars(automobile_num_text)
+                witness_text = trip_non_alphanumeric_chars(witness_text)
+                car_text = strip_non_alphanumeric_chars(car_text)
+                bus_text = strip_non_alphanumeric_chars(bus_text)
+                truck_text = strip_non_alphanumeric_chars(truck_text)
+                bicycle_text = strip_non_alphanumeric_chars(bicycle_text)
+                pedestrian_text = strip_non_alphanumeric_chars(pedestrian_text)
 
                 contact_name_text = strip_non_alphanumeric_chars(contact_name_text)
                 contact_phone_text = strip_non_alphanumeric_chars(contact_phone_text)
                 try:
                     incident = Incident(
+                        witness=witness_text,
                         date=time,
                         address=loc,
-                        pedestrian_num=int(pedestrian_num_text) if len(pedestrian_num_text) > 0
-                        else 0,
-                        bicycle_num=int(bicycle_num_text) if len(bicycle_num_text) > 0
-                        else 0,
-                        automobile_num=int(automobile_num_text) if len(automobile_num_text) > 0
-                        else 0,
-                        description=row[description_index],
+                        car=bool(car_text) if len(car_text) > 0
+                        else False,
+                        bus=bool(car_text) if len(bus_text) > 0
+                        else False,
+                        truck=bool(car_text) if len(truck_text) > 0
+                        else False,
+                        bicycle=bool(car_text) if len(bicycle_text) > 0
+                        else False,
+                        pedestrian=bool(car_text) if len(pedestrian_text) > 0
+                        else False,
                         injuries=row[injuries_index],
                         injuries_description=row[injuries_desc_index],
+                        description=row[description_index],
+                        road_conditions=row[road_conditions_index],
                         deaths=int(row[deaths_index]) if len(row[deaths_index]) > 0 else 0,
                         license_plates=row[license_plates_index],
                         picture_url=row[picture_index],

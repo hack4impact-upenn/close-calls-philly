@@ -108,18 +108,18 @@
                     } %}
                     {{ f.begin_form(form, flashes) }}
                     {{ f.render_form_field(form.witness)}}
+                    {{ f.render_form_field(form.date)}}
+                    {{ f.render_form_field(form.time)}}
                     {{ f.render_form_field(form.address) }}
                     {{ f.render_form_field(form.car) }}
                     {{ f.render_form_field(form.bus) }}
                     {{ f.render_form_field(form.truck) }}
                     {{ f.render_form_field(form.bicycle) }}
                     {{ f.render_form_field(form.pedestrian) }}
-                    {{ f.render_form_field(form.date)}}
-                    {{ f.render_form_field(form.time)}}
-                    {{ f.render_form_field(form.description) }}
-                    {{ f.render_form_field(form.road_conditions) }}
                     {{ f.render_form_field(form.injuries)}}
                     {{ f.render_form_field(form.injuries_description)}}
+                    {{ f.render_form_field(form.description) }}
+                    {{ f.render_form_field(form.road_conditions) }}
                     {{ f.render_form_field(form.deaths) }}
                     {{ f.render_form_field(form.license_plates) }}
                     {{ f.render_form_field(form.picture_file) }}
