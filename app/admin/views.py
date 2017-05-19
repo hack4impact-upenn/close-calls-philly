@@ -207,45 +207,12 @@ def update_editor_contents():
     return 'OK', 200
 
 
-@admin.route('/download_reports', methods=['GET'])
-@login_required
-@admin_required
-def download_reports():
-    """Download a csv file of all incident reports."""
-
-    def encode(s):
-        return s.encode('utf-8') if s else ''
-
-    current_date = str(datetime.date.today())
-    csv_name = 'Incidents-' + current_date + '.csv'
-    outfile = open(csv_name, 'w+')
-    print('initial file contents:', outfile.read())
-
-    wr = csv.writer(outfile, delimiter=',', quoting=csv.QUOTE_MINIMAL)
-    reports = db.session.query(Incident).all()
-    wr.writerow(['DATE', 'LOCATION', 'NUMBER OF AUTOMOBILES', 'NUMBER OF BICYCLES',
-                'NUMBER OF PEDESTRIANS', 'DESCRIPTION', 'INJURIES', 'INJURIES DESCRIPTION',
-                'DEATHS', 'LICENSE PLATES', 'PICTURE URL', 'CONTACT NAME', 'CONTACT PHONE', 'CONTACT EMAIL'])
-    for r in reports:
-        wr.writerow([r.date, r.address, r.automobile_num, r.bicycle_num, r.pedestrian_num,
-                     r.description, r.injuries, r.injuries_description, r.deaths,
-                     r.license_plates, r.picture_url, r.contact_name, r.contact_phone, r.contact_email])
-
-    endfile = open(csv_name, 'r+')
-    data = endfile.read()
-    return Response(
-        data,
-        mimetype="text/csv",
-        headers={"Content-disposition": "attachment; filename=" + csv_name})
-
 @admin.route('/upload_reports', methods=['POST'])
 @login_required
 @admin_required
 def upload_reports():
     """Reads a csv and imports the data into a database."""
     # The indices in the csv of different data
-    
-
 
     def parse_datetime(date_index, row):
         """for date_format in ['%m/%d/%Y %H:%M', '%m/%d/%y %H:%M']:
@@ -276,7 +243,6 @@ def upload_reports():
 
         return validated
 
-
     def print_error(row_number, error_message):
         """TODO: docstring"""
         print ('Row {:d}: {}L/'.format(row_number, error_message))
@@ -295,7 +261,7 @@ def upload_reports():
     contact_name_index = 11
     contact_phone_index = 12
     contact_email_index = 13
-    
+
     validator_form = IncidentReportForm()
 
     csv_file = request.files['file']
@@ -310,7 +276,7 @@ def upload_reports():
         columns = next(reader)
         for c in range(len(columns)):
             columns[c] = columns[c].upper()
-        if columns != ["DATE","LOCATION","NUMBER OF AUTOMOBILES","NUMBER OF BICYCLES","NUMBER OF PEDESTRIANS","DESCRIPTION","INJURIES","INJURIES DESCRIPTION","NUMBER OF DEATHS","LICENSE PLATES","PICTURE URL","CONTACT NAME","CONTACT PHONE","CONTACT EMAIL"]:
+        if columns != ["DATE", "LOCATION", "NUMBER OF AUTOMOBILES", "NUMBER OF BICYCLES", "NUMBER OF PEDESTRIANS", "DESCRIPTION", "INJURIES", "INJURIES DESCRIPTION", "NUMBER OF DEATHS", "LICENSE PLATES", "PICTURE URL", "CONTACT NAME", "CONTACT PHONE", "CONTACT EMAIL"]:
             flash('The column names and order must match the specified form exactly. Please click the info icon for more details.', 'error')
             return redirect(url_for('main.index'))
         error_lines = []
