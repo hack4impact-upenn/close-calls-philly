@@ -312,7 +312,7 @@ def upload_reports():
                 witness_text = row[witness_index].strip()
                 car_text = row[car_index].strip()
                 bus_text = row[bus_index].strip()
-                truck_text = row truck_index].strip()
+                truck_text = row[truck_index].strip()
                 bicycle_text = row[bicycle_index].strip()
                 pedestrian_text = row[pedestrian_index].strip()
 
