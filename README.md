@@ -1,4 +1,4 @@
-# Close Call Philly
+# Close Calls Philly
 
 ## Team Members
 * Katie Jiang
@@ -11,7 +11,7 @@
 #####  Clone the repo
 
 ```
-$ git clone https://github.com/hack4impact/vision-zero-philly.git
+$ git clone https://github.com/hack4impact/close-calls-philly.git
 $ cd vision-zero-philly
 ```
 
