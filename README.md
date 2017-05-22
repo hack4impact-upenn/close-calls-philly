@@ -12,7 +12,7 @@
 
 ```
 $ git clone https://github.com/hack4impact/close-calls-philly.git
-$ cd vision-zero-philly
+$ cd close-calls-philly
 ```
 
 ##### Initialize a virtualenv
