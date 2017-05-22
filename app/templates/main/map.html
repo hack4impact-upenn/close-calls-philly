@@ -123,6 +123,7 @@
             {{ f.render_form_field(form.truck) }}
             {{ f.render_form_field(form.bicycle) }}
             {{ f.render_form_field(form.pedestrian) }}
+            {{ f.render_form_field(form.category) }}
             {{ f.render_form_field(form.injuries) }}
             <div id="injuries-description-field" style="display:none">{{ f.render_form_field(form.injuries_description) }}</div>
             {{ f.render_form_field(form.description) }}
@@ -205,9 +206,10 @@
                 <li>TRUCK</li>
                 <li>BICYCLE</li>
                 <li>PEDESTRIAN</li>
+                <li>CATEGORY</li>
+                <li>DESCRIPTION</li>
                 <li>INJURIES</li>
                 <li>INJURIES DESCRIPTION</li>
-                <li>DESCRIPTION</li>
                 <li>WEATHER/ROAD CONDITIONS</li>
                 <li>NUMBER OF DEATHS</li>
                 <li>LICENSE PLATES</li>
@@ -217,7 +219,7 @@
                 <li>CONTACT EMAIL</li>
             </ol>
             The first line of the CSV must include all of these column names in this order, regardless of whether some (or all) incidents do not have certain fields filled out.
-            Please note that entries in the "Observed/Experienced" and "Injuries" columns should be either "Yes" or "No", and the entries for the various types of vehicles should be either "True" or "False".
+            Please note that entries in the "Observed/Experienced" and "Injuries" columns should be either "Yes" or "No", and the entries for the various types of vehicles should be either "Yes" or "No".
             The format of the "Date" column should be (year-month-day hour:minute am/pm).
             If there are no injuries, the "Injuries Description" is optional.
             The entries for "Description", "Road/Weather Conditions", "License Plates", "Picture URL", "Contact Name", "Contact Phone", and "Contact Email" are optional.
@@ -298,7 +300,9 @@
         div3.innerHTML = '<img src="../static/images/death_swatch.png"> Death';
         legend.appendChild(div1);
         legend.appendChild(div2);
-        legend.appendChild(div3);
+        {% if current_user.is_authenticated %}
+            legend.appendChild(div3);
+        {% endif %}
         map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push(legend);
         google.maps.event.addListener(map, 'click', function(event) {
                 $('#latitude').val(event.latLng.lat());
@@ -369,16 +373,14 @@
         var bounds = new google.maps.LatLngBounds();
         {% for report in incident_reports %}
             var iconFile = "";
-            {% if report.deaths > 0 %}
+            {% if (report.deaths > 0) and (current_user.is_authenticated) %}
                 iconFile = '../static/images/marker_deaths.png';
-            {% elif report.injuries == 'Yes' %}
+            {% elif report.injuries == 'Yes' or ((not current_user.is_authenticated) and (report.deaths > 0)) %}
                 iconFile = "../static/images/marker_injury.png";
             {% else %}
                 iconFile = "../static/images/marker.png";
             {% endif %}
-            $(function() {
-                console.log('{{ report.address.latitude }}');
-                console.log('{{ report.address.longitude }}');
+        $(function() {
             var marker = new google.maps.Marker({
                 // Use latitude and longitude values from incident report
                 // to set position of marker
@@ -397,13 +399,11 @@
                                 '<i class="remove icon"></i>' +
                                 '</button>' +
                                 '<h3>Date: ' + '{{ report.date.strftime('%m-%d-%Y at %I:%M %p') }}' + '</h3>' +
+                                '<p><b>Category:</b> ' + '{{ report.category }}</p>'+
                                 '<p><b>Description:</b> ' + '{{ report.description }}' + '</p>' +
+                                '<p><b>Injuries:</b> ' + '{{ report.injuries_description if report.injuries_description else '' }} </p>';
                                 '<p><b>Weather/Road Conditions:</b> ' + '{{ report.road_conditions }}' + '</p>' +
-                                '<p><b>Injuries:</b> ' + '{{ report.injuries_description if report.injuries_description else 'No injuries.' }} ' +
                                 '<p><b>Experienced/Observed:</b> ' + '{{ report.witness }}' + '</p>';
-            {% if report.deaths > 0 %}
-                contentString += '<p><b>Number of Deaths:</b> ' + '{{ report.deaths }}' + '</p>';
-            {% endif %}
             var vehicleTypes = []
             {% if report.car %}
                 vehicleTypes.push('Car');
@@ -421,22 +421,24 @@
                 vehicleTypes.push('Pedestrian');
             {% endif %}
             contentString += '<p><b>Types of Vehicles Involved:</b> ' + vehicleTypes.join(', ') + '</p>'
-            {% if report.picture_url %}
-            contentString += '<p><a href="{{ report.picture_url }}" target="_blank" rel="noopener noreferrer">' + 'Link to Picture' + '</a></p>';
-            {% endif %}
             {% if current_user.is_authenticated %}
-            contentString += '<p><b>Contact Name:</b> ' + '{{ report.contact_name if report.contact_name else '' }}' +'</p>';
-            contentString += '<p><b>Contact Phone:</b> ' + '{{ report.contact_phone if report.contact_phone else '' }}' + '</p>';
-            contentString += '<p><b>Contact Email:</b> ' + '{{ report.contact_email if report.contact_email else '' }}</div>';
+                contentString += '<p><b>Number of Deaths:</b> ' + '{{ report.deaths }}' + '</p>';
+                contentString += '<p><b>License Plates:</b> ' + "{{ report.license_plates if report.license_plates else '' }}" + '</p>';
+                {% if report.picture_url %}
+                    contentString += '<p><a href="{{ report.picture_url }}" target="_blank" rel="noopener noreferrer">' + 'Link to Picture' + '</a></p>';
+                {% endif %}
+                contentString += '<p><b>Contact Name:</b> ' + '{{ report.contact_name if report.contact_name else '' }}' +'</p>';
+                contentString += '<p><b>Contact Phone:</b> ' + '{{ report.contact_phone if report.contact_phone else '' }}' + '</p>';
+                contentString += '<p><b>Contact Email:</b> ' + '{{ report.contact_email if report.contact_email else '' }}</p></div>';
             {% else %}
-            contentString += '</div>';
+                contentString += '</div>';
             {% endif %}
             bounds.extend(marker.getPosition());
 
             // Dynamically add state to marker object.
             marker.incidentDate = incidentDate;
             marker.locationName = '\"{{ report.address | replace("\n", ", ") }}\"';
-
+            marker.category = '{{ report.category }}';
             marker.car = '{{ report.car }}';
             marker.bus = '{{ report.bus }}';
             marker.truck = '{{ report.truck }}';
@@ -451,11 +453,12 @@
             marker.licensePlates = "{{ report.license_plates if report.license_plates else ''}}";
             marker.pictureUrl = '{{ report.picture_url if report.picture_url else '' }}';
 
-            {% if current_user.is_admin() %}
+            {% if current_user.is_authenticated %}
             marker.contactName = '{{ report.contact_name if report.contact_name else '' }}';
             marker.contactPhone = '{{ report.contact_phone if report.contact_phone else '' }}';
             marker.contactEmail = '{{ report.contact_email if report.contact_email else '' }}';
             {% endif %}
+
 
             marker.contentString = contentString;
             markers.push(marker);

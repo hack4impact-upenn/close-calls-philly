@@ -33,6 +33,7 @@ def index():
         new_incident = Incident(
             address=l,
             date=datetime.combine(form.date.data, form.time.data),
+            category=form.category.data,
             car=form.car.data,
             bus=form.bus.data,
             truck=form.truck.data,

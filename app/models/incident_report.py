@@ -35,6 +35,9 @@ class Incident(db.Model):
                                 lazy='joined',
                                 backref='incident')
     date = db.Column(db.DateTime)
+    category = db.Column(db.String)
+    description = db.Column(db.Text, default=None)
+    license_plates = db.Column(db.String, default=None) # optional
     car = db.Column(db.Boolean)
     bus = db.Column(db.Boolean)
     truck = db.Column(db.Boolean)
@@ -43,9 +46,7 @@ class Incident(db.Model):
     injuries = db.Column(db.Text)
     injuries_description = db.Column(db.Text, default=None) # optional
     witness = db.Column(db.Text)
-    description = db.Column(db.Text) # optional
     road_conditions = db.Column(db.Text) # optional
-    license_plates = db.Column(db.String, default=None) # optional
     deaths = db.Column(db.Integer, default=0) # optional
     picture_url = db.Column(db.Text, default=None) # optional
     contact_name = db.Column(db.Text, default=None) # optional
@@ -108,6 +109,8 @@ class Incident(db.Model):
             r = Incident(
                 address=l,
                 date=fake.date_time_between(start_date="-1y", end_date="now"),
+                category="Running a red light",
+                description=fake.paragraph(),
                 car=bool(random.getrandbits(1)),
                 bus=bool(random.getrandbits(1)),
                 truck=bool(random.getrandbits(1)),
@@ -116,7 +119,6 @@ class Incident(db.Model):
                 injuries=has_injury,
                 injuries_description=injuries_description_entry,
                 witness=is_witness,
-                description=fake.paragraph(),
                 road_conditions=fake.paragraph(),
                 deaths=choice([0]*98+[0, 1]),
                 license_plates=license_plates_str,

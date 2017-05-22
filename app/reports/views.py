@@ -82,10 +82,11 @@ def edit_report_info(report_id):
                                hour=t.hour, minute=t.minute, second=t.second)
 
         report.picture_url = form.picture_url.data
+        report.category = form.category.data
+        report.description = form.description.data
         report.injuries = form.injuries.data
         report.injuries_description = form.injuries_description.data
         report.witness = form.witness.data
-        report.description = form.description.data
         report.road_conditions = form.road_conditions.data
         report.deaths = form.deaths.data
         if (form.deaths.data == None):
@@ -120,18 +121,18 @@ def edit_report_info(report_id):
 
     # pre-populate form
 
-    form.car.default = report.car
-    form.bus.default = report.bus
-    form.truck.default = report.truck
-    form.bicycle.default = report.bicycle
-    form.pedestrian.default = report.pedestrian
-
+    if report.witness:
+        form.witness.default = 'Yes'
+    else:
+        form.witness.default = 'No'
+    
     form.address.default = report.address.original_user_text
 
     form.date.default = report.date
     form.time.default = report.date
 
     form.picture_url.default = report.picture_url
+    form.category.default = report.category
     form.description.default = report.description
     form.injuries.default = report.injuries
     form.injuries_description.default = report.injuries_description

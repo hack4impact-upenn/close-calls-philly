@@ -255,16 +255,17 @@ def upload_reports():
     truck_index = 5
     bicycle_index = 6
     pedestrian_index = 7
-    injuries_index = 8
-    injuries_desc_index = 9
-    description_index = 10
-    road_conditions_index = 11
-    deaths_index = 12
-    license_plates_index = 13
-    picture_index = 14
-    contact_name_index = 15
-    contact_phone_index = 16
-    contact_email_index = 17
+    category_index = 8
+    description_index = 9
+    injuries_index = 10
+    injuries_desc_index = 11
+    road_conditions_index = 12
+    deaths_index = 13
+    license_plates_index = 14
+    picture_index = 15
+    contact_name_index = 16
+    contact_phone_index = 17
+    contact_email_index = 18
 
     validator_form = IncidentReportForm()
 
@@ -280,7 +281,7 @@ def upload_reports():
         columns = next(reader)
         for c in range(len(columns)):
             columns[c] = columns[c].upper()
-        if columns != ["DATE", "LOCATION", "NUMBER OF AUTOMOBILES", "NUMBER OF BICYCLES", "NUMBER OF PEDESTRIANS", "DESCRIPTION", "INJURIES", "INJURIES DESCRIPTION", "NUMBER OF DEATHS", "LICENSE PLATES", "PICTURE URL", "CONTACT NAME", "CONTACT PHONE", "CONTACT EMAIL"]:
+        if columns != ["OBSERVED/EXPERIENCED", "DATE", "LOCATION", "CAR", "BUS", "TRUCK", "BICYCLE", "PEDESTRIAN", "CATEGORY", "DESCRIPTION", "INJURIES", "INJURIES DESCRIPTION", "WEATHER/ROAD CONDITIONS", "NUMBER OF DEATHS", "LICENSE PLATES", "PICTURE URL", "CONTACT NAME", "CONTACT PHONE", "CONTACT EMAIL"]:
             flash('The column names and order must match the specified form exactly. Please click the info icon for more details.', 'error')
             return redirect(url_for('main.index'))
         error_lines = []
@@ -333,12 +334,18 @@ def upload_reports():
                 ):
                     error_lines.append(i)
                     errors.append("Description")
+                    continue
 
                 if not validate_field(field=validator_form.picture_url,data=row[picture_index]):
                     error_lines.append(i)
                     errors.append("Picture URL")
+                    continue
+                if row[category_index].lower() not in [s[0].lower() for s in validator_form.category.choices]:
+                    error_lines.append(i)
+                    errors.append("Category does not match any of the options")
+                    continue
 
-                witness_text = trip_non_alphanumeric_chars(witness_text)
+                witness_text = strip_non_alphanumeric_chars(witness_text)
                 car_text = strip_non_alphanumeric_chars(car_text)
                 bus_text = strip_non_alphanumeric_chars(bus_text)
                 truck_text = strip_non_alphanumeric_chars(truck_text)
@@ -352,19 +359,15 @@ def upload_reports():
                         witness=witness_text,
                         date=time,
                         address=loc,
-                        car=bool(car_text) if len(car_text) > 0
-                        else False,
-                        bus=bool(car_text) if len(bus_text) > 0
-                        else False,
-                        truck=bool(car_text) if len(truck_text) > 0
-                        else False,
-                        bicycle=bool(car_text) if len(bicycle_text) > 0
-                        else False,
-                        pedestrian=bool(car_text) if len(pedestrian_text) > 0
-                        else False,
+                        car=(car_text.lower() == "yes"),
+                        bus=(bus_text.lower() == "yes"),
+                        truck=(truck_text.lower() == "yes"),
+                        bicycle=(bicycle_text.lower() == "yes"),
+                        pedestrian=(pedestrian_text.lower() == "yes"),
+                        category=row[category_index],
+                        description=row[description_index],
                         injuries=row[injuries_index],
                         injuries_description=row[injuries_desc_index],
-                        description=row[description_index],
                         road_conditions=row[road_conditions_index],
                         deaths=int(row[deaths_index]) if len(row[deaths_index]) > 0 else 0,
                         license_plates=row[license_plates_index],

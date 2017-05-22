@@ -36,6 +36,7 @@
         <tr><td>Truck</td><td>{{ report.truck }}</td></tr>
         <tr><td>Bicycle</td><td>{{ report.bicycle }}</td></tr>
         <tr><td>Pedestrian</td><td>{{ report.pedestrian }}</td></tr>
+        <tr><td>Category</td><td>{{ report.category }}</td><tr>
         <tr><td>Description</td><td>{{ report.description }}</td></tr>
         <tr><td>Weather/Road Conditions</td><td>{{ report.road_conditions }}</td></tr>
         <tr><td>Injuries</td><td>{{ report.injuries }}</td></tr>
@@ -116,9 +117,10 @@
                     {{ f.render_form_field(form.truck) }}
                     {{ f.render_form_field(form.bicycle) }}
                     {{ f.render_form_field(form.pedestrian) }}
+                    {{ f.render_form_field(form.category) }}
+                    {{ f.render_form_field(form.description) }}
                     {{ f.render_form_field(form.injuries)}}
                     {{ f.render_form_field(form.injuries_description)}}
-                    {{ f.render_form_field(form.description) }}
                     {{ f.render_form_field(form.road_conditions) }}
                     {{ f.render_form_field(form.deaths) }}
                     {{ f.render_form_field(form.license_plates) }}
@@ -139,14 +141,37 @@
     </div>
 
     <script type="text/javascript">
-        $('.deletion.checkbox').checkbox({
-            onChecked: function() {
-                $('.deletion.button').removeClass('disabled')
+        $(document).ready(function() {
+            $('.deletion.checkbox').checkbox({
+                onChecked: function() {
+                    $('.deletion.button').removeClass('disabled')
                         .attr('href', '{{ url_for('reports.delete_report', report_id=report.id) }}');
-            },
-            onUnchecked: function() {
-                $('.deletion.button').addClass('disabled').removeAttr('href');
+                },
+                onUnchecked: function() {
+                    $('.deletion.button').addClass('disabled').removeAttr('href');
+                }
+            });
+            console.log("{{ report.pedestrian }}" === "True");
+            if ("{{ report.car }}" === "False") {
+                $("#car").prop("checked", false);
             }
+            if ("{{ report.bus }}" === "False") {
+                $("#bus").prop('checked', false);
+            }
+            if ("{{ report.truck }}" === "False") {
+                $("#truck").prop("checked", false);
+            }
+            if ("{{ report.bicycle }}" === "False") {
+                $("#bicycle").prop("checked", false);
+            }
+            if ("{{ report.pedestrian }}" === "False") {
+                $("#pedestrian").prop("checked", false);
+            }
+            $('#car').value = ("{{ report.car }}" === "True") ? "y" : "n";
+            $('#bus').value = ("{{ report.bus }}" === "True") ? "y" : "n";
+            $('#truck').value = ("{{ report.truck }}"=== "True") ? "y" : "n";
+            $('#bicycle').value = ("{{ report.bicycle }}" === "True") ? "y" : "n";
+            $('#pedestrian').value = ("{{ report.pedestrian }}" === "True") ? "y" : "n";
         });
     </script>
 {% endblock %}

@@ -3,6 +3,7 @@ import datetime as datetime
 from flask_wtf import Form
 from flask_wtf.file import FileField, FileAllowed
 from wtforms.fields import (
+    SelectField,
     StringField,
     SubmitField,
     IntegerField,
@@ -73,6 +74,19 @@ class IncidentReportForm(Form):
         ('Yes', 'Yes'),
         ('No', 'No')
     ], validators=[InputRequired()])
+
+    category = SelectField('Category',
+                choices=[("Failure to stop", "Failure to stop"),
+                        ("Running a red light", "Running a red light"),
+                        ("Swerving vehicle", "Swerving vehicle"),
+                        ("Tailgating", "Tailgating"),
+                        ("Cycling on sidewalk", "Cycling on sidewalk"),
+                        ("Car door", "Car door"),
+                        ("Crossing against signal", "Crossing against signal"),
+                        ("Other", "Other")],
+                validators=[
+                    InputRequired()
+                ])
 
     description = TextAreaField('Description', validators=[
         Optional(),
