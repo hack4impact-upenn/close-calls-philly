@@ -28,7 +28,7 @@ from ..models import User, Role, EditableHTML, Incident, IncidentLocation
 from ..reports.forms import IncidentReportForm
 
 from .. import db
-from ..utils import parse_phone_number, url_for_external, geocode, strip_non_alphanumeric_chars
+from ..utils import parse_phone_number, url_for_external, geocode, reverse_geocode, strip_non_alphanumeric_chars
 
 from ..email import send_email
 
@@ -249,23 +249,25 @@ def upload_reports():
 
     witness_index = 0
     date_index = 1
-    location_index = 2
-    car_index = 3
-    bus_index = 4
-    truck_index = 5
-    bicycle_index = 6
-    pedestrian_index = 7
-    category_index = 8
-    description_index = 9
-    injuries_index = 10
-    injuries_desc_index = 11
-    road_conditions_index = 12
-    deaths_index = 13
-    license_plates_index = 14
-    picture_index = 15
-    contact_name_index = 16
-    contact_phone_index = 17
-    contact_email_index = 18
+    latitude_index = 2
+    longitude_index = 3
+    address_index = 4
+    car_index = 5
+    bus_index = 6
+    truck_index = 7
+    bicycle_index = 8
+    pedestrian_index = 9
+    category_index = 10
+    description_index = 11
+    injuries_index = 12
+    injuries_desc_index = 13
+    road_conditions_index = 14
+    deaths_index = 15
+    license_plates_index = 16
+    picture_index = 17
+    contact_name_index = 18
+    contact_phone_index = 19
+    contact_email_index = 20
 
     validator_form = IncidentReportForm()
 
@@ -281,20 +283,32 @@ def upload_reports():
         columns = next(reader)
         for c in range(len(columns)):
             columns[c] = columns[c].upper()
-        if columns != ["OBSERVED/EXPERIENCED", "DATE", "LOCATION", "CAR", "BUS", "TRUCK", "BICYCLE", "PEDESTRIAN", "CATEGORY", "DESCRIPTION", "INJURIES", "INJURIES DESCRIPTION", "WEATHER/ROAD CONDITIONS", "NUMBER OF DEATHS", "LICENSE PLATES", "PICTURE URL", "CONTACT NAME", "CONTACT PHONE", "CONTACT EMAIL"]:
+        if columns != ["OBSERVED/EXPERIENCED", "DATE", "LATITUDE", "LONGITUDE", "ADDRESS", "CAR", "BUS", "TRUCK", "BICYCLE", "PEDESTRIAN", "CATEGORY", "DESCRIPTION", "INJURIES", "INJURIES DESCRIPTION", "WEATHER/ROAD CONDITIONS", "NUMBER OF DEATHS", "LICENSE PLATES", "PICTURE URL", "CONTACT NAME", "CONTACT PHONE", "CONTACT EMAIL"]:
             flash('The column names and order must match the specified form exactly. Please click the info icon for more details.', 'error')
             return redirect(url_for('main.index'))
         error_lines = []
         errors = []
         for i, row in enumerate(reader, start=2):  # i is the row number
-
-            address_text = row[location_index]
-            coords = geocode(address_text)
+            coords = []
+            address_text = ""
+            try:
+                coords = [float(row[latitude_index]), float(row[longitude_index])]
+                if len(row[address_index]) > 0:
+                    address_text = row[address_index]
+                else:
+                    address_text = reverse_geocode(coords[0], coords[1])
+            except:
+                address_text = row[address_index]
+                try:
+                    coords = geocode(address_text)
+                except:
+                    pass
 
             # Ignore rows that do not have correct geocoding
-            if coords[0] is None or coords[1] is None:
-                print_error(i, 'Failed to geocode "{:s}"'.format(address_text))
+            if len(coords) < 2 or coords[0] is None or coords[1] is None:
+                print_error(i, 'No valid address or latitude/longitude coordinates')
                 error_lines.append(i)
+                continue
 
             # Insert correctly geocoded row to database
             else:
@@ -302,7 +316,6 @@ def upload_reports():
                     latitude=coords[0],
                     longitude=coords[1],
                     original_user_text=address_text)
-                db.session.add(loc)
 
                 time = parse_datetime(date_index, row)
                 if time is None:
@@ -379,6 +392,7 @@ def upload_reports():
                         contact_email=contact_email_text if len(contact_email_text) > 0
                         else None,
                     )
+                    db.session.add(loc)
                     db.session.add(incident)
                 except Exception:
                     error_lines.append(i)
