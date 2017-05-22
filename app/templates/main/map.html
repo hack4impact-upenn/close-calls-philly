@@ -237,6 +237,8 @@
     var polygon = null;
     var dragging = false;
     var form_mode = true;
+    var selectedMarker = null;
+    var selectedMarkerIcon = null;
 
     $('#createBoundingBoxButton').click(function() {
         drawShape();
@@ -269,16 +271,11 @@
     });
 
     $('#downloadCSVButton').click(function() {
-        {% if current_user.is_admin() %}
+        {% if current_user.is_authenticated %}
             downloadCSV(true);
         {% else %}
             downloadCSV(false);
         {% endif %}
-    });
-
-    $('#uploadCSVButton').click(function() {
-        // $('#file_upload').click();
-        //TODO: WHAT IS HERE
     });
 
     function initializeMapAndMarkers() {
@@ -338,11 +335,15 @@
             updateMarkersFromBounds();
         });
 
+        google.maps.event.addListener(map, 'click', function(event) {
+            if (selectedMarker != null) {
+                closeInfoWindow();
+            }
+        });
 
         var oms = new OverlappingMarkerSpiderfier(map, {keepSpiderfied: true, nearbyDistance: 10});
 
-        var selectedMarker;
-        var selectedMarkerIcon;
+
         // Add click listener to marker for displaying infoWindow
         oms.addListener('click', function(marker, event) {
           $('#form_container').hide();
@@ -355,17 +356,7 @@
           selectedMarker = marker;
           selectedMarkerIcon = marker.icon;
           marker.setIcon("../static/images/marker_selected.png");
-          $('#close_info').on('click', function() {
-              if (form_mode) {
-                  $('#form_container').show();
-              }
-              else {
-                  $('#map_controls').show();
-              }
-              $('#info_container').hide();
-              marker.setIcon(selectedMarkerIcon);
-              selectedMarker = null;
-          });
+          $('#close_info').on('click', closeInfoWindow);
         });
 
         markers = [];
@@ -598,6 +589,19 @@
         };
         navigator.geolocation.getCurrentPosition(success, error);
     }
+
+    function closeInfoWindow() {
+        if (form_mode) {
+            $('#form_container').show();
+        }
+        else {
+            $('#map_controls').show();
+        }
+        $('#info_container').hide();
+        selectedMarker.setIcon(selectedMarkerIcon);
+        selectedMarker = null;
+    }
+
 
     $('#injuries-0').click(function() {
         $('#injuries-description-field').show('fast');
