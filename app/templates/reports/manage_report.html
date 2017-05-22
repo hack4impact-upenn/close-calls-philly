@@ -141,14 +141,37 @@
     </div>
 
     <script type="text/javascript">
-        $('.deletion.checkbox').checkbox({
-            onChecked: function() {
-                $('.deletion.button').removeClass('disabled')
+        $(document).ready(function() {
+            $('.deletion.checkbox').checkbox({
+                onChecked: function() {
+                    $('.deletion.button').removeClass('disabled')
                         .attr('href', '{{ url_for('reports.delete_report', report_id=report.id) }}');
-            },
-            onUnchecked: function() {
-                $('.deletion.button').addClass('disabled').removeAttr('href');
+                },
+                onUnchecked: function() {
+                    $('.deletion.button').addClass('disabled').removeAttr('href');
+                }
+            });
+            console.log("{{ report.pedestrian }}" === "True");
+            if ("{{ report.car }}" === "False") {
+                $("#car").prop("checked", false);
             }
+            if ("{{ report.bus }}" === "False") {
+                $("#bus").prop('checked', false);
+            }
+            if ("{{ report.truck }}" === "False") {
+                $("#truck").prop("checked", false);
+            }
+            if ("{{ report.bicycle }}" === "False") {
+                $("#bicycle").prop("checked", false);
+            }
+            if ("{{ report.pedestrian }}" === "False") {
+                $("#pedestrian").prop("checked", false);
+            }
+            $('#car').value = ("{{ report.car }}" === "True") ? "y" : "n";
+            $('#bus').value = ("{{ report.bus }}" === "True") ? "y" : "n";
+            $('#truck').value = ("{{ report.truck }}"=== "True") ? "y" : "n";
+            $('#bicycle').value = ("{{ report.bicycle }}" === "True") ? "y" : "n";
+            $('#pedestrian').value = ("{{ report.pedestrian }}" === "True") ? "y" : "n";
         });
     </script>
 {% endblock %}

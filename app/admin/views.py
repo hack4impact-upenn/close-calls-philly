@@ -281,7 +281,7 @@ def upload_reports():
         columns = next(reader)
         for c in range(len(columns)):
             columns[c] = columns[c].upper()
-        if columns != ["WITNESSED", "DATE", "LOCATION", "CAR", "BUS", "TRUCK", "BICYCLE", "PEDESTRIAN", "CATEGORY", "DESCRIPTION", "INJURIES", "INJURIES DESCRIPTION", "ROAD CONDITIONS", "NUMBER OF DEATHS", "LICENSE PLATES", "PICTURE URL", "CONTACT NAME", "CONTACT PHONE", "CONTACT EMAIL"]:
+        if columns != ["OBSERVED/EXPERIENCED", "DATE", "LOCATION", "CAR", "BUS", "TRUCK", "BICYCLE", "PEDESTRIAN", "CATEGORY", "DESCRIPTION", "INJURIES", "INJURIES DESCRIPTION", "WEATHER/ROAD CONDITIONS", "NUMBER OF DEATHS", "LICENSE PLATES", "PICTURE URL", "CONTACT NAME", "CONTACT PHONE", "CONTACT EMAIL"]:
             flash('The column names and order must match the specified form exactly. Please click the info icon for more details.', 'error')
             return redirect(url_for('main.index'))
         error_lines = []
@@ -345,7 +345,7 @@ def upload_reports():
                     errors.append("Category does not match any of the options")
                     continue
 
-                witness_text = trip_non_alphanumeric_chars(witness_text)
+                witness_text = strip_non_alphanumeric_chars(witness_text)
                 car_text = strip_non_alphanumeric_chars(car_text)
                 bus_text = strip_non_alphanumeric_chars(bus_text)
                 truck_text = strip_non_alphanumeric_chars(truck_text)
@@ -359,16 +359,11 @@ def upload_reports():
                         witness=witness_text,
                         date=time,
                         address=loc,
-                        car=bool(car_text) if len(car_text) > 0
-                        else False,
-                        bus=bool(car_text) if len(bus_text) > 0
-                        else False,
-                        truck=bool(car_text) if len(truck_text) > 0
-                        else False,
-                        bicycle=bool(car_text) if len(bicycle_text) > 0
-                        else False,
-                        pedestrian=bool(car_text) if len(pedestrian_text) > 0
-                        else False,
+                        car=(car_text.lower() == "yes"),
+                        bus=(bus_text.lower() == "yes"),
+                        truck=(truck_text.lower() == "yes"),
+                        bicycle=(bicycle_text.lower() == "yes"),
+                        pedestrian=(pedestrian_text.lower() == "yes"),
                         category=row[category_index],
                         description=row[description_index],
                         injuries=row[injuries_index],

@@ -121,12 +121,11 @@ def edit_report_info(report_id):
 
     # pre-populate form
 
-    form.car.default = report.car
-    form.bus.default = report.bus
-    form.truck.default = report.truck
-    form.bicycle.default = report.bicycle
-    form.pedestrian.default = report.pedestrian
-
+    if report.witness:
+        form.witness.default = 'Yes'
+    else:
+        form.witness.default = 'No'
+    
     form.address.default = report.address.original_user_text
 
     form.date.default = report.date
