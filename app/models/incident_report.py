@@ -35,14 +35,18 @@ class Incident(db.Model):
                                 lazy='joined',
                                 backref='incident')
     date = db.Column(db.DateTime)
-    pedestrian_num = db.Column(db.Integer)
-    bicycle_num = db.Column(db.Integer)
-    automobile_num = db.Column(db.Integer)
     category = db.Column(db.String)
     description = db.Column(db.Text, default=None)
     license_plates = db.Column(db.String, default=None) # optional
+    car = db.Column(db.Boolean)
+    bus = db.Column(db.Boolean)
+    truck = db.Column(db.Boolean)
+    bicycle = db.Column(db.Boolean)
+    pedestrian = db.Column(db.Boolean)
     injuries = db.Column(db.Text)
     injuries_description = db.Column(db.Text, default=None) # optional
+    witness = db.Column(db.Text)
+    road_conditions = db.Column(db.Text) # optional
     deaths = db.Column(db.Integer, default=0) # optional
     picture_url = db.Column(db.Text, default=None) # optional
     contact_name = db.Column(db.Text, default=None) # optional
@@ -93,26 +97,29 @@ class Incident(db.Model):
                                                   radius=0.01))
             )
             has_injury = 'No'
+            is_witness = 'No'
             injuries_description_entry = ""
             if random.random() >= 0.5:
                 has_injury = 'Yes'
                 injuries_description_entry = "An injury occurred."
-            num_automobiles = random.randint(0, 2)
+            if random.random() >= 0.5:
+                is_witness = 'Yes'
             license_plates_str = ""
-            for _ in range(num_automobiles):
-                license_plates_str += rand_alphanumeric(6) + ', '
-            if len(license_plates_str) > 0:
-                license_plates_str = license_plates_str[:-2]
+            license_plates_str += rand_alphanumeric(6)
             r = Incident(
                 address=l,
                 date=fake.date_time_between(start_date="-1y", end_date="now"),
-                pedestrian_num=random.randint(0, 2),
-                bicycle_num=random.randint(0, 2),
-                automobile_num=num_automobiles,
                 category="Running a red light",
                 description=fake.paragraph(),
+                car=bool(random.getrandbits(1)),
+                bus=bool(random.getrandbits(1)),
+                truck=bool(random.getrandbits(1)),
+                bicycle=bool(random.getrandbits(1)),
+                pedestrian=bool(random.getrandbits(1)),
                 injuries=has_injury,
                 injuries_description=injuries_description_entry,
+                witness=is_witness,
+                road_conditions=fake.paragraph(),
                 deaths=choice([0]*98+[0, 1]),
                 license_plates=license_plates_str,
                 picture_url=fake.image_url(),

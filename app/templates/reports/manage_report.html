@@ -31,13 +31,17 @@
         <tr><td>Address</td><td>{{ report.address }}</td></tr>
         <tr><td>Date</td><td>{{ report.date.strftime('%m-%d-%Y') }}</td></tr>
         <tr><td>Time</td><td>{{ report.date.strftime('%I:%M %p') }}</td></tr>
-        <tr><td>Number of Pedestrians</td><td>{{ report.pedestrian_num }}</td></tr>
-        <tr><td>Number of Automobiles</td><td>{{ report.autombile_num }}</td></tr>
-        <tr><td>Number of Bicycles</td><td>{{ report.bicycle_num }}</td></tr>
+        <tr><td>Car</td><td>{{ report.car }}</td></tr>
+        <tr><td>Bus</td><td>{{ report.bus }}</td></tr>
+        <tr><td>Truck</td><td>{{ report.truck }}</td></tr>
+        <tr><td>Bicycle</td><td>{{ report.bicycle }}</td></tr>
+        <tr><td>Pedestrian</td><td>{{ report.pedestrian }}</td></tr>
         <tr><td>Category</td><td>{{ report.category }}</td><tr>
         <tr><td>Description</td><td>{{ report.description }}</td></tr>
+        <tr><td>Weather/Road Conditions</td><td>{{ report.road_conditions }}</td></tr>
         <tr><td>Injuries</td><td>{{ report.injuries }}</td></tr>
         <tr><td>Injuries Description</td><td>{{ report.injuries_description }}</td></tr>
+        <tr><td>Observed/Experienced</td><td>{{ report.witness }}</td></tr>
         <tr><td>Number of Deaths</td><td>{{ report.deaths }}</td></tr>
         <tr><td>License Plates</td><td>{{ report.license_plates }}</td></tr>
         <tr><td>Picture</td>
@@ -104,19 +108,23 @@
                     'success': get_flashed_messages(category_filter=['form-success'])
                     } %}
                     {{ f.begin_form(form, flashes) }}
-                    {{ f.render_form_field(form.address) }}
-                    {{ f.render_form_field(form.automobile_num) }}
-                    {{ f.render_form_field(form.bicycle_num) }}
-                    {{ f.render_form_field(form.pedestrian_num) }}
+                    {{ f.render_form_field(form.witness)}}
                     {{ f.render_form_field(form.date)}}
                     {{ f.render_form_field(form.time)}}
-                    {{ f.render_form_field(form.picture_file) }}
+                    {{ f.render_form_field(form.address) }}
+                    {{ f.render_form_field(form.car) }}
+                    {{ f.render_form_field(form.bus) }}
+                    {{ f.render_form_field(form.truck) }}
+                    {{ f.render_form_field(form.bicycle) }}
+                    {{ f.render_form_field(form.pedestrian) }}
                     {{ f.render_form_field(form.category) }}
                     {{ f.render_form_field(form.description) }}
                     {{ f.render_form_field(form.injuries)}}
                     {{ f.render_form_field(form.injuries_description)}}
+                    {{ f.render_form_field(form.road_conditions) }}
                     {{ f.render_form_field(form.deaths) }}
                     {{ f.render_form_field(form.license_plates) }}
+                    {{ f.render_form_field(form.picture_file) }}
                     {{ f.render_form_field(form.contact_name)}}
                     {{ f.render_form_field(form.contact_phone)}}
                     {{ f.render_form_field(form.contact_email)}}

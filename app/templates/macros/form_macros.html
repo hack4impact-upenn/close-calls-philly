@@ -85,10 +85,15 @@
         {% if field.errors %}
             <div class="ui red pointing label">
                 {{ field.errors[0] | safe }}
-            </div>
+            </div>v
         {% endif %}
     </div>
 {% endmacro %}
+
+{% for field in form %}
+    {{ field }}
+    {% if field.flags.required %}*{% endif %}{{ field.label }}
+{% endfor %}
 
 {% macro render_form_input(field) %}
     {% if field.widget.input_type == 'checkbox' %}
@@ -97,7 +102,13 @@
             {{ field.label }}
         </div>
     {% elif field.type == 'RadioField' %}
+      {% if field.flags.required %}
+      <div style="display: inline-block">
+      {{ field.label }}<span style="color: red; font-style: italic"> *</span>
+      </div><br />
+      {% else %}
       {{ field.label }}
+      {% endif %}
         {% for item in field %}
             <div class="ui radio checkbox">
                 {{ item }}
@@ -109,7 +120,13 @@
     {% elif field.type == 'FormField' %}
         {{ render_form(field) }}
     {% else %}
-        {{ field.label }}
+       {% if field.flags.required %}
+       <div style="display: inline-block">
+          {{ field.label }}<span style="color: red; font-style: italic"> *</span>
+       </div>
+       {% else %}
+       {{ field.label }}
+       {% endif %}
         {% if field.description %}
                 <p class="help-block">{{ field.description|safe }}</p>
         {% endif %}

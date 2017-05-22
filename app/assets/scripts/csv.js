@@ -1,21 +1,35 @@
 function downloadCSV(isAdmin) {
     // Init CSV array.
     var csv = [
-            ['data:text/csv;charset=utf-8,DATE,LOCATION,NUMBER OF AUTOMOBILES,NUMBER OF BICYCLES,' +
-            'NUMBER OF PEDESTRIANS,CATEGORY,DESCRIPTION,INJURIES,INJURIES DESCRIPTION,DEATHS,LICENSE PLATES,PICTURE URL']
+        'data:text/csv;charset=utf-8,OBSERVED/EXPERIENCED,DATE,ADDRESS,CAR,'+
+        'BUS,TRUCK,BICYCLE,PEDESTRIAN,CATEGORY,DESCRIPTION,INJURIES,INJURIES DESCRIPTION,'+
+        'WEATHER/ROAD CONDITIONS'
     ];
     if (isAdmin) {
-        csv[0] = csv[0] + ',CONTACT NAME';
-        csv[0] = csv[0] + ',CONTACT PHONE';
-        csv[0] = csv[0] + ',CONTACT EMAIL';
+        csv[0] = csv[0]+',NUMBER OF DEATHS,LICENSE PLATES,PICTURE URL,,CONTACT NAME,CONTACT PHONE,CONTACT EMAIL';
     }
     markersDisplayedOnMap.forEach(function(marker) {
         var licensePlates = marker.licensePlates.split(',').join(';');
 
-        var line = [marker.incidentDate, marker.locationName, marker.automobileNum,
-                    marker.bicycleNum, marker.pedestrianNum, marker.category, marker.description, marker.injuries,
-                    marker.injuries_description, marker.deaths, marker.licensePlates, marker.pictureUrl];
+        var line = [
+            marker.witness,
+            marker.incidentDate,
+            marker.locationName,
+            marker.car,
+            marker.bus,
+            marker.truck,
+            marker.bicycle,
+            marker.pedestrian,
+            marker.category,
+            marker.description,
+            marker.injuries,
+            marker.injuries_description,
+            marker.road_conditions
+        ];
         if (isAdmin) {
+            line.push(marker.deaths);
+            line.push(marker.licensePlates);
+            line.push(marker.pictureUrl);
             line.push(marker.contactName);
             line.push(marker.contactPhone);
             line.push(marker.contactEmail);

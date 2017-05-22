@@ -40,13 +40,17 @@
                         <tr>
                             <th class="sorted descending">Date</th>
                             <th>Address</th>
-                            <th>Number of Pedestrians</th>
-                            <th>Number of Automobiles</th>
-                            <th>Number of Bicycles</th>
+                            <th>Car</th>
+                            <th>Bus</th>
+                            <th>Truck</th>
+                            <th>Bicycle</th>
+                            <th>Pedestrian</th>
                             <th>Category</th>
                             <th>Description</th>
+                            <th>Weather/Road Conditions</th>
                             <th>Injuries</th>
                             <th>Injuries Description</th>
+                            <th>Observed/Experienced</th>
                             <th>Number of Deaths</th>
                             <th>License Plates</th>
                             <th>Picture URL</th>
@@ -60,13 +64,17 @@
                         <tr onclick="window.location.href = '{{ url_for('reports.report_info', report_id=r.id) }}';">
                             <td class="single line">{{ r.date.strftime('%Y-%m-%d at %I:%M %p') }}</td>
                             <td>{{ r.address }}</td>
-                            <td>{{ r.pedestrian_num }}</td>
-                            <td>{{ r.automobile_num }}</td>
-                            <td>{{ r.bicycle_num }}</td>
+                            <td>{{ r.car }}</td>
+                            <td>{{ r.bus }}</td>
+                            <td>{{ r.truck }}</td>
+                            <td>{{ r.bicycle }}</td>
+                            <td>{{ r.pedestrian }}</td>
                             <td>{{ r.category }}</td>
                             <td>{{ r.description }}</td>
+                            <td>{{ r.road_conditions }}</td>
                             <td>{{ r.injuries }}</td>
                             <td>{{ r.injuries_description }}</td>
+                            <td>{{ r.witness }}</td>
                             <td>{{ r.deaths }}</td>
                             <td>{{ r.license_plates }}</td>
                             <td>{{ r.picture_url }}</td>

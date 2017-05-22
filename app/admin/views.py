@@ -207,45 +207,12 @@ def update_editor_contents():
     return 'OK', 200
 
 
-@admin.route('/download_reports', methods=['GET'])
-@login_required
-@admin_required
-def download_reports():
-    """Download a csv file of all incident reports."""
-
-    def encode(s):
-        return s.encode('utf-8') if s else ''
-
-    current_date = str(datetime.date.today())
-    csv_name = 'Incidents-' + current_date + '.csv'
-    outfile = open(csv_name, 'w+')
-    print('initial file contents:', outfile.read())
-
-    wr = csv.writer(outfile, delimiter=',', quoting=csv.QUOTE_MINIMAL)
-    reports = db.session.query(Incident).all()
-    wr.writerow(['DATE', 'LOCATION', 'NUMBER OF AUTOMOBILES', 'NUMBER OF BICYCLES',
-                'NUMBER OF PEDESTRIANS', 'DESCRIPTION', 'INJURIES', 'INJURIES DESCRIPTION',
-                'DEATHS', 'LICENSE PLATES', 'PICTURE URL', 'CONTACT NAME', 'CONTACT PHONE', 'CONTACT EMAIL'])
-    for r in reports:
-        wr.writerow([r.date, r.address, r.automobile_num, r.bicycle_num, r.pedestrian_num,
-                     r.description, r.injuries, r.injuries_description, r.deaths,
-                     r.license_plates, r.picture_url, r.contact_name, r.contact_phone, r.contact_email])
-
-    endfile = open(csv_name, 'r+')
-    data = endfile.read()
-    return Response(
-        data,
-        mimetype="text/csv",
-        headers={"Content-disposition": "attachment; filename=" + csv_name})
-
 @admin.route('/upload_reports', methods=['POST'])
 @login_required
 @admin_required
 def upload_reports():
     """Reads a csv and imports the data into a database."""
     # The indices in the csv of different data
-    
-
 
     def parse_datetime(date_index, row):
         """for date_format in ['%m/%d/%Y %H:%M', '%m/%d/%y %H:%M']:
@@ -276,27 +243,30 @@ def upload_reports():
 
         return validated
 
-
     def print_error(row_number, error_message):
         """TODO: docstring"""
         print ('Row {:d}: {}L/'.format(row_number, error_message))
 
-    date_index = 0
-    location_index = 1
-    category_index = 5
-    description_index = 6
-    injuries_index = 7
-    injuries_desc_index = 8
-    deaths_index = 9
-    pedestrian_num_index = 2
-    bicycle_num_index = 4
-    automobile_num_index = 3
-    license_plates_index = 10
-    picture_index = 11
-    contact_name_index = 12
-    contact_phone_index = 13
-    contact_email_index = 14
-    
+    witness_index = 0
+    date_index = 1
+    location_index = 2
+    car_index = 3
+    bus_index = 4
+    truck_index = 5
+    bicycle_index = 6
+    pedestrian_index = 7
+    category_index = 8
+    description_index = 9
+    injuries_index = 10
+    injuries_desc_index = 11
+    road_conditions_index = 12
+    deaths_index = 13
+    license_plates_index = 14
+    picture_index = 15
+    contact_name_index = 16
+    contact_phone_index = 17
+    contact_email_index = 18
+
     validator_form = IncidentReportForm()
 
     csv_file = request.files['file']
@@ -311,7 +281,7 @@ def upload_reports():
         columns = next(reader)
         for c in range(len(columns)):
             columns[c] = columns[c].upper()
-        if columns != ["DATE","LOCATION","NUMBER OF AUTOMOBILES","NUMBER OF BICYCLES","NUMBER OF PEDESTRIANS","CATEGORY","DESCRIPTION","INJURIES","INJURIES DESCRIPTION","NUMBER OF DEATHS","LICENSE PLATES","PICTURE URL","CONTACT NAME","CONTACT PHONE","CONTACT EMAIL"]:
+        if columns != ["WITNESSED", "DATE", "LOCATION", "CAR", "BUS", "TRUCK", "BICYCLE", "PEDESTRIAN", "CATEGORY", "DESCRIPTION", "INJURIES", "INJURIES DESCRIPTION", "ROAD CONDITIONS", "NUMBER OF DEATHS", "LICENSE PLATES", "PICTURE URL", "CONTACT NAME", "CONTACT PHONE", "CONTACT EMAIL"]:
             flash('The column names and order must match the specified form exactly. Please click the info icon for more details.', 'error')
             return redirect(url_for('main.index'))
         error_lines = []
@@ -340,9 +310,12 @@ def upload_reports():
                     errors.append("Date/Time Format")
                     continue
 
-                pedestrian_num_text = row[pedestrian_num_index].strip()
-                bicycle_num_text = row[bicycle_num_index].strip()
-                automobile_num_text = row[automobile_num_index].strip()
+                witness_text = row[witness_index].strip()
+                car_text = row[car_index].strip()
+                bus_text = row[bus_index].strip()
+                truck_text = row[truck_index].strip()
+                bicycle_text = row[bicycle_index].strip()
+                pedestrian_text = row[pedestrian_index].strip()
 
                 contact_name_text = row[contact_name_index].strip()
                 contact_phone_text = row[contact_phone_index].strip()
@@ -363,10 +336,7 @@ def upload_reports():
                     errors.append("Description")
                     continue
 
-                if not validate_field(
-                    field=validator_form.picture_url,
-                    data=row[picture_index]
-                ):
+                if not validate_field(field=validator_form.picture_url,data=row[picture_index]):
                     error_lines.append(i)
                     errors.append("Picture URL")
                     continue
@@ -375,26 +345,35 @@ def upload_reports():
                     errors.append("Category does not match any of the options")
                     continue
 
-                pedestrian_num_text = strip_non_alphanumeric_chars(pedestrian_num_text)
-                bicycle_num_text = strip_non_alphanumeric_chars(bicycle_num_text)
-                automobile_num_text = strip_non_alphanumeric_chars(automobile_num_text)
+                witness_text = trip_non_alphanumeric_chars(witness_text)
+                car_text = strip_non_alphanumeric_chars(car_text)
+                bus_text = strip_non_alphanumeric_chars(bus_text)
+                truck_text = strip_non_alphanumeric_chars(truck_text)
+                bicycle_text = strip_non_alphanumeric_chars(bicycle_text)
+                pedestrian_text = strip_non_alphanumeric_chars(pedestrian_text)
 
                 contact_name_text = strip_non_alphanumeric_chars(contact_name_text)
                 contact_phone_text = strip_non_alphanumeric_chars(contact_phone_text)
                 try:
                     incident = Incident(
+                        witness=witness_text,
                         date=time,
                         address=loc,
-                        pedestrian_num=int(pedestrian_num_text) if len(pedestrian_num_text) > 0
-                        else 0,
-                        bicycle_num=int(bicycle_num_text) if len(bicycle_num_text) > 0
-                        else 0,
-                        automobile_num=int(automobile_num_text) if len(automobile_num_text) > 0
-                        else 0,
+                        car=bool(car_text) if len(car_text) > 0
+                        else False,
+                        bus=bool(car_text) if len(bus_text) > 0
+                        else False,
+                        truck=bool(car_text) if len(truck_text) > 0
+                        else False,
+                        bicycle=bool(car_text) if len(bicycle_text) > 0
+                        else False,
+                        pedestrian=bool(car_text) if len(pedestrian_text) > 0
+                        else False,
                         category=row[category_index],
                         description=row[description_index],
                         injuries=row[injuries_index],
                         injuries_description=row[injuries_desc_index],
+                        road_conditions=row[road_conditions_index],
                         deaths=int(row[deaths_index]) if len(row[deaths_index]) > 0 else 0,
                         license_plates=row[license_plates_index],
                         picture_url=row[picture_index],

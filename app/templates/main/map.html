@@ -7,10 +7,6 @@
 
         <div id="map_controls">
             <div id="form_button">Report Incident</div>
-            <!-- <button id="close_controls" class="ui icon button close">
-                <i class="remove icon"></i>
-            </button> -->
-
             <div class="ui horizontal divider" id="centerMapDivider">Center Map</div>
             <form name="addressForm" id="addressForm">
                 <div class="ui action input" id="addressSearch">
@@ -25,6 +21,7 @@
                     <button id="licenseSubmitButton" class="ui button">Search</button>
                 </div>
             </form>
+            <br />
             <div id="boundingBoxSection">
                 <h4>Bounding Boxes&nbsp&nbsp<a><i onclick="sendBoundingInstructionsModal()" class="info circle icon" aria-hidden="true" id="boundingInstructionsIcon"></i></a></h4>
                 <button id="createBoundingBoxButton" class="ui button long-button">Create Bounding Box</button>
@@ -57,8 +54,18 @@
                 <b>Vehicle Type</b>
                 <form>
                     <div class="ui checkbox">
-                        <input type="checkbox" id="automobile"></input>
-                        <label>Automobile</label>
+                        <input type="checkbox" id="car"></input>
+                        <label>Car</label>
+                    </div>
+                    <br />
+                    <div class="ui checkbox">
+                        <input type="checkbox" id="bus"></input>
+                        <label>Bus</label>
+                    </div>
+                    <br />
+                    <div class="ui checkbox">
+                        <input type="checkbox" id="truck"></input>
+                        <label>Truck</label>
                     </div>
                     <br />
                     <div class="ui checkbox">
@@ -94,9 +101,6 @@
         </div>
         <div id="form_container">
             <div id="map_button">Map Controls</div>
-        <!-- <button id="close_form" class="ui icon button close">
-                <i class="remove icon"></i>
-            </button> -->
             <div class="ui horizontal divider" id="reportDivider">Incident Report</div>
             <div id ="form_fields">
             {% set flashes = {
@@ -107,20 +111,25 @@
             } %}
 
             {{ f.begin_form(form, flashes) }}
-            {{ f.render_form_field(form.address) }}
-            <div class="ui button long-button" id="current_location_button" onclick="geoFindMe()">Use Current location</div>
-            <h3>Type</h3>
-            {{ f.render_form_field(form.automobile_num) }}
-            {{ f.render_form_field(form.bicycle_num) }}
-            {{ f.render_form_field(form.pedestrian_num) }}
+            {{ f.render_form_field(form.witness) }}
             {{ f.render_form_field(form.date)}}
             {{ f.render_form_field(form.time)}}
-            {{ f.render_form_field(form.picture_file) }}
+            {{ f.render_form_field(form.address) }}
+            <div class="ui button long-button" id="current_location_button" onclick="geoFindMe()">Use Current location</div>
+            <br />
+            <h4>Select Types of Vehicles Involved<span style="color: red; font-style: italic"> *</span></h4>
+            {{ f.render_form_field(form.car) }}
+            {{ f.render_form_field(form.bus) }}
+            {{ f.render_form_field(form.truck) }}
+            {{ f.render_form_field(form.bicycle) }}
+            {{ f.render_form_field(form.pedestrian) }}
             {{ f.render_form_field(form.category) }}
-            {{ f.render_form_field(form.description) }}
             {{ f.render_form_field(form.injuries) }}
             <div id="injuries-description-field" style="display:none">{{ f.render_form_field(form.injuries_description) }}</div>
+            {{ f.render_form_field(form.description) }}
+            {{ f.render_form_field(form.road_conditions) }}
             {{ f.render_form_field(form.license_plates) }}
+            {{ f.render_form_field(form.picture_file) }}
             {{ f.render_form_field(form.contact_name) }}
             {{ f.render_form_field(form.contact_phone) }}
             {{ f.render_form_field(form.contact_email) }}
@@ -156,6 +165,14 @@
     </div>
 </div>
 
+<div class="ui centered modal" id="injury-call-modal">
+    <i class="close icon"></i>
+    <div class="header">In case of a serious injury, please be sure to call 911.</div>
+    <div class="actions">
+        <div class="ui approve button">Okay</div>
+    </div>
+</div>
+
 <div class="ui centered modal" id="bounding-instructions-modal">
     <i class="close icon"></i>
     <div class="header">Bounding Box Instructions</div>
@@ -181,26 +198,31 @@
         <p>
             For uploading a CSV, the columns should be:
             <ol>
-                <li>Date</li>
-                <li>Location</li>
-                <li>Number of Automobiles</li>
-                <li>Number of Bicycles</li>
-                <li>Number of Pedestrians</li>
-                <li>Category</li>
-                <li>Description</li>
-                <li>Injuries</li>
-                <li>Injuries Description</li>
-                <li>Number of Deaths</li>
-                <li>License Plates</li>
-                <li>Picture URL</li>
-                <li>Contact Name</li>
-                <li>Contact Phone</li>
-                <li>Contact Email</li>
+                <li>OBSERVED/EXPERIENCED</li>
+                <li>DATE</li>
+                <li>LOCATION</li>
+                <li>CAR</li>
+                <li>BUS</li>
+                <li>TRUCK</li>
+                <li>BICYCLE</li>
+                <li>PEDESTRIAN</li>
+                <li>CATEGORY</li>
+                <li>DESCRIPTION</li>
+                <li>INJURIES</li>
+                <li>INJURIES DESCRIPTION</li>
+                <li>WEATHER/ROAD CONDITIONS</li>
+                <li>NUMBER OF DEATHS</li>
+                <li>LICENSE PLATES</li>
+                <li>PICTURE URL</li>
+                <li>CONTACT NAME</li>
+                <li>CONTACT PHONE</li>
+                <li>CONTACT EMAIL</li>
             </ol>
             The first line of the CSV must include all of these column names in this order, regardless of whether some (or all) incidents do not have certain fields filled out.
-            Please note that entry in the Injuries column should be either "Yes" or "No". If there are no injuries, the "Injuries Description" is optional.
-            The entries for "License Plates", "Picture URL", "Contact Name", "Contact Phone", and "Contact Email" are optional.
-
+            Please note that entries in the "Observed/Experienced" and "Injuries" columns should be either "Yes" or "No", and the entries for the various types of vehicles should be either "True" or "False".
+            The format of the "Date" column should be (year-month-day hour:minute am/pm).
+            If there are no injuries, the "Injuries Description" is optional.
+            The entries for "Description", "Road/Weather Conditions", "License Plates", "Picture URL", "Contact Name", "Contact Phone", and "Contact Email" are optional.
             All other columns require an input.
         </p>
 
@@ -245,11 +267,6 @@
         $('#map_button').toggle();
         form_mode = true;
     });
-
-    /*$('#close_controls').click(function(){
-        $('#form_container').show();
-        $('#form_button').toggle();
-    });*/
 
     $('#downloadCSVButton').click(function() {
         {% if current_user.is_admin() %}
@@ -384,10 +401,26 @@
                                 '<h3>Date: ' + '{{ report.date.strftime('%m-%d-%Y at %I:%M %p') }}' + '</h3>' +
                                 '<p><b>Category:</b> ' + '{{ report.category }}</p>'+
                                 '<p><b>Description:</b> ' + '{{ report.description }}' + '</p>' +
-                                '<p><b>Number of Pedestrians:</b> ' + '{{ report.pedestrian_num }}' + '</p>' +
-                                '<p><b>Number of Automobiles:</b> ' + '{{ report.automobile_num }}' + '</p>' +
-                                '<p><b>Number of Bicycles:</b> ' + '{{ report.bicycle_num }}' + '</p>' +
                                 '<p><b>Injuries:</b> ' + '{{ report.injuries_description if report.injuries_description else '' }} </p>';
+                                '<p><b>Weather/Road Conditions:</b> ' + '{{ report.road_conditions }}' + '</p>' +
+                                '<p><b>Experienced/Observed:</b> ' + '{{ report.witness }}' + '</p>';
+            var vehicleTypes = []
+            {% if report.car %}
+                vehicleTypes.push('Car');
+            {% endif %}
+            {% if report.bus %}
+                vehicleTypes.push('Bus');
+            {% endif %}
+            {% if report.truck %}
+                vehicleTypes.push('Truck');
+            {% endif %}
+            {% if report.bicycle %}
+                vehicleTypes.push('Bicycle');
+            {% endif %}
+            {% if report.pedestrian %}
+                vehicleTypes.push('Pedestrian');
+            {% endif %}
+            contentString += '<p><b>Types of Vehicles Involved:</b> ' + vehicleTypes.join(', ') + '</p>'
             {% if current_user.is_authenticated %}
                 contentString += '<p><b>Number of Deaths:</b> ' + '{{ report.deaths }}' + '</p>';
                 contentString += '<p><b>License Plates:</b> ' + "{{ report.license_plates if report.license_plates else '' }}" + '</p>';
@@ -405,19 +438,22 @@
             // Dynamically add state to marker object.
             marker.incidentDate = incidentDate;
             marker.locationName = '\"{{ report.address | replace("\n", ", ") }}\"';
-
-            marker.pedestrianNum = '{{ report.pedestrian_num }}';
-            marker.automobileNum = '{{ report.automobile_num }}';
-            marker.bicycleNum = '{{ report.bicycle_num }}';
             marker.category = '{{ report.category }}';
+            marker.car = '{{ report.car }}';
+            marker.bus = '{{ report.bus }}';
+            marker.truck = '{{ report.truck }}';
+            marker.bicycle = '{{ report.bicycle }}';
+            marker.pedestrian = '{{ report.pedestrian }}';
             marker.description = '{{ report.description }}';
+            marker.road_conditions = '{{ report.road_conditions }}';
             marker.injuries = '{{ report.injuries }}';
             marker.injuries_description = '{{ report.injuries_description if report.injuries == "Yes" else "No injuries." }}';
+            marker.witness = '{{ report.witness }}';
             marker.deaths = '{{ report.deaths }}';
             marker.licensePlates = "{{ report.license_plates if report.license_plates else ''}}";
             marker.pictureUrl = '{{ report.picture_url if report.picture_url else '' }}';
 
-            {% if current_user.is_admin() %}
+            {% if current_user.is_authenticated %}
             marker.contactName = '{{ report.contact_name if report.contact_name else '' }}';
             marker.contactPhone = '{{ report.contact_phone if report.contact_phone else '' }}';
             marker.contactEmail = '{{ report.contact_email if report.contact_email else '' }}';
@@ -565,6 +601,7 @@
 
     $('#injuries-0').click(function() {
         $('#injuries-description-field').show('fast');
+        $("#injury-call-modal").modal('show');
     })
 
     $('#injuries-1').click(function() {

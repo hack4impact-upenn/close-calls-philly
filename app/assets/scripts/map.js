@@ -165,18 +165,16 @@ $(document).ready(function() {
             filterMarkers();
         }
     })
-    $('#automobile').prop('checked', true);
-    $('#pedestrian').prop('checked', true);
+    $('#car').prop('checked', true);
+	$('#bus').prop('checked', true);
+	$('#truck').prop('checked', true);
     $('#bicycle').prop('checked', true);
-    $('#automobile').on('change', function(event) {
-        filterMarkers();
-    });
-    $('#bicycle').on('change', function(event) {
-        filterMarkers();
-    });
-    $('#pedestrian').on('change', function(event) {
-        filterMarkers();
-    });
+	$('#pedestrian').prop('checked', true);
+    $('#car').on('change', filterMarkers);
+	$('#bus').on('change', filterMarkers);
+	$('#truck').on('change', filterMarkers);
+    $('#bicycle').on('change', filterMarkers);
+    $('#pedestrian').on('change', filterMarkers);
 });
 
 function getNextDate(startDate) {
@@ -234,9 +232,11 @@ function withinDateRange(marker) {
 }
 
 function fitsVehicleType(marker) {
-    return (marker.automobileNum > 0 && $('#automobile').is(':checked')) ||
-           (marker.pedestrianNum > 0 && $('#pedestrian').is(':checked')) ||
-           (marker.bicycleNum > 0 && $('#bicycle').is(':checked'));
+	return  (marker.car === 'True' && $('#car').is(':checked')) ||
+			(marker.bus === 'True' && $('#bus').is(':checked')) ||
+			(marker.truck === 'True' && $('#truck').is(':checked')) ||
+			(marker.bicycle === 'True' && $('#bicycle').is(':checked')) ||
+			(marker.pedestrian === 'True' && $('#pedestrian').is(':checked'));
 }
 
 function fitsLicenseSearch(marker) {
