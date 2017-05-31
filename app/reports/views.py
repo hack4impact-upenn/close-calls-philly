@@ -121,10 +121,10 @@ def edit_report_info(report_id):
 
     # pre-populate form
 
-    if report.witness:
-        form.witness.default = 'Yes'
+    if report.witness.lower() == 'observed':
+        form.witness.default = 'Observed'
     else:
-        form.witness.default = 'No'
+        form.witness.default = 'Experienced'
     
     form.address.default = report.address.original_user_text
 

@@ -70,9 +70,9 @@ class IncidentReportForm(Form):
         Length(max=5000)
     ])
 
-    witness = RadioField('Did you observe or experience the accident?', choices=[
-        ('Yes', 'Yes'),
-        ('No', 'No')
+    witness = RadioField('Did you observe or experience the incident?', choices=[
+        ('Observed', 'Observed'),
+        ('Experienced', 'Experienced')
     ], validators=[InputRequired()])
 
     category = SelectField('Category',
