@@ -200,7 +200,9 @@
             <ol>
                 <li>OBSERVED/EXPERIENCED</li>
                 <li>DATE</li>
-                <li>LOCATION</li>
+                <li>LATITUDE</li>
+                <li>LONGITUDE</li>
+                <li>ADDRESS</li>
                 <li>CAR</li>
                 <li>BUS</li>
                 <li>TRUCK</li>
@@ -221,6 +223,7 @@
             The first line of the CSV must include all of these column names in this order, regardless of whether some (or all) incidents do not have certain fields filled out.
             Please note that entries in the "Observed/Experienced" and "Injuries" columns should be either "Yes" or "No", and the entries for the various types of vehicles should be either "Yes" or "No".
             The format of the "Date" column should be (year-month-day hour:minute am/pm).
+            Either both the latitude and longitude fields must be completed, or the address field must be completed.
             If there are no injuries, the "Injuries Description" is optional.
             The entries for "Description", "Road/Weather Conditions", "License Plates", "Picture URL", "Contact Name", "Contact Phone", and "Contact Email" are optional.
             All other columns require an input.

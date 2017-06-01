@@ -89,13 +89,37 @@ def geocode(address):
     if r.json()['status'] == 'OVER_QUERY_LIMIT':
         time.sleep(1)
         r = requests.get(url, params=payload)
-
     if r.json()['status'] == 'ZERO_RESULTS' or len(r.json()['results']) is 0:
         print (r.json())
         return None, None
     else:
         coords = r.json()['results'][0]['geometry']['location']
         return coords['lat'], coords['lng']
+
+
+def reverse_geocode(lat, lng):
+    """Reverse geocoding using Google API
+
+    Returns a string that is the address or None if geocoding fails
+    """
+    url = "https://maps.googleapis.com/maps/api/geocode/json"
+    payload = {
+        'latlng': str(lat)+','+str(lng),
+        'key': current_app.config['GOOGLE_GEOCODE_KEY']
+    }
+    r = requests.get(url, params=payload)
+
+    # Google's geocode api is limited to 10 requests a second
+    if r.json()['status'] == 'OVER_QUERY_LIMIT':
+        time.sleep(1)
+        r = requests.get(url, params=payload)
+
+    if r.json()['status'] == 'ZERO_RESULTS' or len(r.json()['results']) is 0:
+        print (r.json())
+        return None
+    else:
+        address = r.json()['results'][0]['formatted_address']
+        return address
 
 
 def get_current_weather(location):
