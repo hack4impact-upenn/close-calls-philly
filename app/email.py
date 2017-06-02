@@ -6,9 +6,7 @@ from app import create_app
 
 
 def send_email(recipient, subject, template, **kwargs):
-    print('here1')
     app = create_app(os.getenv('FLASK_CONFIG') or 'default')
-    print('here')
     with app.app_context():
         msg = Message(app.config['EMAIL_SUBJECT_PREFIX'] + ' ' + subject,
                       sender=app.config['EMAIL_SENDER'],
