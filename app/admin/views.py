@@ -59,6 +59,7 @@ def invite_user():
         token = user.generate_confirmation_token()
         invite_link = url_for_external('account.join_from_invite',
                                        user_id=user.id, token=token)
+        print('inviting 1')
         get_queue().enqueue(
             send_email,
             recipient=user.email,
@@ -67,6 +68,7 @@ def invite_user():
             user=user,
             invite_link=invite_link,
         )
+        print('inviting 2')
         flash('User {} successfully invited'.format(user.full_name()),
               'form-success')
         return redirect(url_for('admin.invite_user'))
