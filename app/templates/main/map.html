@@ -420,6 +420,8 @@
                 contentString += '<p><b>License Plates:</b> ' + "{{ report.license_plates if report.license_plates else '' }}" + '</p>';
                 {% if report.picture_url %}
                     contentString += '<p><a href="{{ report.picture_url }}" target="_blank" rel="noopener noreferrer">' + 'Link to Picture' + '</a></p>';
+                {% else %}
+                    contentString += '<p>No link to picture</p>'
                 {% endif %}
                 contentString += '<p><b>Contact Name:</b> ' + '{{ report.contact_name if report.contact_name else '' }}' +'</p>';
                 contentString += '<p><b>Contact Phone:</b> ' + '{{ report.contact_phone if report.contact_phone else '' }}' + '</p>';
