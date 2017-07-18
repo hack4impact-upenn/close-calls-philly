@@ -283,12 +283,17 @@
 
     function initializeMapAndMarkers() {
         var mapProp = {
+                zoom: 8,
                 mapTypeId: google.maps.MapTypeId.ROADMAP,
                 mapTypeControl: false,
                 streetViewControl: false,
                 scrollwheel: false,
         };
         map = new google.maps.Map($('#googleMap')[0],mapProp);
+        // map.setCenter(new google.maps.LatLng(INITIAL_CENTER_LAT, INITIAL_CENTER_LONG));
+        console.log(INITIAL_CENTER_LAT);
+        console.log(INITIAL_CENTER_LONG);
+        // console.log(map.getCenter().lat() + ' ' + map.getCenter().lng());
         var legend = document.createElement('div');
         legend.innerHTML = '<h3>Legend</h3>';
         legend.id = 'map-legend';

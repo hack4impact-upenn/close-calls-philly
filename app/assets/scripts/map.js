@@ -34,7 +34,12 @@ function storeMarkerState(markers, map, minDate, bounds, oms) {
     MIN_DATE = minDate;
     startDate = minDate;
     geographicBounds = bounds;
-    map.fitBounds(bounds);
+    if (globalMarkers.length > 0) {
+        map.fitBounds(bounds);
+    }
+    else {
+        geographicBounds = map.getBounds();
+    }
 }
 
 // Use Google geocoder to update geolocation given an address through
