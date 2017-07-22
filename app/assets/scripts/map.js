@@ -8,10 +8,13 @@ var markerCluster = null;
 // Geographic bounds centered according to incident report locations
 var geographicBounds = null;
 
-// Initial map center coordinates
-INITIAL_CENTER_LAT = 39.952;
+// Initial map center coordinates (for Philadelphia)
+INITIAL_CENTER_LAT = 39.953;
 INITIAL_CENTER_LONG = -75.195;
 initial_coords = new google.maps.LatLng(INITIAL_CENTER_LAT, INITIAL_CENTER_LONG);
+
+//Initial Zoom
+DEFAULT_ZOOM = 12;
 
 // Bounds for the Date Slider. End date is current date.
 var MIN_DATE;
@@ -33,8 +36,13 @@ function storeMarkerState(markers, map, minDate, bounds, oms) {
     }
     MIN_DATE = minDate;
     startDate = minDate;
-    geographicBounds = bounds;
-    map.fitBounds(bounds);
+    if (globalMarkers.length > 0) {
+        map.fitBounds(bounds);
+    }
+    else {
+        map.setZoom(DEFAULT_ZOOM);
+        geographicBounds = map.getBounds();
+    }
 }
 
 // Use Google geocoder to update geolocation given an address through

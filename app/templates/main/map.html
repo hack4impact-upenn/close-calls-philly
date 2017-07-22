@@ -289,6 +289,7 @@
                 scrollwheel: false,
         };
         map = new google.maps.Map($('#googleMap')[0],mapProp);
+        map.setCenter(new google.maps.LatLng(INITIAL_CENTER_LAT, INITIAL_CENTER_LONG));
         var legend = document.createElement('div');
         legend.innerHTML = '<h3>Legend</h3>';
         legend.id = 'map-legend';
@@ -463,6 +464,9 @@
             });
         });
         {% endfor %}
+        if (markers.length == 0) {
+            bounds.extend(map.getCenter());
+        }
         storeMarkerState(markers, map, minDate, bounds, oms);
         initializeDateRange();
         addLocationButton(map);
