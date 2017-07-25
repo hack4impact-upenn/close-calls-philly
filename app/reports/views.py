@@ -110,7 +110,7 @@ def edit_report_info(report_id):
             report.picture_deletehash = deletehash
 
         report.contact_name = form.contact_name.data
-        report.contact_phone = form.contact_phone.data
+        report.contact_phone = (int(form.contact_phone.data) if len(form.contact_phone.data) > 0 else None)
         report.contact_email = form.contact_email.data
 
         db.session.add(report)
