@@ -50,7 +50,7 @@ class Incident(db.Model):
     deaths = db.Column(db.Integer, default=0) # optional
     picture_url = db.Column(db.Text, default=None) # optional
     contact_name = db.Column(db.Text, default=None) # optional
-    contact_phone = db.Column(db.Integer, default=None) #optional
+    contact_phone = db.Column(db.Text, default=None) #optional
     contact_email = db.Column(db.Text, default=None) #optional
     picture_deletehash = db.Column(db.Text, default=None)
 
@@ -124,7 +124,7 @@ class Incident(db.Model):
                 license_plates=license_plates_str,
                 picture_url=fake.image_url(),
                 contact_name = "Test Contact",
-                contact_phone=1234567890,
+                contact_phone='1234567890',
                 contact_email = fake.email(),
                 **kwargs
             )
