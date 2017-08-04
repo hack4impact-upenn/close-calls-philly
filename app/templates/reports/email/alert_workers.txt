@@ -6,9 +6,6 @@ A {{ incident_report.agency.name }} vehicle was reported idling. Here is some in
 * Duration (h:m:s): {{ incident_report.duration }}
 * Agency: {{ incident_report.agency.name }}
 * Vehicle ID: {{ incident_report.vehicle_id }}
-{% if incident_report.license_plate %}
-* License Plate: {{ incident_report.license_plate }}
-{% endif %}
 * Location:
 {% if incident_report.location.original_user_text %}
     - User text: {{ incident_report.location.original_user_text }}

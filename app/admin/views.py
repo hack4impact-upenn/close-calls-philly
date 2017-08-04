@@ -263,11 +263,10 @@ def upload_reports():
     injuries_desc_index = 13
     road_conditions_index = 14
     deaths_index = 15
-    license_plates_index = 16
-    picture_index = 17
-    contact_name_index = 18
-    contact_phone_index = 19
-    contact_email_index = 20
+    picture_index = 16
+    contact_name_index = 17
+    contact_phone_index = 18
+    contact_email_index = 19
 
     validator_form = IncidentReportForm()
 
@@ -283,7 +282,7 @@ def upload_reports():
         columns = next(reader)
         for c in range(len(columns)):
             columns[c] = columns[c].upper()
-        if columns != ["OBSERVED/EXPERIENCED", "DATE", "LATITUDE", "LONGITUDE", "ADDRESS", "CAR", "BUS", "TRUCK", "BICYCLE", "PEDESTRIAN", "CATEGORY", "DESCRIPTION", "INJURIES", "INJURIES DESCRIPTION", "WEATHER/ROAD CONDITIONS", "NUMBER OF DEATHS", "LICENSE PLATES", "PICTURE URL", "CONTACT NAME", "CONTACT PHONE", "CONTACT EMAIL"]:
+        if columns != ["OBSERVED/EXPERIENCED", "DATE", "LATITUDE", "LONGITUDE", "ADDRESS", "CAR", "BUS", "TRUCK", "BICYCLE", "PEDESTRIAN", "CATEGORY", "DESCRIPTION", "INJURIES", "INJURIES DESCRIPTION", "WEATHER/ROAD CONDITIONS", "NUMBER OF DEATHS", "PICTURE URL", "CONTACT NAME", "CONTACT PHONE", "CONTACT EMAIL"]:
             flash('The column names and order must match the specified form exactly. Please click the info icon for more details.', 'error')
             return redirect(url_for('main.index'))
         error_lines = []
@@ -383,7 +382,6 @@ def upload_reports():
                         injuries_description=row[injuries_desc_index],
                         road_conditions=row[road_conditions_index],
                         deaths=int(row[deaths_index]) if len(row[deaths_index]) > 0 else 0,
-                        license_plates=row[license_plates_index],
                         picture_url=row[picture_index],
                         contact_name=contact_name_text if len(contact_name_text) > 0
                         else None,

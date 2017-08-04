@@ -43,7 +43,6 @@
         <tr><td>Injuries Description</td><td>{{ report.injuries_description }}</td></tr>
         <tr><td>Observed/Experienced</td><td>{{ report.witness }}</td></tr>
         <tr><td>Number of Deaths</td><td>{{ report.deaths }}</td></tr>
-        <tr><td>License Plates</td><td>{{ report.license_plates }}</td></tr>
         <tr><td>Picture</td>
             <td>
                 {% if report.picture_url %}
@@ -123,7 +122,6 @@
                     {{ f.render_form_field(form.injuries_description)}}
                     {{ f.render_form_field(form.road_conditions) }}
                     {{ f.render_form_field(form.deaths) }}
-                    {{ f.render_form_field(form.license_plates) }}
                     {{ f.render_form_field(form.picture_file) }}
                     {{ f.render_form_field(form.contact_name)}}
                     {{ f.render_form_field(form.contact_phone)}}

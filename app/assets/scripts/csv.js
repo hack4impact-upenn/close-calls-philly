@@ -6,11 +6,9 @@ function downloadCSV(isAdmin) {
         'WEATHER/ROAD CONDITIONS'
     ];
     if (isAdmin) {
-        csv[0] = csv[0]+',NUMBER OF DEATHS,LICENSE PLATES,PICTURE URL,,CONTACT NAME,CONTACT PHONE,CONTACT EMAIL';
+        csv[0] = csv[0]+',NUMBER OF DEATHS,PICTURE URL,,CONTACT NAME,CONTACT PHONE,CONTACT EMAIL';
     }
     markersDisplayedOnMap.forEach(function(marker) {
-        var licensePlates = marker.licensePlates.split(',').join(';');
-
         var line = [
             marker.witness,
             marker.incidentDate,
@@ -28,7 +26,6 @@ function downloadCSV(isAdmin) {
         ];
         if (isAdmin) {
             line.push(marker.deaths);
-            line.push(marker.licensePlates);
             line.push(marker.pictureUrl);
             line.push(marker.contactName);
             line.push(marker.contactPhone);

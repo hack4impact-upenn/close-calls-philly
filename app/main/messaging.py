@@ -20,11 +20,10 @@ from twilio.rest import TwilioRestClient
 
 STEP_INIT = 0
 STEP_LOCATION = 1
-STEP_LICENSE_PLATE = 2
-STEP_VEHICLE_ID = 3
-STEP_DURATION = 4
-STEP_DESCRIPTION = 5
-STEP_PICTURE = 6
+STEP_VEHICLE_ID = 2
+STEP_DURATION = 3
+STEP_DESCRIPTION = 4
+STEP_PICTURE = 5
 
 
 @main.route('/report_incident', methods=['GET'])  # noqa
@@ -42,7 +41,6 @@ def handle_message():
     # Retrieve incident cookies
     step = int(request.cookies.get('messagecount', 0))
     vehicle_id = str(request.cookies.get('vehicle_id', ''))
-    license_plate = str(request.cookies.get('license_plate', ''))
     duration = int(request.cookies.get('duration', 0))
     description = str(request.cookies.get('description', ''))
     location = str(request.cookies.get('location', ''))
@@ -51,7 +49,6 @@ def handle_message():
     if 'report' == body.lower():
         # reset report variables/cookies
         vehicle_id = ''
-        license_plate = ''
         duration = 0
         description = ''
         location = ''
@@ -61,9 +58,6 @@ def handle_message():
 
     elif step == STEP_LOCATION:
         location, step = handle_location_step(body, step, twiml)
-
-    elif step == STEP_LICENSE_PLATE:
-        license_plate, step = handle_license_plate_step(body, step, twiml)
 
     elif step == STEP_VEHICLE_ID:
         vehicle_id, step = handle_vehicle_id_step(body, step, twiml)
@@ -78,8 +72,7 @@ def handle_message():
         step, image_job_id = handle_picture_step(step, message_sid,
                                                  twilio_hosted_media_url)
 
-        new_incident = handle_create_report(description, duration,
-                                            license_plate, location,
+        new_incident = handle_create_report(description, duration, location,
                                             picture_url, vehicle_id,
                                             phone_number)
 
@@ -114,7 +107,6 @@ def handle_message():
 
     set_cookie(response, 'messagecount', str(step))
     set_cookie(response, 'vehicle_id', vehicle_id)
-    set_cookie(response, 'license_plate', license_plate)
     set_cookie(response, 'duration', str(duration))
     set_cookie(response, 'description', description)
     set_cookie(response, 'location', location)
@@ -140,38 +132,11 @@ def handle_location_step(body, step, twiml):
 
     if len(errors) == 0:
         location = body
-        step = STEP_LICENSE_PLATE
-        twiml.message('What is the license plate number? Reply "no" to skip. '
-                      '(e.g. MG1234E)')
     else:
         location = ''
         reply_with_errors(errors, twiml, 'location')
 
     return location, step
-
-
-def handle_license_plate_step(body, step, twiml):
-    """Handle a message from the user containing the report's license plate."""
-    if body.lower() == 'no':
-        body = ''
-
-    validator_form = IncidentReportForm()
-    errors = data_errors(
-        form=validator_form,
-        field=validator_form.license_plate,
-        data=body
-    )
-    if len(errors) == 0:
-        license_plate = body
-        step = STEP_VEHICLE_ID
-        twiml.message('What is the Vehicle ID? This is usually on the back or '
-                      'side of the vehicle. (e.g. 105014)')
-    else:
-        license_plate = ''
-        reply_with_errors(errors, twiml, 'license plate')
-
-    return license_plate, step
-
 
 def handle_vehicle_id_step(body, step, twiml):
     """Handle a message from the user containing the report's vehicle id."""
