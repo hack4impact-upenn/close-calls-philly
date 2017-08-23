@@ -7,9 +7,6 @@
   <li><b>Duration (h:m:s):</b> {{ incident_report.duration }}</li>
   <li><b>Agency:</b> {{ incident_report.agency.name }}</li>
   <li><b>Vehicle ID:</b> {{ incident_report.vehicle_id }}</li>
-  {% if incident_report.license_plate %}
-    <li><b>License Plate:</b> {{ incident_report.license_plate }}</li>
-  {% endif %}
   <li><b>Location:</b>
       <ul>
           {% if incident_report.location.original_user_text %}

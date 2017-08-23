@@ -15,12 +15,6 @@
                 </div>
             </form>
             <div class="ui horizontal divider" id="vehicleDivider">Filters</div>
-            <form name="licenseForm" id="licenseForm">
-                <div class="ui action input" id="licenseSearch">
-                    <input class="prompt" placeholder="Enter License Plate..." type="text" name="license" id="license">
-                    <button id="licenseSubmitButton" class="ui button">Search</button>
-                </div>
-            </form>
             <br />
             <div id="boundingBoxSection">
                 <h4>Bounding Boxes&nbsp&nbsp<a><i onclick="sendBoundingInstructionsModal()" class="info circle icon" aria-hidden="true" id="boundingInstructionsIcon"></i></a></h4>
@@ -128,7 +122,6 @@
             <div id="injuries-description-field" style="display:none">{{ f.render_form_field(form.injuries_description) }}</div>
             {{ f.render_form_field(form.description) }}
             {{ f.render_form_field(form.road_conditions) }}
-            {{ f.render_form_field(form.license_plates) }}
             {{ f.render_form_field(form.picture_file) }}
             {{ f.render_form_field(form.contact_name) }}
             {{ f.render_form_field(form.contact_phone) }}
@@ -214,7 +207,6 @@
                 <li>INJURIES DESCRIPTION</li>
                 <li>WEATHER/ROAD CONDITIONS</li>
                 <li>NUMBER OF DEATHS</li>
-                <li>LICENSE PLATES</li>
                 <li>PICTURE URL</li>
                 <li>CONTACT NAME</li>
                 <li>CONTACT PHONE</li>
@@ -225,7 +217,7 @@
             The format of the "Date" column should be (year-month-day hour:minute am/pm).
             Either both the latitude and longitude fields must be completed, or the address field must be completed.
             If there are no injuries, the "Injuries Description" is optional.
-            The entries for "Description", "Road/Weather Conditions", "License Plates", "Picture URL", "Contact Name", "Contact Phone", and "Contact Email" are optional.
+            The entries for "Description", "Road/Weather Conditions", "Picture URL", "Contact Name", "Contact Phone", and "Contact Email" are optional.
             All other columns require an input.
         </p>
 
@@ -418,7 +410,6 @@
             contentString += '<p><b>Types of Vehicles Involved:</b> ' + vehicleTypes.join(', ') + '</p>'
             {% if current_user.is_authenticated %}
                 contentString += '<p><b>Number of Deaths:</b> ' + '{{ report.deaths }}' + '</p>';
-                contentString += '<p><b>License Plates:</b> ' + "{{ report.license_plates if report.license_plates else '' }}" + '</p>';
                 {% if report.picture_url %}
                     contentString += '<p><a href="{{ report.picture_url }}" target="_blank" rel="noopener noreferrer">' + 'Link to Picture' + '</a></p>';
                 {% else %}
@@ -447,7 +438,6 @@
             marker.injuries_description = '{{ report.injuries_description if report.injuries == "Yes" else "No injuries." }}';
             marker.witness = '{{ report.witness }}';
             marker.deaths = '{{ report.deaths }}';
-            marker.licensePlates = "{{ report.license_plates if report.license_plates else ''}}";
             marker.pictureUrl = '{{ report.picture_url if report.picture_url else '' }}';
 
             {% if current_user.is_authenticated %}

@@ -91,7 +91,6 @@ def edit_report_info(report_id):
         report.deaths = form.deaths.data
         if (form.deaths.data == None):
             report.deaths = 0
-        report.license_plates = form.license_plates.data.upper()
 
         if form.picture_file.data.filename:
             filepath = secure_filename(form.picture_file.data.filename)
@@ -125,7 +124,7 @@ def edit_report_info(report_id):
         form.witness.default = 'Observed'
     else:
         form.witness.default = 'Experienced'
-    
+
     form.address.default = report.address.original_user_text
 
     form.date.default = report.date
@@ -137,7 +136,6 @@ def edit_report_info(report_id):
     form.injuries.default = report.injuries
     form.injuries_description.default = report.injuries_description
     form.deaths.default = report.deaths
-    form.license_plates.default = report.license_plates
     form.contact_name.default = report.contact_name
     form.contact_phone.default = str(report.contact_phone)
     form.contact_email.default = report.contact_email

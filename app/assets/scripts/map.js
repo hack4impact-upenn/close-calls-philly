@@ -163,16 +163,6 @@ $(document).ready(function() {
         update_center();
         return false;
     });
-    $('#licenseForm').on('submit', function(event) {
-        filterMarkers();
-        return false;
-    });
-    // Capture all possible changes to the text input.
-    $('#license').on('change textInput input', function(event) {
-        if (!$('#license').val()) {
-            filterMarkers();
-        }
-    })
     $('#car').prop('checked', true);
 	$('#bus').prop('checked', true);
 	$('#truck').prop('checked', true);
@@ -247,11 +237,6 @@ function fitsVehicleType(marker) {
 			(marker.pedestrian === 'True' && $('#pedestrian').is(':checked'));
 }
 
-function fitsLicenseSearch(marker) {
-    var licenseSearch = $('#license').val().toUpperCase();
-    return marker.licensePlates.includes(licenseSearch);
-}
-
 function filterMarkers() {
     markersDisplayedOnMap = [];
     var bounds = (rectangle === null) ? null : rectangle.getBounds();
@@ -259,7 +244,7 @@ function filterMarkers() {
     for (mw = 0; mw < globalMarkers.length; mw++) {
         var marker = globalMarkers[mw];
         if (withinRectangleBounds(marker, bounds) && withinPolygonBounds(marker, vertices) &&
-                withinDateRange(marker) && fitsVehicleType(marker) && fitsLicenseSearch(marker)) {
+                withinDateRange(marker) && fitsVehicleType(marker)) {
             marker.setMap(globalMap);
             markersDisplayedOnMap.push(marker);
         } else {

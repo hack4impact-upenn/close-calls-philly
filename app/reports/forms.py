@@ -126,11 +126,6 @@ class IncidentReportForm(Form):
 
     deaths = IntegerField('Number of Deaths', validators=[Optional()])
 
-    license_plates = TextAreaField('License Plates', validators=[
-        Optional(),
-        Length(max=5000)
-    ])
-
     contact_name = StringField('Contact Name', validators=[
         Optional(),
         Length(max=1000)

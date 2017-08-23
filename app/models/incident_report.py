@@ -37,7 +37,6 @@ class Incident(db.Model):
     date = db.Column(db.DateTime)
     category = db.Column(db.String)
     description = db.Column(db.Text, default=None)
-    license_plates = db.Column(db.String, default=None) # optional
     car = db.Column(db.Boolean)
     bus = db.Column(db.Boolean)
     truck = db.Column(db.Boolean)
@@ -104,8 +103,6 @@ class Incident(db.Model):
                 injuries_description_entry = "An injury occurred."
             if random.random() >= 0.5:
                 is_witness = 'Yes'
-            license_plates_str = ""
-            license_plates_str += rand_alphanumeric(6)
             r = Incident(
                 address=l,
                 date=fake.date_time_between(start_date="-1y", end_date="now"),
@@ -121,7 +118,6 @@ class Incident(db.Model):
                 witness=is_witness,
                 road_conditions=fake.paragraph(),
                 deaths=choice([0]*98+[0, 1]),
-                license_plates=license_plates_str,
                 picture_url=fake.image_url(),
                 contact_name = "Test Contact",
                 contact_phone=1234567890,

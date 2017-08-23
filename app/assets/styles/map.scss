@@ -21,18 +21,16 @@
     clear: both;
 }
 
-#addressForm,
-#licenseForm {
+#addressForm {
     margin: 5px auto;
     width: 100%;
 }
 
-#addressSearch,
-#licenseSearch {
+#addressSearch {
     width: 100%;
 }
 
-#submitButton, #licenseSubmitButton {
+#submitButton {
     width: 30%;
     background-color: $teal;
     color: $white;
@@ -44,7 +42,7 @@
     display: inline-block;
 }
 
-#submitButton:hover, #licenseSubmitButton:hover, #submit:hover{
+#submitButton:hover, #submit:hover{
     background-color: $light-teal;
 }
 
@@ -209,7 +207,6 @@ form textarea#description {
         width: 100%;
     }
 
-    #licenseSearch,
     #centerMapDivider,
     #boundingBoxSection,
     #downloadCSVButton,
